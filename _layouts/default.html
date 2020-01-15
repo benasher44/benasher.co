@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{ site.description }}">
+  <title>
+    {% if page.title %}
+      {{ page.title }} &middot; {{ site.title }}
+    {% else %}
+      {{ site.title }} &middot; {{ site.description }}
+    {% endif %}
+  </title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      benasher.co
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start">
+      {% for item in site.data.pages %}
+        <a class="navbar-item{% if page.url == item.url %} is-active{% endif %}" href="{{ item.url }}">
+          {{ item.title }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</nav>
+<main class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <article class="column is-two-thirds content">
+        {{ content }}
+      </article>
+    </div>
+  </div>
+</main>
+</body>
+</html>

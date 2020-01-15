@@ -1,0 +1,31 @@
+---
+---
+$ben-red: #76323F;
+$ben-gray: #233237;
+
+$content-heading-color: $ben-red;
+$link: $ben-red;
+
+$navbar-background-color: $ben-gray;
+$navbar-item-color: white;
+$navbar-item-active-color: darken($navbar-item-color, 10%);
+$navbar-item-active-background-color: lighten($navbar-background-color, 10%);
+$navbar-item-hover-background-color: $navbar-item-active-background-color;
+$navbar-item-hover-color: $navbar-item-active-color;
+
+$navbar-breakpoint: 10px;
+@import "bulma/bulma.sass";
+
+.content h1 {
+    font-weight: 300;
+    font-size: 2.5em;
+}
+
+.navbar-brand a {
+    font-weight: 100;
+    font-size: 1.5em;
+}
+
+.navbar-brand {
+    padding: 0 10pt 0 0;
+}
