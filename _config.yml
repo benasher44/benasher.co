@@ -1,6 +1,9 @@
 url: https://benasher.co
 title: Ben Asher
 
+plugins:
+  - jekyll-sitemap
+
 sass:
   style: compressed
 
