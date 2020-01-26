@@ -1,6 +1,9 @@
 ---
 layout: page
 title: About
+url: /about
+in-nav: true
+nav-order: 1
 ---
 
 ## Me

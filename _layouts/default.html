@@ -22,9 +22,10 @@
   </div>
   <div class="navbar-menu">
     <div class="navbar-start">
-      {% for item in site.data.pages %}
-        <a class="navbar-item{% if page.url == item.url %} is-active{% endif %}" href="{{ item.url }}">
-          {{ item.title }}
+      {% assign nav_pages = site.pages | where: "in-nav", "true" | sort: "nav-order" %}
+      {% for nav_page in nav_pages %}
+        <a class="navbar-item{% if page.url == nav_page.url %} is-active{% endif %}" href="{{ nav_page.url }}">
+          {{ nav_page.title }}
         </a>
       {% endfor %}
     </div>
