@@ -1,0 +1,7 @@
+---
+layout: default
+---
+
+{% for post in site.posts %}
+  {% include post.html content=post.content excerpt=post.excerpt title=post.title url=post.url date=post.date %}
+{% endfor %}

@@ -1,6 +1,14 @@
 url: https://benasher.co
+title: Ben Asher
 
 sass:
   style: compressed
 
 description: "Ben Asher's personal website."
+permalink: /:title/
+
+exclude:
+  - Makefile
+  - vendor
+  - Gemfile
+  - Gemfile.lock

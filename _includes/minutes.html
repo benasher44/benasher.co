@@ -1,0 +1,6 @@
+{% capture words %}
+  {{ include.content | number_of_words | minus: 250 }}
+{% endcapture %}
+{% unless words contains "-" %}
+- <span class="tag is-info is-light">{{ words | plus: 250 | divided_by: 180 | append: " minute read" }}</span>
+{% endunless %}

@@ -18,7 +18,10 @@ $navbar-breakpoint: 10px;
 
 .content h1 {
     font-weight: 300;
-    font-size: 2.5em;
+}
+
+.content h1 a {
+    font-weight: 300;
 }
 
 .navbar-brand a {

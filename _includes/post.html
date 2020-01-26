@@ -1,0 +1,13 @@
+<article class="column is-two-thirds content">
+  {% if include.url %}
+  <h1 class="title is-1"><a href="{{ include.url }}">{{ include.title }}</a></h1>
+  {% else %}
+  <h1 class="title is-1"/>{{ include.title }}</h1>
+  {% endif %}
+  <h6 class="subtitle is-6">{{ include.date | date_to_string }}{% include minutes.html %}</h6>
+  {{ include.excerpt }}
+  {% if include.url %}
+  <p><a href="{{ include.url }}">Read more…</a></p>
+  {% endif %}
+</article>
+
