@@ -1,8 +1,11 @@
 url: https://benasher.co
 title: Ben Asher
+author: Ben Asher
+description: Ben Asher's personal website and blog
 
 plugins:
   - jekyll-sitemap
+  - jekyll-feed
 
 sass:
   style: compressed
