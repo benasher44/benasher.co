@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v1
+        - name: npm install
+          run: npm install
+        - name: bundle install
+          run: bundle install
+        - name: build
+          run: make
