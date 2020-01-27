@@ -29,3 +29,4 @@ exclude:
   - Dangerfile
   - LICENSE
   - requirements.txt
+  - node_modules
