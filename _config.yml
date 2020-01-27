@@ -1,11 +1,18 @@
 url: https://benasher.co
 title: Ben Asher
-author: Ben Asher
 description: Ben Asher's personal website and blog
+author:
+  name: Ben Asher
+  twitter: benasher44
+
+twitter:
+  username: benasher44
+  card: summary
 
 plugins:
-  - jekyll-sitemap
   - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
 
 sass:
   style: compressed
