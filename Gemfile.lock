@@ -1,14 +1,3 @@
-GIT
-  remote: https://github.com/skatkov/mdspell
-  revision: 75662297d28a56e22e7aa54a3799c74b7c0cefdc
-  specs:
-    mdspell (0.2.0)
-      ffi-aspell (~> 1.1)
-      kramdown (>= 1.8)
-      mixlib-cli (~> 1.5)
-      mixlib-config (~> 2.2)
-      rainbow (~> 2.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -48,8 +37,6 @@ GEM
     faraday-http-cache (2.0.0)
       faraday (~> 0.8)
     ffi (1.11.3)
-    ffi-aspell (1.1.0)
-      ffi
     forwardable-extended (2.6.0)
     git (1.5.0)
     http_parser.rb (0.6.0)
@@ -88,9 +75,6 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.3.6)
-    mixlib-cli (1.7.0)
-    mixlib-config (2.2.18)
-      tomlrb
     multipart-post (2.1.1)
     nap (1.1.0)
     no_proxy_fix (0.1.2)
@@ -101,9 +85,6 @@ GEM
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (4.0.3)
-    rainbow (2.2.2)
-      rake
-    rake (13.0.1)
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -116,7 +97,6 @@ GEM
       faraday (> 0.8, < 2.0)
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
-    tomlrb (1.2.9)
     unicode-display_width (1.6.0)
 
 PLATFORMS
@@ -129,7 +109,6 @@ DEPENDENCIES
   jekyll-feed
   jekyll-seo-tag
   jekyll-sitemap
-  mdspell!
 
 BUNDLED WITH
    2.1.4

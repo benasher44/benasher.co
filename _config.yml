@@ -16,6 +16,7 @@ plugins:
 
 sass:
   style: compressed
+  sass_dir: node_modules
 
 description: "Ben Asher's personal website."
 permalink: /:title/
