@@ -25,3 +25,7 @@ exclude:
   - vendor
   - Gemfile
   - Gemfile.lock
+  - package-lock.json
+  - Dangerfile
+  - LICENSE
+  - requirements.txt
