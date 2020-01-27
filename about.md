@@ -28,7 +28,6 @@ This website is built with [jekyll](https://jekyllrb.com), styled with [bulma](h
 
 At the moment, it's functional enough for me to write, but there are a few more things coming:
 
-- Categories and tags to posts
-- Filtering for categories and
+- Filtering for categories and tags
 - Resume
 - A bit more about myself
