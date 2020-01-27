@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "bulma": "^0.8.0",
+    "markdown-spellcheck": "orta/node-markdown-spellcheck"
+  }
+}

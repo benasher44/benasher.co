@@ -1,0 +1,43 @@
+name: Push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v1
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - name: pip install
+        run: python -m pip install -r requirements.txt
+      - name: Install bundler
+        run: gem install bundler
+      - name: Cache bundle
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ruby-bundle-${{ hashFiles('Gemfile.lock') }}
+      - name: bundle install
+        run: bundle install --path=vendor/bundle
+      - name: Setup Node
+        uses: actions/setup-node@v1
+      - name: Install yarn
+        run: npm install -g yarn
+      - name: Yarn
+        run: yarn
+      - name: Deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: make deploy

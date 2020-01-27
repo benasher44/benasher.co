@@ -16,6 +16,7 @@ plugins:
 
 sass:
   style: compressed
+  sass_dir: node_modules
 
 description: "Ben Asher's personal website."
 permalink: /:title/
@@ -25,3 +26,11 @@ exclude:
   - vendor
   - Gemfile
   - Gemfile.lock
+  - package-lock.json
+  - Dangerfile
+  - LICENSE
+  - requirements.txt
+  - node_modules
+  - package.json
+  - yarn-error.log
+  - yarn.lock
