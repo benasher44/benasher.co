@@ -28,6 +28,8 @@ jobs:
         with:
           path: vendor/bundle
           key: ruby-bundle-${{ hashFiles('Gemfile.lock') }}
+      - name: Setup Node
+        uses: actions/setup-node@v1
       - name: bundle install
         run: bundle install --path=vendor/bundle
       - name: Danger
