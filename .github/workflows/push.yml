@@ -1,12 +1,12 @@
-name: PR
+name: Push
 
 on:
-  pull_request:
+  push:
     branches:
       - master
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -28,17 +28,16 @@ jobs:
         with:
           path: vendor/bundle
           key: ruby-bundle-${{ hashFiles('Gemfile.lock') }}
+      - name: bundle install
+        run: bundle install --path=vendor/bundle
       - name: Setup Node
         uses: actions/setup-node@v1
       - name: Install yarn
         run: npm install -g yarn
       - name: Yarn
         run: yarn
-      - name: bundle install
-        run: bundle install --path=vendor/bundle
-      - name: Danger
+      - name: Deploy
         env:
-          DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
-        run: bundle exec danger
-      - name: build
-        run: make
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: make deploy
