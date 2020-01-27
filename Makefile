@@ -11,4 +11,4 @@ serve:
 .PHONY: deploy
 deploy: build
 	aws s3 sync --delete --dryrun _site s3://benasher.co
-	aws cloudfront create-invalidation --distribution-id E2FTU05IZTIYC9 --paths '*'
+	aws cloudfront create-invalidation --distribution-id E2FTU05IZTIYC9 --paths '/*'
