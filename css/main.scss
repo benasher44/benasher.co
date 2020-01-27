@@ -14,7 +14,7 @@ $navbar-item-hover-background-color: $navbar-item-active-background-color;
 $navbar-item-hover-color: $navbar-item-active-color;
 
 $navbar-breakpoint: 10px;
-@import "bulma/bulma.sass";
+@import "../node_modules/bulma/bulma.sass";
 
 .content h1 {
     font-weight: 300;
