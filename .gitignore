@@ -3,3 +3,4 @@ vendor
 _site
 .jekyll-cache
 node_modules
+cached_assets.yml

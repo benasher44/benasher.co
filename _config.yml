@@ -18,7 +18,6 @@ sass:
   style: compressed
   sass_dir: node_modules
 
-description: "Ben Asher's personal website."
 permalink: /:title/
 
 exclude:
@@ -34,3 +33,8 @@ exclude:
   - package.json
   - yarn-error.log
   - yarn.lock
+  - scripts
+  - cached_assets.yml
+
+cached_assets:
+  '/css/main.css': '/css/main.css'
