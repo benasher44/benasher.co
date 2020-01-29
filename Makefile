@@ -8,7 +8,13 @@ build:
 serve:
 	bundle exec jekyll serve
 
+.PHONY: deploy-build
+deploy-build:
+	./scripts/prep_cache.rb
+	bundle exec jekyll build --config _config.yml,cached_assets.yml
+	./scripts/fill_cache.rb
+
 .PHONY: deploy
-deploy: build
-	aws s3 sync --delete _site s3://benasher.co
+deploy: deploy-build
+	./scripts/deploy.rb
 	aws cloudfront create-invalidation --distribution-id E2FTU05IZTIYC9 --paths '/*'
