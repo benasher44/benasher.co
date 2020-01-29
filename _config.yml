@@ -20,6 +20,15 @@ sass:
 
 permalink: /:title/
 
+defaults:
+  - scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      image:
+        path: /img/logo.png
+        width: 1000
+        height: 1000
+
 exclude:
   - Makefile
   - vendor
