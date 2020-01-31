@@ -38,3 +38,7 @@ $navbar-breakpoint: 10px;
 .navbar-brand {
     padding: 0 10pt 0 0;
 }
+
+.navbar-end a.navbar-item:hover {
+    background-color: transparent
+}
