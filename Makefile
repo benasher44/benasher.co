@@ -6,7 +6,7 @@ build:
 
 .PHONY: serve
 serve:
-	bundle exec jekyll serve
+	bundle exec jekyll serve --drafts
 
 .PHONY: deploy-build
 deploy-build:

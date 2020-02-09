@@ -44,6 +44,7 @@ exclude:
   - yarn.lock
   - scripts
   - cached_assets.yml
+  - css/includes
 
 cached_assets:
   '/css/main.css': '/css/main.css'

@@ -15,6 +15,11 @@ $navbar-item-hover-color: $navbar-item-active-color;
 
 $navbar-breakpoint: 10px;
 
+$code: inherit;
+$code-weight: bold;
+
+@import "../css/includes/github";
+
 @import "bulma/sass/utilities/_all";
 @import "bulma/sass/base/_all";
 @import "bulma/sass/elements/_all";
@@ -41,4 +46,8 @@ $navbar-breakpoint: 10px;
 
 .navbar-end a.navbar-item:hover {
     background-color: transparent
+}
+
+figure.highlight {
+    text-align: left;
 }
