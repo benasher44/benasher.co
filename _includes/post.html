@@ -5,7 +5,11 @@
   <h1 class="title is-1"/>{{ include.title }}</h1>
   {% endif %}
   <h6 class="subtitle is-6">{{ include.date | date_to_string }}{% include minutes.html %}</h6>
+  {% if include.excerpt %}
   {{ include.excerpt }}
+  {% elsif include.content %}
+  {{ include.content }}
+  {% endif %}
   {% if include.url %}
   <p><a href="{{ include.url }}">Read more…</a></p>
   {% endif %}
