@@ -9,6 +9,10 @@
   {{ include.excerpt }}
   {% elsif include.content %}
   {{ include.content }}
+  <div class="level is-size-7">
+    <p class="level-item" style="margin-top: 2rem;">Questions or comments? Find me on <a href="https://twitter.com/benasher44">twitter</a>.</p>
+    <p class="level-item">Find a mistake or inaccuracy? Please open an issue or PR on <a href="https://github.com/benasher44/benasher.co">github</a>.</p>
+  </div>
   {% endif %}
   {% if include.url %}
   <p><a href="{{ include.url }}">Read more…</a></p>
