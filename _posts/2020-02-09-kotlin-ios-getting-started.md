@@ -65,7 +65,7 @@ And in Kotlin:
 data class Dog(val name: String, override val ownerName: String): Pet
 {% endhighlight %}
 
-In Kotlin, we're still at one line. I don't know how others find the ability to do this in one line, but as I've been writing more Kotlin, I've found it to be practical and concise. It's one of the Kotlin-y things I've come to enjoy most, and I've found more and more of these "little things" as I've explored the language.
+In Kotlin, we're still at one line. I don't know how others find the ability to do this in one line, but as I've been writing more Kotlin, I've found it to be practical and concise. It's one of the "Kotlin-y" things I've come to enjoy most, and I've found more and more of these "little things" as I've explored the language.
 
 ## Coming from Swift
 
@@ -76,7 +76,7 @@ At this point, you may have noticed some similarities between the two languages,
 - `fun foo(arg: String)` and `func foo(arg: String)` for defining a function called "foo"
 - `class` and `class`
 
-But coming from Swift, there were also tools I wanted to reach for when writing Kotlin, which didn't have such an exact match Kotlin. For me, these all fell into the category of working with statics. The first thing to know is that there is no `static` keyword like in Swift. Think about all of the places you might use `static `in Swift. How do we do those things in Kotlin?
+Coming from Swift, there were also tools I wanted to reach for when writing Kotlin, which didn't have such an exact match in Kotlin. For me, these all fell into the category of working with statics. The first thing to know is that there is no `static` keyword like in Swift. Think about all of the places you might use `static `in Swift. How do we do those things in Kotlin?
 
 ### Singletons
 
