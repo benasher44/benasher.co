@@ -4,6 +4,7 @@ title: Getting Started with Kotlin on iOS, Part 1
 tags: kotlin multiplatform kotlin/native ios swift
 categories: software
 description: A brief introduction to Kotlin for Swift/iOS developers before diving into Kotlin multiplatform.
+updated: 2019-02-11
 ---
 
 Hello! I'm Ben. I'm an iOS engineer at Autodesk where I work on the PlanGrid app. PlanGrid is a construction productivity tool that works on iOS, Android, and even Windows 😱. The iOS version is written in Swift (some Obj-C too because it's older), but now most of the code I write day-to-day for the iOS app is in Kotlin.
@@ -113,7 +114,11 @@ When I first saw this, my mind went to the C++ `friend` keyword 🙈, but all it
 
 ### Kotlin/Native and Objects
 
-One thing to note about `object`s when working with them in multiplatform contexts is that they behave in slightly different ways on native platforms like iOS (i.e. built using Kotlin/Native) compared to the JVM. On native platforms, globals (including `object`s) are initialized during Kotlin/Native runtime initialization, which is typically when you launch your application. On the JVM, they're initialized on access (lazily).
+~~One thing to note about `object`s when working with them in multiplatform contexts is that they behave in slightly different ways on native platforms like iOS (i.e. built using Kotlin/Native) compared to the JVM. On native platforms, globals (including `object`s) are initialized during Kotlin/Native runtime initialization, which is typically when you launch your application. On the JVM, they're initialized on access (lazily).~~
+
+Their behavior here turns out to be the same 🎉. I made a mistake understanding the [concurrency rules](https://github.com/JetBrains/kotlin-native/blob/95ee655fbe8a5d346aea00c42deeb7ca493cb757/CONCURRENCY.md#global-variables-and-singletons) and reading too much into this line in the [immutability docs](https://github.com/JetBrains/kotlin-native/blob/985385e2fac037a1e9d8f2253139fced195c7421/IMMUTABILITY.md):
+
+> Top level/global variables of non-primitive types are by default accessible in the main thread (i.e., the thread which initialized Kotlin/Native runtime first) only.
 
 I'll discuss this a bit more in a future post.
 
