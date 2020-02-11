@@ -10,7 +10,7 @@ nav-order: 1
 
 I am a software developer primarily focused on mobile and iOS. I live in Berkeley, CA and work at Autodesk on mobile construction software.
 
-You can find me on [twitter](https://benasher44) or via email at hello @ this domain. You can find some of my work on [github](https://github.com/benasher44).
+You can find me on [twitter](https://twitter.com/benasher44) or via email at hello @ this domain. You can find some of my work on [github](https://github.com/benasher44).
 
 #### Speaking
 
