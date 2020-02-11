@@ -1,21 +1,26 @@
-<article class="column is-two-thirds content">
-  {% if include.url %}
-  <h1 class="title is-1"><a href="{{ include.url }}">{{ include.title }}</a></h1>
-  {% else %}
-  <h1 class="title is-1"/>{{ include.title }}</h1>
-  {% endif %}
-  <h6 class="subtitle is-6">{{ include.date | date_to_string }}{% include minutes.html %}{% include updated.html %}</h6>
-  {% if include.excerpt %}
-  {{ include.excerpt }}
-  {% elsif include.content %}
-  {{ include.content }}
-  <div class="level is-size-7">
-    <p class="level-item" style="margin-top: 2rem;">Questions or comments? Find me on <a href="https://twitter.com/benasher44">twitter</a>.</p>
-    <p class="level-item">Find a mistake or inaccuracy? Please open an issue or PR on <a href="https://github.com/benasher44/benasher.co">github</a>.</p>
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <article class="column is-two-thirds content">
+        {% if include.url %}
+        <h1 class="title is-1"><a href="{{ include.url }}">{{ include.title }}</a></h1>
+        {% else %}
+        <h1 class="title is-1"/>{{ include.title }}</h1>
+        {% endif %}
+        <h6 class="subtitle is-6">{{ include.date | date_to_string }}{% include minutes.html %}{% include updated.html %}</h6>
+        {% if include.excerpt %}
+        {{ include.excerpt }}
+        {% elsif include.content %}
+        {{ include.content }}
+        <div class="level is-size-7">
+          <p class="level-item" style="margin-top: 2rem;">Questions or comments? Find me on <a href="https://twitter.com/benasher44">twitter</a>.</p>
+          <p class="level-item">Find a mistake or inaccuracy? Please open an issue or PR on <a href="https://github.com/benasher44/benasher.co">github</a>.</p>
+        </div>
+        {% endif %}
+        {% if include.url %}
+        <p><a href="{{ include.url }}">Read more…</a></p>
+        {% endif %}
+      </article>
+    </div>
   </div>
-  {% endif %}
-  {% if include.url %}
-  <p><a href="{{ include.url }}">Read more…</a></p>
-  {% endif %}
-</article>
-
+</section>
