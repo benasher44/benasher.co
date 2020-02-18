@@ -37,11 +37,11 @@ To make the interop work, Kotlin/Native generates some base-layer (for lack of a
 
 You won't find these in your actual Kotlin code. They're generated when creating the Obj-C framework. The overarching reason we need all of this is to ensure smooth interop between the Swift/Obj-C world and the Kotlin one. To pick an example, one of Kotlin’s promises is working in your application without the help of the JVM, yet Kotlin/Native has to have working [automatic memory management](https://github.com/JetBrains/kotlin-native/blob/master/FAQ.md#q-what-is-kotlinnative-memory-management-model). Among other things, `KotlinBase` allows the memory management environments of Kotlin/Native and Swift to work together without help from me and you. I won’t get into how their automated memory management works in detail (could be a post in itself if I had the expertise), but it’s one of the concerns [Alec Strong](https://twitter.com/strongolopolis) addresses in [our talk from KotlinConf 2019](https://bit.ly/basher_kotlinconf_2019).
 
-You also might notice lots of `__attribute__((swift_name("SwiftyNameHere")))` sprinkled throughout the header. If you haven’t worked with making Obj-C APIs feel “Swifty” before, this is the mechanism for making an Obj-C-sounding declarations look and feel “Swifty” when interacting with them in Swift. Obj-C will see the classes and methods as is, and Swift will see the string inside the `swift_name` part.
+You also might notice lots of `__attribute__((swift_name("SwiftyNameHere")))` sprinkled throughout the header. If you haven’t worked with making Obj-C APIs feel “Swifty” before, this is the mechanism for making a Obj-C-sounding declarations look and feel “Swifty” when interacting with them in Swift. Obj-C will see the classes and methods as is, and Swift will see the string inside the `swift_name` part.
 
 Now that we have some of those basics covered, it’s time to write some Kotlin. Phill is going to walk through how some of the basic Kotlin constructs come out on the other end and appear to Swift.
 
-## Class
+## Classes
 
 One of the most common features of the Kotlin language you’ll work with is a class, which for the most part works exactly as you would expect it to in Swift and Obj-C. Define a `class` (or a `data class`) `Sample` in Kotlin and a corresponding class will be defined in Obj-C. 
 
@@ -60,13 +60,16 @@ __attribute__((swift_name("Sample")))
 @end;
 {% endhighlight %}
 
-Notice that generated Obj-C classes inherit from the `KotlinBase` super class, which subsequently inherits from `NSObject`e Generated classes are prefixed with a prefix that is derived from the framework name, in this case “KotlinIos2”. Each class includes type annotations in order to make class names. Methods and initializers look and behave natively to Swift language conventions.
+Notice that generated Obj-C classes inherit from the `KotlinBase` super class, which itself inherits from `NSObject`e Generated classes are prefixed with a prefix that is derived from the framework name, in this case “KotlinIos2”. Annotations are used to ensure this prefix is omitted from Swift, and that methods and initialziers look and behave natively to Swift language conventions.
 
 ### Inheritance
 
-// Code Block demonstrating open class?
+{% highlight kotlin %}
+// Kotlin
+open class Sample
+{% endhighlight %}
 
-Since classes in Kotlin are final by default, their native counterpart is annotated to restrict subclassing with `__attribute__((objc_subclassing_restricted))`. By specifying open on your Kotlin class, the generated Obj-C class will also support inheritance.
+Since classes in Kotlin are final by default, their native counterpart is annotated to restrict subclassing with the `__attribute__((objc_subclassing_restricted))` attribute. By specifying open on your Kotlin class, the generated Obj-C class will also support subclassing.
 
 ### Protocol Conformance
 
