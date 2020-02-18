@@ -4,12 +4,13 @@ title: 'Getting Started with Kotlin on iOS, Part 2: Interop'
 tags: kotlin multiplatform kotlin/native ios swift
 categories: software
 description: An introduction to interop between Kotlin and Swift in Kotlin multiplatform.
+excerpt_separator: <!--more-->
 ---
 
 ###### Co-authored by [Phill Farrugia](https://github.com/phillfarrugia)
 
 After you get a [feel for the language](https://benasher.co/kotlin-ios-getting-started/) and do some [Koans](https://play.kotlinlang.org/koans/), the next step in your journey to writing Kotlin for iOS is understanding what that Kotlin is going to look like from the Swift in your iOS app. The way that Kotlin reverse interop (Swift talking to Kotlin) works is via Objective-C. For some, discovering that they get an Obj-C header from their Kotlin library, instead of a Swift one, is disappointing. That’s an understandable reaction. In a all (or majority) Swift code base, you and your team may have spent a lot of time building out your project using all that Swift has to offer– even the stuff that’s not compatible with Obj-C.
-
+<!--more-->
 ## But my Swift!
 
 The first thing to understand here is that Kotlin/Native–the member of the Kotlin multiplatform family responsible for this part–predates the Swift language features like Swift ABI, and module ABI, stability that would make Swift-only reverse interop for Kotlin possible. We know, and JetBrains knows, that Apple now has (some) Swift-only system frameworks now, and Apple’s ecosystem is moving in that direction. If JetBrains wants developers to [build iOS (and Android) apps in Android Studio](https://blog.jetbrains.com/kotlin/2019/12/what-to-expect-in-kotlin-1-4-and-beyond/) this year, I think we can expect Swift reverse interop in the future 🙏.
