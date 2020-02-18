@@ -13,7 +13,7 @@ After you get a [feel for the language](https://benasher.co/kotlin-ios-getting-s
 <!--more-->
 ## But my Swift!
 
-The first thing to understand here is that Kotlin/Native—the member of the Kotlin multiplatform family responsible for this part—predates the Swift language features like Swift ABI, and module ABI, stability that would make Swift-only reverse interop for Kotlin possible. We know, and JetBrains knows, that Apple now has (some) Swift-only system frameworks now, and Apple’s ecosystem is moving in that direction. If JetBrains wants developers to [build iOS (and Android) apps in Android Studio](https://blog.jetbrains.com/kotlin/2019/12/what-to-expect-in-kotlin-1-4-and-beyond/) this year, I think we can expect Swift reverse interop in the future 🙏.
+The first thing to understand here is that Kotlin/Native—the member of the Kotlin multiplatform family responsible for this part—predates the Swift language features like Swift ABI, and module ABI, stability that would make Swift-only reverse interop for Kotlin possible. We know, and JetBrains knows, that Apple has (some) Swift-only system frameworks now, and Apple’s ecosystem is moving in that direction. If JetBrains wants developers to [build iOS (and Android) apps in Android Studio](https://blog.jetbrains.com/kotlin/2019/12/what-to-expect-in-kotlin-1-4-and-beyond/) this year, I think we can expect Swift reverse interop in the future 🙏.
 
 For now though, what you get when you build a Kotlin library into an Obj-C framework is one with a header that is well-annotated for Swift. Phill and others on our team that were getting their hands dirty with our Kotlin-based framework didn’t realize—until they looked under the hood—that the classes they were interacting with were Obj-C. For what it’s worth, this is the status quo with the majority of Apple’s system frameworks that you interact with in Swift right now. You get an Obj-C framework that is annotated to feel “Swifty”.
 
@@ -43,13 +43,15 @@ Now that we have some of those basics covered, it’s time to write some Kotlin.
 
 ## Class
 
-One of the most common features of the Kotlin language you’ll work with is a class, which for the most part works exactly as you would expect it to in Swift and Obj-C. Define a class (or a data class) `Sample` in Kotlin and a corresponding class will be defined in Obj-C. 
+One of the most common features of the Kotlin language you’ll work with is a class, which for the most part works exactly as you would expect it to in Swift and Obj-C. Define a `class` (or a `data class`) `Sample` in Kotlin and a corresponding class will be defined in Obj-C. 
 
 {% highlight kotlin %}
+// Kotlin
 class Sample
 {% endhighlight %}
 
 {% highlight objective-c %}
+// Obj-C
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("Sample")))
 @interface KotlinIos2Sample : KotlinBase
@@ -58,7 +60,7 @@ __attribute__((swift_name("Sample")))
 @end;
 {% endhighlight %}
 
-Notice that generated Obj-C classes inherit from the `KotlinBase` super class, which subsequently inherits from NSObject. Generated classes are prefixed with a prefix that is derived from the framework name, in this case “KotlinIos2”. Each class includes type annotations in order to make class names, methods and initializers look and behave natively to Swift language conventions.
+Notice that generated Obj-C classes inherit from the `KotlinBase` super class, which subsequently inherits from `NSObject`e Generated classes are prefixed with a prefix that is derived from the framework name, in this case “KotlinIos2”. Each class includes type annotations in order to make class names. Methods and initializers look and behave natively to Swift language conventions.
 
 ### Inheritance
 
@@ -72,23 +74,23 @@ Conforming your class to an interface in Kotlin outputs protocol conformance in 
 
 // Protocol conformance in Objc header code block
 
-### Initializers
+### Constructors and Properties
 
-Using Kotlin’s primary constructors to define a set of parameters directly after the class name `class MyClass(val str1: String, val str2: String)` will generate a designated initializer in Obj-C. It will also generate @property members on the public interface of the class, marked with `readonly` if defined as a `val`, or not if the property is a `var`.
+Using Kotlin’s primary constructors to define a set of parameters directly after the class name `class MyClass(val str1: String, val str2: String)` will generate a designated initializer in Obj-C. It will also generate `@property` members on the public interface of the class, marked with `readonly` if defined as a `val`, or not if the property is a `var`.
 
 // Kotlin primary constructor code block
 
-Initializers and functions will concatenate parameter names into an Obj-C-friendly camel case method name, such as `initWithStr2:str2:` and provide a more concise Swift-friendly function annotation.
+Initializers and functions will concatenate parameter names into an Obj-C-friendly camel case method name, such as `initWithStr2:str2:` and provide a more concise Swift-friendly function name annotation.
 
 // Objective C class with a designated initializer
 
 ## Value Types
 
-Coming from the world of Swift where you might often find yourself defining structs, you’ll quickly notice that the Kotlin language doesn’t have value types. Instead the next best thing is a data class which is typically used as a mechanism to hold data in a series of properties. Data classes allow the compiler to derive members such as `equals()`, `hashCode()`, `toString()` and `copy()` on your object.
+Coming from the world of Swift where you often find yourself defining structs, you’ll quickly notice that the Kotlin language doesn’t have value types. Instead the next best thing is a `data class` which is typically used as a mechanism to hold data in a series of properties. The `data class` allows the compiler to derive members such as `equals()`, `hashCode()`, `toString()` and `copy()` from the properties on your object.
 
 // Data class defined in Kotlin
 
-If you define a data class in Kotlin, you’ll see that these derived methods are implemented as their Obj-C counterparts on NSObject such as `isEqual`, `hash`, and `description`.
+If you define a `data class` in Kotlin, you’ll see that these derived methods are implemented as their Obj-C counterparts on `NSObject` such as `isEqual`, `hash`, and `description`.
 
 // Objective C class with isEqual/hash/description
 
@@ -117,7 +119,7 @@ __attribute__((swift_name("MyEnum")))
 @end;
 {% endhighlight %}
 
-Interestingly since enums in Kotlin are classes, Kotlin/Native generates an Obj-C class with each enum case defined as a readonly class property on the type. This generated class inherits from the KotlinEnum superclass, which is another generated class that utilizes Obj-C lightweight generics to implement base enum functionality such as case comparison, equality and initialization.
+Interestingly since enums in Kotlin are classes, Kotlin/Native generates an Obj-C class with each enum case defined as a readonly class property on the type. This generated class inherits from the `KotlinEnum` superclass, which is another generated class that utilizes Obj-C lightweight generics to implement base enum functionality such as case comparison, equality and initialization.
 
 
 
