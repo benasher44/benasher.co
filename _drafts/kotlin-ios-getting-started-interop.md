@@ -125,3 +125,6 @@ __attribute__((swift_name("MyEnum")))
 Interestingly since enums in Kotlin are classes, Kotlin/Native generates an Obj-C class with each enum case defined as a readonly class property on the type. This generated class inherits from the `KotlinEnum` superclass, which is another generated class that utilizes Obj-C lightweight generics to implement base enum functionality such as case comparison, equality and initialization.
 
 
+## Integrating Kotlin on iOS
+
+Kotlin's Kotlin/Native backend does a good job of setting you up with the basics you need to integrate Kotlin on iOS. There are some rough edges, and I'll dig into some of those in a future post. For now, I wanted to focus on the basics of what you can expect from Kotlin/Native, so that you can get started. And with that, my next and final post in this "getting started" series will focus on the build and integrating your Kotlin-based library, which I think is one of the more intimidating parts of making Kotlin a part of your team's workflow.
