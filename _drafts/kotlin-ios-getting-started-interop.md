@@ -50,7 +50,7 @@ One of the most common features of the Kotlin language you’ll work with is a c
 class Sample
 {% endhighlight %}
 
-{% highlight objective-c %}
+{% highlight objc %}
 // Obj-C
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("Sample")))
@@ -60,7 +60,7 @@ __attribute__((swift_name("Sample")))
 @end;
 {% endhighlight %}
 
-Notice that generated Obj-C classes inherit from the `KotlinIos2Base` super class, which itself inherits from `NSObject`. Generated classes are prefixed with a prefix that is derived from the framework name, in this case “KotlinIos2”. "Attributes" are used to ensure this prefix is omitted from Swift, and that methods and initialziers look and behave natively to Swift language conventions.
+Notice that generated Obj-C classes inherit from the `KotlinIos2Base` super class, which itself inherits from `NSObject`. Generated classes are prefixed with a prefix that is derived from the framework name, in this case “KotlinIos2”. "Attributes" are used to ensure this prefix is omitted from Swift, and that methods and initializers look and behave natively to Swift language conventions.
 
 ### Inheritance
 
@@ -69,33 +69,93 @@ Notice that generated Obj-C classes inherit from the `KotlinIos2Base` super clas
 open class Sample
 {% endhighlight %}
 
+{% highlight objc %}
+// Obj-C
+__attribute__((swift_name("Sample")))
+@interface KotlinIos2Sample : KotlinIos2Base
+- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
++ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
+@end;
+{% endhighlight %}
+
 Since classes in Kotlin are final by default, their native counterpart is annotated to restrict subclassing with the `__attribute__((objc_subclassing_restricted))` attribute. By specifying `open` on your Kotlin class, the generated Obj-C class will also support subclassing.
 
 ### Protocol Conformance
 
-Conforming your class to an interface in Kotlin outputs protocol conformance in the public header of the generated Obj-C.
+Conforming your class to an interface in Kotlin defines the interface as a protocol and adds conformance in the public header of the generated Obj-C class.
 
-// Protocol conformance in Objc header code block
+{% highlight kotlin %}
+// Kotlin
+interface SampleInterface
+
+class MyClass: SampleInterface
+{% endhighlight %}
+
+{% highlight objc %}
+// Obj-C
+__attribute__((swift_name("SampleInterface")))
+@protocol KotlinIos2SampleInterface
+@required
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("MyClass")))
+@interface KotlinIos2MyClass : KotlinBase <KotlinIos2SampleInterface>
+- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
++ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
+@end;
+{% endhighlight %}
+
 
 ### Constructors and Properties
 
-Using Kotlin’s primary constructors to define a set of parameters directly after the class name `class MyClass(val str1: String, val str2: String)` will generate a designated initializer in Obj-C. It will also generate `@property` members on the public interface of the class, marked with `readonly` if defined as a `val`, or not if the property is a `var`.
+Using Kotlin’s primary constructors to define a set of parameters directly after the class name  will generate a designated initializer in Obj-C. It will also generate `@property` members on the public interface of the class, marked with `readonly` if defined as a `val`, or not if the property is a `var`.
 
-// Kotlin primary constructor code block
+{% highlight kotlin %}
+// Kotlin
+class MyClass(val str1: String, var str2: String)
+{% endhighlight %}
 
-Initializers and functions will concatenate parameter names into an Obj-C-friendly camel case method name, such as `initWithStr2:str2:` and provide a more concise Swift-friendly function name annotation.
+{% highlight objc %}
+// Obj-C
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("MyClass")))
+@interface KotlinIos2MyClass : KotlinBase
+- (instancetype)initWithStr1:(NSString *)str1 str2:(NSString *)str2 __attribute__((swift_name("init(str1:str2:)"))) __attribute__((objc_designated_initializer));
+@property (readonly) NSString *str1 __attribute__((swift_name("str1")));
+@property NSString *str2 __attribute__((swift_name("str2")));
+@end;
+{% endhighlight %}
 
-// Objective C class with a designated initializer
+Initializers and functions will concatenate parameter names into an Obj-C-friendly camel case method name, such as `initWithStr1:str2:` and provide a more concise Swift-friendly function name annotation.
 
 ## Value Types
 
-Coming from the world of Swift where you often find yourself defining structs, you’ll quickly notice that the Kotlin language doesn’t have value types. Instead the next best thing is a `data class` which is typically used as a mechanism to hold data in a series of properties. The `data class` allows the compiler to derive members such as `equals()`, `hashCode()`, `toString()` and `copy()` from the properties on your object.
+Coming from the world of Swift, you're probably used to defining structs but you'll quickly notice that the Kotlin language doesn't differentiate value types and references types. Instead the next best thing is a `data class` which is simply a class that allows the compiler to derive some out-of-the-box members such as `equals()`, `hashCode()`, `toString()` and `copy()` from the properties defined on the object.
 
-// Data class defined in Kotlin
+{% highlight kotlin %}
+// Kotlin
+data class MyDataClass(val str1: String, var str2: String)
+{% endhighlight %}
 
-If you define a `data class` in Kotlin, you’ll see that these derived methods are implemented as their Obj-C counterparts on `NSObject` such as `isEqual`, `hash`, and `description`.
+{% highlight objc %}
+// Obj-C
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("MyDataClass")))
+@interface KotlinIos2MyDataClass : KotlinBase
+- (instancetype)initWithStr1:(NSString *)str1 str2:(NSString *)str2 __attribute__((swift_name("init(str1:str2:)"))) __attribute__((objc_designated_initializer));
+- (NSString *)component1 __attribute__((swift_name("component1()")));
+- (NSString *)component2 __attribute__((swift_name("component2()")));
+- (KotlinIos2MyDataClass *)doCopyStr1:(NSString *)str1 str2:(NSString *)str2 __attribute__((swift_name("doCopy(str1:str2:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+@property (readonly) NSString *str1 __attribute__((swift_name("str1")));
+@property NSString *str2 __attribute__((swift_name("str2")));
+@end;
+{% endhighlight %}
 
-// Objective C class with isEqual/hash/description
+If you inspect the Obj-C output of a Kotlin data class, you'll see that the compiler has mapped these derived methods into their Obj-C equivalents on `NSObject` such as `isEqual`, `hash` and `description`.
 
 ## Function Calls
 
@@ -103,13 +163,13 @@ TBD
 
 ## Enums
 
-Enums in Kotlin are just classes, but they’re a special kind of class that work in much the same way as they do in Swift. Although when you define an enum in Kotlin and peek at the Obj-C generated header, you may not see what you thought you’d see.
+Enums are actually a special type of class in Kotlin, but they work in much the same way as they do in Swift. When you define an enum in Kotlin and peek at the Obj-C generated header, you may not see what you thought you’d see.
 
 {% highlight kotlin %}
 enum class MyEnum { CASE1, CASE2 }
 {% endhighlight %}
 
-{% highlight objective-c %}
+{% highlight objc %}
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("MyEnum")))
 @interface KotlinIos2MyEnum : KotlinIos2KotlinEnum
@@ -122,7 +182,7 @@ __attribute__((swift_name("MyEnum")))
 @end;
 {% endhighlight %}
 
-Interestingly since enums in Kotlin are classes, Kotlin/Native generates an Obj-C class with each enum case defined as a readonly class property on the type. This generated class inherits from the `KotlinEnum` superclass, which is another generated class that utilizes Obj-C lightweight generics to implement base enum functionality such as case comparison, equality and initialization.
+Since enums are just classes in Kotlin, the compiler generates an Obj-C class with each enum case defined as a readonly class property on the type. This generated class inherits from a `KotlinEnum` superclass, which is another generated class that utilizes Obj-C lightweight generics to provide base-layer enum functionality including case comparison, equality and initialization.
 
 
 ## Integrating Kotlin on iOS
