@@ -41,6 +41,8 @@ You also might notice lots of `__attribute__((swift_name("SwiftyNameHere")))` sp
 
 Now that we have some of those basics covered, it’s time to write some Kotlin. Phill is going to walk through how some of the basic Kotlin constructs come out on the other end and appear to Swift.
 
+From here on out, you can try out the below samples from [this sample project](https://github.com/benasher44/KotlinIos2).
+
 ## Classes
 
 One of the most common features of the Kotlin language you’ll work with is a class, which for the most part works exactly as you would expect it to in Swift and Obj-C. Define a `class` (or a `data class`) `Sample` in Kotlin and a corresponding class will be defined in Obj-C. 
@@ -60,7 +62,7 @@ __attribute__((swift_name("Sample")))
 @end;
 {% endhighlight %}
 
-Notice that generated Obj-C classes inherit from the `KotlinIos2Base` super class, which itself inherits from `NSObject`. Generated classes are prefixed with a prefix that is derived from the framework name, in this case “KotlinIos2”. "Attributes" are used to ensure this prefix is omitted from Swift, and that methods and initializers look and behave natively to Swift language conventions.
+Notice that generated Obj-C classes inherit from the `KotlinIos2Base` super class, which itself inherits from `NSObject`. Generated classes are prefixed with a prefix that is derived from the framework name, in this case “KotlinIos2”. [Attributes](https://clang.llvm.org/docs/AttributeReference.html) are used to ensure this prefix is omitted from Swift, and that methods and initializers look and behave natively to Swift language conventions.
 
 ### Inheritance
 
@@ -109,7 +111,7 @@ __attribute__((swift_name("MyClass")))
 
 ### Constructors and Properties
 
-Using Kotlin’s primary constructors to define a set of parameters directly after the class name  will generate a designated initializer in Obj-C. It will also generate `@property` members on the public interface of the class, marked with `readonly` if defined as a `val`, or not if the property is a `var`.
+Using a primary constructor in Kotlin to define a set of parameters directly after the class name will generate a designated initializer in Obj-C. It will also generate `@property` members on the public interface of the class, marked with `readonly` if defined as a `val`, or not if the property is a `var`.
 
 {% highlight kotlin %}
 // Kotlin
@@ -131,7 +133,7 @@ Initializers and functions will concatenate parameter names into an Obj-C-friend
 
 ## Value Types
 
-Coming from the world of Swift, you're probably used to defining structs but you'll quickly notice that the Kotlin language doesn't differentiate value types and references types. Instead the next best thing is a `data class` which is simply a class that allows the compiler to derive some out-of-the-box members such as `equals()`, `hashCode()`, `toString()` and `copy()` from the properties defined on the object.
+Coming from the world of Swift, you're probably used to defining structs but you'll quickly notice that the Kotlin language doesn't have value types. Instead, the next best thing is a `data class`, which is simply a class that allows the compiler to derive some out-of-the-box members such as `equals()`, `hashCode()`, `toString()` and `copy()` from the properties defined on the object.
 
 {% highlight kotlin %}
 // Kotlin
