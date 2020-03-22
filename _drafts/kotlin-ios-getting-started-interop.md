@@ -90,7 +90,7 @@ Conforming your class to an interface in Kotlin defines the interface as a proto
 // Kotlin
 interface SampleInterface
 
-class MyClass: SampleInterface
+class SampleClass: SampleInterface
 {% endhighlight %}
 
 {% highlight objc %}
@@ -101,8 +101,8 @@ __attribute__((swift_name("SampleInterface")))
 @end;
 
 __attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("MyClass")))
-@interface KotlinIos2MyClass : KotlinBase <KotlinIos2SampleInterface>
+__attribute__((swift_name("SampleClass")))
+@interface KotlinIos2SampleClass : KotlinBase <KotlinIos2SampleInterface>
 - (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
 + (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
 @end;
@@ -159,19 +159,17 @@ __attribute__((swift_name("MyDataClass")))
 
 If you inspect the Obj-C output of a Kotlin data class, you'll see that the compiler has mapped these derived methods into their Obj-C equivalents on `NSObject` such as `isEqual`, `hash` and `description`.
 
-## Function Calls
-
-TBD
-
 ## Enums
 
 Enums are actually a special type of class in Kotlin, but they work in much the same way as they do in Swift. When you define an enum in Kotlin and peek at the Obj-C generated header, you may not see what you thought you’d see.
 
 {% highlight kotlin %}
+// Kotlin
 enum class MyEnum { CASE1, CASE2 }
 {% endhighlight %}
 
 {% highlight objc %}
+// Obj-C
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("MyEnum")))
 @interface KotlinIos2MyEnum : KotlinIos2KotlinEnum
@@ -185,6 +183,65 @@ __attribute__((swift_name("MyEnum")))
 {% endhighlight %}
 
 Since enums are just classes in Kotlin, the compiler generates an Obj-C class with each enum case defined as a readonly class property on the type. This generated class inherits from a `KotlinEnum` superclass, which is another generated class that utilizes Obj-C lightweight generics to provide base-layer enum functionality including case comparison, equality and initialization.
+
+## Method Calls
+
+Functions defined in Kotlin along with their named arguments, default arguments and return types map to Obj-C and Swift almost seamlessy. As an API consumer, interacting with these methods feels exactly the same as if they were originally defined in Swift. [Attributes](https://clang.llvm.org/docs/AttributeReference.html) maintain a Swifty method signature, parameter types are mapped to native types, companion objects are mapped to seperate Obj-C classes with the same namespace and even Lambda's defined in Kotlin are generated as closures with the same parameters and return types.
+
+{% highlight kotlin %}
+// Kotlin
+enum class LogLevel {
+    ERROR,
+    WARNING,
+    INFO,
+    DEBUG
+}
+
+class Logger {
+    companion object default {
+        fun log(level: LogLevel = LogLevel.ERROR, message: String, completion: (Boolean) -> Unit) { }
+    }
+}
+{% endhighlight %}
+
+{% highlight objc %}
+// Obj-C
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("LogLevel")))
+@interface KotlinIos2LogLevel : KotlinIos2KotlinEnum
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
+- (instancetype)initWithName:(NSString *)name ordinal:(int32_t)ordinal __attribute__((swift_name("init(name:ordinal:)"))) __attribute__((objc_designated_initializer)) __attribute__((unavailable));
+@property (class, readonly) KotlinIos2LogLevel *error __attribute__((swift_name("error")));
+@property (class, readonly) KotlinIos2LogLevel *warning __attribute__((swift_name("warning")));
+@property (class, readonly) KotlinIos2LogLevel *info __attribute__((swift_name("info")));
+@property (class, readonly) KotlinIos2LogLevel *debug __attribute__((swift_name("debug")));
+- (int32_t)compareToOther:(KotlinIos2LogLevel *)other __attribute__((swift_name("compareTo(other:)")));
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("Logger")))
+@interface KotlinIos2Logger : KotlinIos2Base
+- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
++ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
+@end;
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("Logger.default")))
+@interface KotlinIos2LoggerDefault : KotlinIos2Base
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)default_ __attribute__((swift_name("init()")));
+- (void)logLevel:(KotlinIos2LogLevel *)level message:(NSString *)message completion:(void (^)(KotlinIos2Boolean *))completion __attribute__((swift_name("log(level:message:completion:)")));
+@end;
+{% endhighlight %}
+
+{% highlight swift %}
+Logger.default.log(.error, "An error ocurred") {
+    // Closure
+}
+{% endhighlight %}
+
 
 
 ## Integrating Kotlin on iOS
