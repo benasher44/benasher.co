@@ -239,6 +239,7 @@ __attribute__((swift_name("Logger.default")))
 {% endhighlight %}
 
 {% highlight swift %}
+// Swift
 Logger.default.log(.error, "An error ocurred") {
     // Closure
 }
