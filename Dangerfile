@@ -17,6 +17,9 @@ prose.ignored_words = %w[
   ABI
   timezones
   KotlinMobileBootstrap
+  KotlinIos2
+  subclassing
+  enums
 ]
 prose.ignore_numbers = true
 prose.lint_files '_posts/*.md'

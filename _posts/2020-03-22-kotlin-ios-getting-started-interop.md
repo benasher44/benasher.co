@@ -186,9 +186,9 @@ Since enums are just classes in Kotlin, the compiler generates an Obj-C class wi
 
 ## Method Calls
 
-Functions defined in Kotlin along with their named arguments, default arguments, and return types map to Obj-C and Swift almost seamlessy. As an API consumer, interacting with these methods feels exactly the same as if they were originally defined in Swift. [Attributes](https://clang.llvm.org/docs/AttributeReference.html) maintain a Swift-y method signature, parameter types are mapped to native types and even Lambda's defined in Kotlin are generated as closures with the same parameters and return types.
+Functions defined in Kotlin along with their named arguments, default arguments, and return types map to Obj-C and Swift almost seamlessly. As an API consumer, interacting with these methods feels exactly the same as if they were originally defined in Swift. [Attributes](https://clang.llvm.org/docs/AttributeReference.html) maintain a Swift-y method signature, parameter types are mapped to native types and even Lambda's defined in Kotlin are generated as closures with the same parameters and return types.
 
-Since Obj-C doesn't support default arguments, these are unfortunately not mapped through to Swift. If you're familiar with static and class methods in Swift, Kotlin's companion objects provide similar functionality. Companion objects defined in Kotlin will actually generate seperate Obj-C classes but use the `swift_name` annotation to maintain a consistent API interface, so while the generated Obj-C looks different you can interact with the method in the same way you would a static method.
+Since Obj-C doesn't support default arguments, these are unfortunately not mapped through to Swift. If you're familiar with static and class methods in Swift, Kotlin's companion objects provide similar functionality. Companion objects defined in Kotlin will actually generate separate Obj-C classes but use the `swift_name` annotation to maintain a consistent API interface, so while the generated Obj-C looks different you can interact with the method in the same way you would a static method.
 
 {% highlight kotlin %}
 // Kotlin
