@@ -23,5 +23,6 @@ prose.ignored_words = %w[
   structs
 ]
 prose.ignore_numbers = true
-prose.lint_files '_posts/*.md'
-prose.check_spelling '_posts/*.md'
+files_to_check = git.modified_files + git.added_files
+prose.lint_files files_to_check
+prose.check_spelling files_to_check
