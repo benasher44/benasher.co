@@ -11,6 +11,12 @@ prose.ignored_words = %w[
   KotlinConf
   globals
   Koans
+  Phill
+  Farrugia
+  interop
+  ABI
+  timezones
+  KotlinMobileBootstrap
 ]
 prose.ignore_numbers = true
 prose.lint_files '_posts/*.md'
