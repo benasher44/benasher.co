@@ -20,6 +20,7 @@ prose.ignored_words = %w[
   KotlinIos2
   subclassing
   enums
+  structs
 ]
 prose.ignore_numbers = true
 prose.lint_files '_posts/*.md'
