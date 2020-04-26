@@ -14,14 +14,29 @@ prose.ignored_words = %w[
   Phill
   Farrugia
   interop
-  ABI
   timezones
   KotlinMobileBootstrap
   KotlinIos2
   subclassing
   enums
   structs
+  iOS
+  multiplatform
+  runtime
+  i.e.
+  Swifty
+  natively
+  quo
+  Aviv
+  e.g.
+  enum
+  APIs
+  initializer
+  initializers
+  Kotlin/Native
 ]
+prose.language = 'en-us'
 prose.ignore_numbers = true
+prose.ignore_acronyms = true
 prose.lint_files '_posts/*.md'
 prose.check_spelling '_posts/*.md'

@@ -182,7 +182,7 @@ __attribute__((swift_name("MyEnum")))
 @end;
 {% endhighlight %}
 
-Since enums are just classes in Kotlin, the compiler generates an Obj-C class with each enum case defined as a readonly class property on the type. This generated class inherits from a `KotlinIos2KotlinEnum` superclass, which is another generated class that utilizes Obj-C lightweight generics to provide base-layer enum functionality including case comparison, equality and initialization.
+Since enums are just classes in Kotlin, the compiler generates an Obj-C class with each enum case defined as a `readonly` class property on the type. This generated class inherits from a `KotlinIos2KotlinEnum` superclass, which is another generated class that utilizes Obj-C lightweight generics to provide base-layer enum functionality including case comparison, equality and initialization.
 
 ## Method Calls
 

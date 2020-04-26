@@ -42,7 +42,7 @@ GEM
       faraday (>= 0.8)
     ffi (1.12.2)
     forwardable-extended (2.6.0)
-    git (1.6.0)
+    git (1.7.0)
       rchardet (~> 1.8)
     http_parser.rb (0.6.0)
     i18n (1.8.2)
