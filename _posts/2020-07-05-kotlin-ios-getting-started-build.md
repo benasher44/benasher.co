@@ -10,7 +10,7 @@ Once you get your Kotlin multiplatform proof-of-concept in a working state, you'
 
 Fundamental to getting this working is understanding what the various Gradle tasks do, which make your multiplatform build work. It's also important to dig into how Gradle tasks work in general, so you can better understand how to debug Gradle build issues, when they arise — a useful skill upgrading to a new version of the Kotlin Gradle plugin.
 
-But on top of that, I think you'll also start to understand how powerful Gradle is and begin to see how you can use it to automate all sorts of other tasks that are part of your build. And while you can get away with not diving into details about how Gradle tasks work for awhile, I promise that if you spend a bit of time on some of the recommended reading below, you'll wish you hadn't put it off.
+On top of that, I think you'll also start to understand how powerful Gradle is and begin to see how you can use it to automate all sorts of other tasks that are part of your build. And while you can get away with not diving into details about how Gradle tasks work for awhile, I promise that if you spend a bit of time on some of the recommended reading below, you'll wish you hadn't put it off.
 
 ## Gradle
 
