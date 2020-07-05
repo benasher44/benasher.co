@@ -34,6 +34,14 @@ prose.ignored_words = %w[
   initializer
   initializers
   Kotlin/Native
+  Xcode
+  vendored
+  Gradle
+  macOS
+  linux
+  CocoaPods
+  IntelliJ
+  64-bit
 ]
 prose.language = 'en-us'
 prose.ignore_numbers = true
