@@ -23,11 +23,3 @@ You can find me on [twitter](https://twitter.com/benasher44) or via email at hel
 ## This Site
 
 This website is built with [jekyll](https://jekyllrb.com), styled with [bulma](https://bulma.io), and designed by me with inspiration from [jessesquires.com](https://jessesquires.com).
-
-#### TODOs
-
-At the moment, it's functional enough for me to write, but there are a few more things coming:
-
-- Filtering for categories and tags
-- Resume
-- A bit more about myself
