@@ -45,6 +45,7 @@ exclude:
   - scripts
   - cached_assets.yml
   - css/includes
+  - README.md
 
 cached_assets:
   '/css/main.css': '/css/main.css'
