@@ -25,7 +25,7 @@ The best advice I can give about learning Gradle is to read some of their docume
 
 ### Gradle Tasks in a Kotlin Multiplatform Project
 
-In your project, Gradle tasks are what make it go. They run your tests, build your debug builds, and it's what your CI will run to verify your build. Kotlin multiplatform projects turn the Gradle task complexity up to 11. So again, if you can spare the time, do as much of the recommended reading above as you can stand. From this point on, I'll assume some base knowledge of tasks
+In your project, Gradle tasks are what make it go. They run your tests, build your debug builds, and it's what your CI will run to verify your build. Kotlin multiplatform projects turn the Gradle task complexity up to 11. So again, if you can spare the time, do as much of the recommended reading above as you can stand. From this point on, I'll assume some base knowledge of tasks.
 
 Something I often encounter on my team is folks, that are newer to multiplatform, running the "wrong" Gradle tasks. For example, someone will come to me with a build issue, and I'll find that this whole time they've been running the [`build`, `check`, or `assemble`](https://docs.gradle.org/current/userguide/base_plugin.html) tasks as part of their development workflow. On a project with fewer targets (i.e. only a JVM target), this is fine. In a multiplatform project, this is going to run the build and/or test tasks for all of the targets in your project that are supported by your machine. That can take a _lot_ of time.
 
