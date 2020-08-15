@@ -24,7 +24,7 @@ jobs:
       - name: Install bundler
         run: gem install bundler
       - name: Cache bundle
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: vendor/bundle
           key: ruby-bundle-${{ hashFiles('Gemfile.lock') }}
