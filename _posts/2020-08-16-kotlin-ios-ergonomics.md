@@ -6,7 +6,7 @@ categories: software
 description: A review of using Kotlin from Swift— good parts and those that could use improvement.
 ---
 
-At Autodesk, my colleagues and I are more than a year and a half into our Kotlin multiplatform (KMP) shared library journey. That's one Kotlin shared library, shared amongst our three mobile platforms that we support for the PlanGrid app (iOS, Android, and Windows).
+At Autodesk, my colleagues and I are more than a year and a half into our Kotlin multiplatform (KMP) shared library journey. That's one Kotlin shared library, shared among our three mobile platforms that we support for the PlanGrid app (iOS, Android, and Windows).
 
 Most new feature development for the PlanGrid app starts in the shared library now. It has become so much an extension of our main application that we're planning a move to a mono-repo (iOS, Android, Windows, and the KMP shared library all in one place) later this year, which will help solve some of our scale issues (great problem to have all things considered).
 
@@ -57,7 +57,7 @@ Logger.default.log(.error, "An error ocurred") {
 }
 {% endhighlight %}
 
-This example highlights some idiomitic Kotlin that allows you to write idiomatic-looking Swift. It's impressive. However, this example has a secret. It also highlights many of the areas where Kotlin/Native interop with iOS has room for improvement. With Kotlin 1.4.0 out the door, I hope now is a good time to raise these issues. Fixing them would take the sell to iOS teams to the next level, at least in terms of having excellent interop. I'll discuss the issues in increasing in order of how long it took our team to notice and bump into them.
+This example highlights some idiomatic Kotlin that allows you to write idiomatic-looking Swift. It's impressive. However, this example has a secret. It also highlights many of the areas where Kotlin/Native interop with iOS has room for improvement. With Kotlin 1.4.0 out the door, I hope now is a good time to raise these issues. Fixing them would take the sell to iOS teams to the next level, at least in terms of having excellent interop. I'll discuss the issues in increasing in order of how long it took our team to notice and bump into them.
 
 ### Exhaustive Enums
 
@@ -98,7 +98,7 @@ I want to go back to enums for a moment. I mentioned that I would review the iss
 
 ### Translation to Obj-C Primitives
 
-The final one I want to talk about is the most minor, but we do come across it on occasion. In the above example, we are hiding the fact that the completion closure has one parameter. It's a Kotlin `boolean`, but it is translated to Obj-C as a `KotlinBoolean` `class`. This is bound to happen if the type is optional. Again, Obj-C doesn't support optional primitives. In this case howeever, it's not. It should be a `BOOL` instead, which will translate to a `Swift` `Bool`.
+The final one I want to talk about is the most minor, but we do come across it on occasion. In the above example, we are hiding the fact that the completion closure has one parameter. It's a Kotlin `boolean`, but it is translated to Obj-C as a `KotlinBoolean` `class`. This is bound to happen if the type is optional. Again, Obj-C doesn't support optional primitives. In this case however, it's not. It should be a `BOOL` instead, which will translate to a `Swift` `Bool`.
 
 In most cases, Kotlin/Native does the right thing, but there are occasions like [this one](https://youtrack.jetbrains.com/issue/KT-41106) that come across a bit clunky. I admit though, I don't have the expertise to understand why this happened in this case. Again, the interop you get for iOS is great. Fixing polish-type issues like this would take the interop to the next level.
 

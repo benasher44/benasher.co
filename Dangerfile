@@ -42,6 +42,12 @@ prose.ignored_words = %w[
   CocoaPods
   IntelliJ
   64-bit
+  mono-repo
+  KMP-based
+  KMP-generated
+  codebase
+  namespace
+  frontend
 ]
 prose.language = 'en-us'
 prose.ignore_numbers = true
