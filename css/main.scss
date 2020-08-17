@@ -22,11 +22,17 @@ $code-weight: bold;
 
 @import "bulma/sass/utilities/_all";
 @import "bulma/sass/base/_all";
-@import "bulma/sass/elements/_all";
+@import "bulma/sass/elements/container";
+@import "bulma/sass/elements/content";
+@import "bulma/sass/elements/tag";
+@import "bulma/sass/elements/title";
+@import "bulma/sass/elements/other";
 @import "bulma/sass/components/navbar";
-@import "bulma/sass/grid/_all";
-@import "bulma/sass/layout/_all";
-@import "bulma/sass/helpers/_all";
+@import "bulma/sass/grid/columns";
+@import "bulma/sass/layout/footer";
+@import "bulma/sass/layout/section";
+@import "bulma/sass/helpers/color";
+@import "bulma/sass/helpers/typography";
 
 .content h1 {
     font-weight: 300;
