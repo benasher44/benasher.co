@@ -71,7 +71,7 @@ In the above sample code, you can see there's no problem passing enums around. Y
 
 ### Companion Objects
 
-In [my first article](/kotlin-ios-getting-started/), I mentioned how, as an iOS developer, I found the `companion object` a bit strange at first, but I get it now. As my iOS colleagues have become better acquainted with them, we have begun to see them more often in our shared library. The problem comes if you don't know that you can name a `companion object`, like in the above example. Unnamed ones are more common, in my experience. Here is what the Swift code would look like, if we hadn't named the above `companion objecet` "default":
+In [my first article](/kotlin-ios-getting-started/), I mentioned how, as an iOS developer, I found the `companion object` a bit strange at first, but I get it now. As my iOS colleagues have become better acquainted with them, we have begun to see them more often in our shared library. The problem comes if you don't know that you can name a `companion object`, like in the above example. Unnamed ones are more common, in my experience. Here is what the Swift code would look like, if we hadn't named the above `companion object` "default":
 
 {% highlight swift %}
 // Swift
