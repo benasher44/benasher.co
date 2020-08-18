@@ -4,7 +4,7 @@ title: Getting Started with Kotlin on iOS, Part 1
 tags: kotlin multiplatform kotlin/native ios swift
 categories: software
 description: A brief introduction to Kotlin for Swift/iOS developers before diving into Kotlin multiplatform.
-updated: 2019-02-11
+updated: 2020-02-11
 ---
 
 Hello! I'm Ben. I'm an iOS engineer at Autodesk where I work on the PlanGrid app. PlanGrid is a construction productivity tool that works on iOS, Android, and even Windows 😱. The iOS version is written in Swift (some Obj-C too because it's older), but now most of the code I write day-to-day for the iOS app is in Kotlin.
