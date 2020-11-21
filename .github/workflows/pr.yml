@@ -38,7 +38,7 @@ jobs:
         run: bundle install --path=vendor/bundle
       - name: Danger
         env:
-          DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bundle exec danger
       - name: build
         run: make
