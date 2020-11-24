@@ -8,6 +8,10 @@ build:
 serve:
 	bundle exec jekyll serve --drafts
 
+.PHONY: live-serve
+live-serve:
+	bundle exec jekyll serve --drafts --livereload
+
 .PHONY: deploy-build
 deploy-build:
 	./scripts/prep_cache.rb
