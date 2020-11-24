@@ -32,7 +32,7 @@ Now that it has been about 30 minutes, you resume debugging, fix the bug, rebuil
 
 If this sounds miserable, you are right! Slack relationship issues aside, there is a better way. You can debug a binary pre-built from CI. The whole reason we have to debug using Kotlin that was built from local sources in the first place is because dSYM bundles (which enable Xcode to map binary function addresses to your sources and therefore enable your breakpoints) contain references to your sources that contain absolute paths from the machine that built the framework and dSYM. You can set all of the break points you want, but Xcode won't be able to figure out that `/var/lib/jenkins/YourLibrary/src/commonMain/kotlin/MyClass.kt` referenced in the dSYM built by your CI machine is `~/Code/YourLibrary/src/commonMain/kotlin/MyClass.kt` on your local machine.
 
-The good news though is that there is away to make Xcode and LLDB understand just that. Apple has a page [here](https://opensource.apple.com/source/lldb/lldb-179.1/www/symbols.html) that explains that you can embed a plist file in your dSYM bundle that tells LLDB (run by Xcode) how to map absolute paths in your dSYM to those on your machine. Here's their example plist:
+The good news though is that there is a way to make Xcode and LLDB understand just that. Apple has a page [here](https://opensource.apple.com/source/lldb/lldb-179.1/www/symbols.html) that explains that you can embed a plist file in your dSYM bundle that tells LLDB (run by Xcode) how to map absolute paths in your dSYM to those on your machine. Here's their example plist:
 
 {% highlight xml %}
 <?xml version="1.0" encoding="UTF-8"?>
