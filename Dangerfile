@@ -48,6 +48,14 @@ prose.ignored_words = %w[
   codebase
   namespace
   frontend
+  pre-built
+  podspec
+  repo
+  CocoaPod
+  dev
+  dSYM
+  Plists
+  plists
 ]
 prose.language = 'en-us'
 prose.ignore_numbers = true

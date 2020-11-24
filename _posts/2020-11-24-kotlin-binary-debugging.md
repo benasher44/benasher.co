@@ -9,16 +9,16 @@ description: A look at distribution of a Kotlin multiplatform library via CocoaP
 When getting Kotlin integrated into your iOS and Android teams' workflows, something you will need to tackle is figuring out how to debug your iOS-ready Kotlin from Xcode. This quest may lead you to some of the following resources:
 
 - Kevin Galligan's post: [Debugging Kotlin on iOS with Xcode](https://dev.to/touchlab/debugging-kotlin-on-ios-with-xcode-37fd)
-- Touchlab's github resources for doing this, such as [https://github.com/touchlab/xcode-kotlin/](https://github.com/touchlab/xcode-kotlin/)
+- Touchlab's GitHub resources for doing this, such as [https://github.com/touchlab/xcode-kotlin/](https://github.com/touchlab/xcode-kotlin/)
 
-At Autodesk, engineers aren't always working alongside locally-built-from-source Kotlin. Often, many of us are testing our latest Swift code, which links against the pre-built binary framework version of the library that was built by CI and downloaded and installed from a remote location via CocoaPods (podspec checked into a private specs repo). We do this for a few reasons:
+At Autodesk, engineers aren't always working alongside a Kotlin framework that was built from local sources. Often, many of us are testing our latest Swift code, which links against the pre-built binary framework version of the library that was built by CI and downloaded and installed from a remote location via CocoaPods (podspec checked into a private specs repo). We do this for a few reasons:
 
 1. Early on, this meant we could test out Kotlin multiplatform without requiring that other iOS engineers have a certain Java setup to run a local build. To the unaware iOS engineer, it just looked like we added another CocoaPod that installs a binary framework— one of many.
 1. Even if you are someone on the team that often does work in our shared Kotlin code, using a pre-built binary means you can skip a whole build step (building Kotlin into an iOS framework).
 
 If you follow all of the advice from Kevin and Touchlab's available documentation and use their plugins, then you should find yourself with a working setup that allows you to debug Kotlin built from source on your machine. This is exciting! You now have a basic working "dev setup."
 
-Now, let's say you're working off of the pre-built framework version of your Kotlin library. All of a sudden, you find a bug! You do some initial debugging, and you come to the conclusion that, yes, this bug is in the Kotlin code somewhere. To get this sorted out, you will need to get your new "dev setup" back into place:
+Now, let's say you're working with the pre-built version of your Kotlin framework. All of a sudden, you find a bug! You do some initial debugging, and you come to the conclusion that, yes, this bug is in the Kotlin code somewhere. To get this sorted out, you will need to get your new "dev setup" back into place:
 
 1. Figure out what version of the Kotlin code you were using, and check that out.
 1. Follow the above-linked guidance, and get Xcode building your Kotlin from source.
@@ -30,7 +30,7 @@ Now that it has been about 30 minutes, you do some debugging, fix the bug, rebui
 
 ## Debugging from the Binary
 
-If this sounds miserable, you are right! Slack relationship issues aside, there is a better way. You can debug a binary pre-built from CI. The whole reason we have to debug using Kotlin that was built from source in the first place is becuase dSYM bundles (which enable Xcode to map binary function address to your sources and therefore enable your breakpoints) contain references to your sources that contain absolute paths from the machine that built the framework and dSYM. You can set all of the break points you want, but Xcode won't be able to figure out that `/var/lib/jenkins/YourLibrary/src/commonMain/MyClass.kt` referenced in the dSYM built by your CI machine is `~/Code/YourLibrary/src/commonMain/MyClass.kt` on your machine.
+If this sounds miserable, you are right! Slack relationship issues aside, there is a better way. You can debug a binary pre-built from CI. The whole reason we have to debug using Kotlin that was built from source in the first place is because dSYM bundles (which enable Xcode to map binary function address to your sources and therefore enable your breakpoints) contain references to your sources that contain absolute paths from the machine that built the framework and dSYM. You can set all of the break points you want, but Xcode won't be able to figure out that `/var/lib/jenkins/YourLibrary/src/commonMain/MyClass.kt` referenced in the dSYM built by your CI machine is `~/Code/YourLibrary/src/commonMain/MyClass.kt` on your machine.
 
 The good news though is that there is away to make Xcode and LLDB understand just that. Apple has a page [here](https://opensource.apple.com/source/lldb/lldb-179.1/www/symbols.html) that explains that you can embed a plist file in your dSYM bundle that tells LLDB (run by Xcode) how to map absolute paths in your dSYM to those on your machine. Here's the example plist:
 
