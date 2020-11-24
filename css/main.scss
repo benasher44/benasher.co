@@ -6,6 +6,9 @@ $ben-gray: #233237;
 $content-heading-color: $ben-red;
 $link: $ben-red;
 
+$fullhd: 700px;
+$body-font-size: 1.1em;
+
 $navbar-background-color: $ben-gray;
 $navbar-item-color: white;
 $navbar-item-active-color: darken($navbar-item-color, 10%);
@@ -20,7 +23,10 @@ $code-weight: bold;
 
 @import "../css/includes/github";
 
-@import "bulma/sass/utilities/_all";
+@import "bulma/sass/utilities/initial-variables";
+@import "bulma/sass/utilities/functions";
+@import "bulma/sass/utilities/derived-variables";
+@import "bulma/sass/utilities/mixins";
 @import "bulma/sass/base/_all";
 @import "bulma/sass/elements/container";
 @import "bulma/sass/elements/content";
@@ -28,7 +34,6 @@ $code-weight: bold;
 @import "bulma/sass/elements/title";
 @import "bulma/sass/elements/other";
 @import "bulma/sass/components/navbar";
-@import "bulma/sass/grid/columns";
 @import "bulma/sass/layout/footer";
 @import "bulma/sass/layout/section";
 @import "bulma/sass/helpers/color";
