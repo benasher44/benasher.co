@@ -55,6 +55,7 @@ prose.ignored_words = %w[
   dev
   dSYM
   Plists
+  plist
   plists
 ]
 prose.language = 'en-us'

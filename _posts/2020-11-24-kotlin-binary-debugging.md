@@ -9,7 +9,7 @@ description: A look at distribution of a Kotlin multiplatform library via CocoaP
 When getting Kotlin integrated into your iOS and Android teams' workflows, something you will need to tackle is figuring out how to debug your iOS-ready Kotlin from Xcode. This quest may lead you to some of the following resources:
 
 - Kevin Galligan's post: [Debugging Kotlin on iOS with Xcode](https://dev.to/touchlab/debugging-kotlin-on-ios-with-xcode-37fd)
-- Touchlab's GitHub resources for doing this, such as [https://github.com/touchlab/xcode-kotlin/](https://github.com/touchlab/xcode-kotlin/)
+- Touchlab's GitHub resources for doing this, such as [xcode-kotlin](https://github.com/touchlab/xcode-kotlin/)
 
 At Autodesk, engineers aren't always working alongside a Kotlin framework that was built from local sources. Often, many of us are testing our latest Swift code, which links against the pre-built binary framework version of the library that was built by CI and downloaded and installed from a remote location via CocoaPods (podspec checked into a private specs repo). We do this for a few reasons:
 
