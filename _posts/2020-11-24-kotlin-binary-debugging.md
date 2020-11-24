@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Debugging Binary Kotlin Frameworks
-tags: kotlin multiplatform kotlin/native ios swift cocoapods
+tags: kotlin multiplatform kotlin/native ios swift debugging Xcode
 categories: software
 description: A look at distribution of a Kotlin multiplatform library via CocoaPods
 ---
