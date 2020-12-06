@@ -3,7 +3,7 @@ layout: post
 title: Debugging Binary Kotlin Frameworks
 tags: kotlin multiplatform kotlin/native ios swift debugging Xcode
 categories: software
-description: How to post-process a binary Kotlin/Native iOS framework, so that you can debug it in Xcode
+description: How to post-process a binary Kotlin/Native iOS framework, so you can debug it in Xcode
 ---
 
 When getting Kotlin integrated into your iOS and Android teams' workflows, something you will need to tackle is figuring out how to debug your iOS-ready Kotlin from Xcode. This quest may lead you to some of the following resources:
