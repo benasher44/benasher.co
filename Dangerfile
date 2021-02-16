@@ -61,4 +61,5 @@ prose.ignored_words = %w[
 prose.language = 'en-us'
 prose.ignore_numbers = true
 prose.ignore_acronyms = true
+prose.lint_files '_posts/*.md'
 prose.check_spelling '_posts/*.md'

@@ -2,7 +2,6 @@
 
 source 'https://rubygems.org'
 
-gem 'aws-sdk'
 gem 'danger', '>= 8'
 gem 'danger-prose'
 gem 'danger-rubocop'

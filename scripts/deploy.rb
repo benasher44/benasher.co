@@ -2,98 +2,26 @@
 
 # frozen_string_literal: true
 
-require 'aws-sdk-cloudfront'
-require 'aws-sdk-s3'
 require 'yaml'
-
-BUCKET = 'benasher.co'
 
 KEY = 'cached_assets'
 WEEK_SECONDS = '604800'
 
 SITE_ROOT = '_site'
 
-CONTENT_TYPES = {
-  css: 'text/css',
-  html: 'text/html',
-  ico: 'image/vnd.microsoft.icon',
-  map: 'application/octet-stream',
-  png: 'image/png',
-  txt: 'text/plain',
-  xml: 'application/xml'
-}.freeze
-
-def content_type(path)
-  ext = File.extname(path).gsub(/^\./, '').to_sym
-  raise "Missing content-type for extension #{ext} (#{path})" unless CONTENT_TYPES.include? ext
-
-  CONTENT_TYPES[ext]
-end
-
-def enumerate_site_files
-  Dir.glob('_site/**/*').each do |path|
-    next if File.directory? path
-
-    yield path
-  end
-end
-
-def validate_content_types!
-  enumerate_site_files do |path|
-    # should not raise
-    content_type(path)
-  end
-end
-
-validate_content_types!
-
-s3 = Aws::S3::Client.new
-
-existing_keys = Set.new
-s3.list_objects(bucket: BUCKET).each do |response|
-  response.contents.map(&:key).each { |k| existing_keys.add k }
+def exec(cmd)
+  puts cmd
+  system cmd
 end
 
 # get the cached_assets to exclude them from sync
 cached_assets = YAML.safe_load(File.read("#{KEY}.yml"))[KEY].values
-cached_asset_paths = Set.new(cached_assets.map { |f| f.gsub(%r{^/}, '') })
+args = cached_assets.map { |f| "--exclude #{f.gsub(%r{^/}, '')}" }
 
-enumerate_site_files do |path|
-  next if File.directory? path
+exec "aws s3 sync #{args.join ' '} --delete _site s3://benasher.co"
 
-  File.open(path) do |file|
-    params = {
-      bucket: BUCKET,
-      key: path,
-      body: file,
-      content_type: content_type(path)
-    }
-    params[:cache_control] = "max-age=#{WEEK_SECONDS}" if cached_asset_paths.include? path
-
-    puts "Putting #{path}"
-    s3.put_object(params)
-
-    # track uploaded files to remove left overs at the end
-    existing_keys.delete(path)
-  end
+# manually upload the cached_assets with cache control headers
+cached_assets.each do |f|
+  path = File.join(SITE_ROOT, f)
+  exec "aws s3 cp --cache-control #{WEEK_SECONDS} #{path} s3://benasher.co#{f}"
 end
-
-unless existing_keys.empty?
-
-  puts "Deleting #{existing_keys}"
-  s3.delete_objects(
-    bucket: BUCKET,
-    delete: {
-      objects: existing_keys.map { |k| { key: k } }
-    }
-  )
-end
-
-# bounce cloudfront caches
-Aws::CloudFront::Client.new.create_invalidation(
-  distribution_id: ENV['AWS_CF_DISTRIBUTION_ID'],
-  invalidation_batch: {
-    paths: { quantity: 1, items: ['/*'] },
-    caller_reference: Time.now.to_s
-  }
-)
