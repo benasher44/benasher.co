@@ -31,10 +31,12 @@ def content_type(path)
 end
 
 def enumerate_site_files
-  Dir.glob('_site/**/*').each do |path|
-    next if File.directory? path
+  Dir.chdir('_site') do
+    Dir.glob('**/*').each do |path|
+      next if File.directory? path
 
-    yield path
+      yield path
+    end
   end
 end
 
