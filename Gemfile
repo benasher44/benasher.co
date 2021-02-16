@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'danger'
+gem 'danger', '>= 8'
 gem 'danger-prose'
 gem 'danger-rubocop'
 gem 'jekyll', '~> 4.0'
