@@ -4,6 +4,7 @@ title: 'An Ergonomics Review of Using Kotlin from Swift'
 tags: kotlin multiplatform kotlin/native ios swift
 categories: software
 description: A review of using Kotlin from Swift— good parts and those that could use improvement.
+updated: 2021-02-16
 ---
 
 At Autodesk, my colleagues and I are more than a year and a half into our Kotlin multiplatform (KMP) shared library journey. That's one Kotlin shared library, shared among our three mobile platforms that we support for the PlanGrid app (iOS, Android, and Windows).
@@ -94,7 +95,26 @@ Default arguments have a solution in Kotlin/JVM interop, which is used in hand-w
 
 ### Enums - Missing Exports
 
-I want to go back to enums for a moment. I mentioned that I would review the issues in the order that my team ran into them. After getting more comfortable using Kotlin enums in our code, we began to come up with cases where we wanted to enumerate Kotlin enums. However, the needed `values()` function [is not exported to Obj-C by default](https://youtrack.jetbrains.com/issue/KT-38530). If you need this, you're left to define it yourself in your library and have it call the equivalent function. The workaround is fine, but it gets in the way, when the library you're using is one that's already packaged up and distributed. A fix requires another PR and waiting on another CI deploy.
+~~I want to go back to enums for a moment. I mentioned that I would review the issues in the order that my team ran into them. After getting more comfortable using Kotlin enums in our code, we began to come up with cases where we wanted to enumerate Kotlin enums. However, the needed `values()` function [is not exported to Obj-C by default](https://youtrack.jetbrains.com/issue/KT-38530). If you need this, you're left to define it yourself in your library and have it call the equivalent function. The workaround is fine, but it gets in the way, when the library you're using is one that's already packaged up and distributed. A fix requires another PR and waiting on another CI deploy.~~
+
+#### New in 1.4.30: `Enum<T>.values()`
+
+As of Kotlin 1.4.30, your Kotlin enums now export a `values()` `class` method, which maps directly to the `Enum<T>.values()` Kotlin method. One thing to note though is that this direct mapping exposes the unfortunate (for Obj-C/Swift) `Kotlin.Array`. If you're using Kotlin/Native, you may know that `Kotlin.List` is the type that Kotlin/Native exposes as a native `NSArray`/`Swift.Array`. With `Kotlin.Array`, you end up with a special `KotlinArray` type, which exposes an iterator. To make of use of this in your Swift code, you'll want to write something like this:
+
+{% highlight swift %}
+extension Array where Element: AnyObject {
+    /// Allows conversion from `KotlinArray` to `Array`
+    public init(_ array: KotlinArray<Element>) {
+        self.init(minimumCapacity: Int(array.size))
+        let iterator = array.iterator()
+        while iterator.hasNext() {
+            self.append(iterator.next() as! Element)
+        }
+    }
+}
+{% endhighlight %}
+
+This will let you bridge `KotlinArray` to `Swift.Array` like so: `Array(MyEnum.values())`. Not bad! I also tried adding some kind of Swift extension to enable bridging like `MyEnum.values().toArray()`, but I ran into Obj-C to Swift generics compatibility issues. If you find a way to make that work though, please let me know on twitter!
 
 ### Translation to Obj-C Primitives
 

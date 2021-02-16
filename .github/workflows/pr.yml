@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
         with:
@@ -29,9 +29,7 @@ jobs:
           path: vendor/bundle
           key: ruby-bundle-${{ hashFiles('Gemfile.lock') }}
       - name: Setup Node
-        uses: actions/setup-node@v1
-      - name: Install yarn
-        run: npm install -g yarn
+        uses: actions/setup-node@v2
       - name: Yarn
         run: yarn
       - name: bundle install
@@ -39,6 +37,7 @@ jobs:
       - name: Danger
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bundle exec danger
+        # put mdspell in the path
+        run: 'PATH="$PATH:$PWD/node_modules/.bin" bundle exec danger'
       - name: build
         run: make
