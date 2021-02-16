@@ -20,5 +20,4 @@ deploy-build:
 
 .PHONY: deploy
 deploy: deploy-build
-	./scripts/deploy.rb
-	aws cloudfront create-invalidation --distribution-id E2FTU05IZTIYC9 --paths '/*'
+	bundle exec ruby ./scripts/deploy.rb

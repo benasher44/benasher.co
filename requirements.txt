@@ -1,2 +1,0 @@
-awscli==1.18.100
-proselint==0.10.2
