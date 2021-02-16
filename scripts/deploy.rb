@@ -31,7 +31,7 @@ def content_type(path)
 end
 
 def enumerate_site_files
-  Dir.chdir('_site') do
+  Dir.chdir(SITE_ROOT) do
     Dir.glob('**/*').each do |path|
       next if File.directory? path
 
