@@ -30,6 +30,10 @@ jobs:
           key: ruby-bundle-${{ hashFiles('Gemfile.lock') }}
       - name: bundle install
         run: bundle install --path=vendor/bundle
+      - name: Setup Node
+        uses: actions/setup-node@v2
+      - name: Yarn
+        run: yarn
       - name: Deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
