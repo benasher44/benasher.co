@@ -22,16 +22,15 @@ jobs:
         with:
           path: vendor/bundle
           key: ruby-bundle-${{ hashFiles('Gemfile.lock') }}
+      - name: bundle install
+        run: bundle install --path=vendor/bundle
       - name: Setup Node
         uses: actions/setup-node@v2
       - name: Yarn
         run: yarn
-      - name: bundle install
-        run: bundle install --path=vendor/bundle
       - name: Danger
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # put mdspell in the path
-        run: 'PATH="$PATH:$PWD/node_modules/.bin" bundle exec danger'
+        run: yarn danger ci
       - name: build
         run: make

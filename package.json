@@ -1,6 +1,10 @@
 {
   "dependencies": {
-    "bulma": "^0.9.1",
-    "markdown-spellcheck": "orta/node-markdown-spellcheck"
+    "bulma": "^0.9.1"
+  },
+  "devDependencies": {
+    "danger": "^10.6.2",
+    "danger-plugin-spellcheck": "^1.5.0",
+    "typescript": "^4.1.5"
   }
 }
