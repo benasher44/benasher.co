@@ -105,7 +105,8 @@ As of Kotlin 1.4.30, your Kotlin enums now export a `values()` `class` method, w
 extension Array where Element: AnyObject {
     /// Allows conversion from `KotlinArray` to `Array`
     public init(_ array: KotlinArray<Element>) {
-        self.init(minimumCapacity: Int(array.size))
+        self.init()
+        self.reserveCapacity(Int(array.size))
         let iterator = array.iterator()
         while iterator.hasNext() {
             self.append(iterator.next() as! Element)
