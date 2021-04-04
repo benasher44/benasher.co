@@ -53,6 +53,9 @@
         "dSYM",
         "Plists",
         "plist",
-        "plists"
+        "plists",
+        "ktor",
+        "ktor-based",
+        "backend"
     ]
 }
