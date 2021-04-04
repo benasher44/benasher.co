@@ -55,6 +55,7 @@
         "plist",
         "plists",
         "ktor",
+        "ktor-based",
         "backend"
     ]
 }
