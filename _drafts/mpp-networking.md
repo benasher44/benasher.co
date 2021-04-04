@@ -9,7 +9,7 @@ description: An approach to networking with Kotlin multiplatform
 If you're starting a new Kotlin multiplatform mobile project, I think starting with ktor for your networking layer is a reasonable choice. If you're planning to add Kotlin multiplatform to an existing project, this may not be desirable for a couple of reasons:
 
 1. Your application may already have a working networking layer, which itself may contain logic related to your API (e.g. authentication). Going with ktor means repeating or refactoring that logic in the shared multiplatform layer.
-1. ktor will manage its own platform-specific networking client (e.g. `URLSession` on iOS). If your ktor-based networking stack and your applcation's "legacy" stack are making connections to the same hosts, you may end up with kept-alive connections to the same hosts in the connection pools managed by each stack.
+1. ktor will manage its own platform-specific networking client (e.g. `URLSession` on iOS). If your ktor-based networking stack and your application's "legacy" stack are making connections to the same hosts, you may end up with kept-alive connections to the same hosts in the connection pools managed by each stack.
 
 Depending on your project, these issues may or may not matter to you, but with these ideas in mind, we (my team at Autodesk) took a stack-agnostic approach to multiplatform networking. In our multiplatform layer, we have an `interface` called `Network`, and it allows us to make network calls to our backend API. Here's a look at the `interface` itself. It started as just this one method and a collection of supporting classes, though it has grown over time:
 
