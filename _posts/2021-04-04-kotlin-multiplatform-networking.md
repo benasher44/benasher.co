@@ -27,7 +27,7 @@ public interface Network {
     public fun makeRequest(
         host: APIHost,
         request: Request,
-        completion: (RequestDataResponse) -> Unit
+        completion: (Request.DataResponse) -> Unit
     ): NetworkDisposable
 }
 
