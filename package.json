@@ -3,8 +3,8 @@
     "bulma": "^0.9.4"
   },
   "devDependencies": {
+    "@benasher44/danger-plugin-spellcheck": "^2.1.0",
     "danger": "^11.3.0",
-    "danger-plugin-spellcheck": "^2.1.0",
     "typescript": "^5.2.2"
   },
   "packageManager": "yarn@4.0.2"

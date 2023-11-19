@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import { fail } from 'danger';
-import spellcheck from 'danger-plugin-spellcheck';
+import spellcheck from '@benasher44/danger-plugin-spellcheck';
 
 try {
     execSync('bundle exec rubocop');
