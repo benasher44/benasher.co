@@ -3,13 +3,13 @@ title: Ben Asher
 description: Ben Asher's personal website and blog
 author:
   name: Ben Asher
-  twitter: benasher44
 
 timezone: America/Los_Angeles
 
-twitter:
-  username: benasher44
-  card: summary
+social:
+  name: Ben Asher
+  links:
+    - https://mastodon.social/@benasher44
 
 plugins:
   - jekyll-feed

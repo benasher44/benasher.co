@@ -115,7 +115,7 @@ extension Array where Element: AnyObject {
 }
 {% endhighlight %}
 
-This will let you bridge `KotlinArray` to `Swift.Array` like so: `Array(MyEnum.values())`. Not bad! I also tried adding some kind of Swift extension to enable bridging like `MyEnum.values().toArray()`, but I ran into Obj-C to Swift generics compatibility issues. If you find a way to make that work though, please let me know on twitter!
+This will let you bridge `KotlinArray` to `Swift.Array` like so: `Array(MyEnum.values())`. Not bad! I also tried adding some kind of Swift extension to enable bridging like `MyEnum.values().toArray()`, but I ran into Obj-C to Swift generics compatibility issues. If you find a way to make that work though, please let me know on mastodon!
 
 ### Translation to Obj-C Primitives
 
