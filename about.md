@@ -10,7 +10,7 @@ nav-order: 1
 
 I am a software developer primarily focused on web, though I used to do mobile/iOS. I live in California and work at Ashby on recruiting software.
 
-You can find me on [mastdon.social](https://mastdon.social/@benasher44) or via email at hello @ this domain. You can find some of my work on [github](https://github.com/benasher44).
+You can find me on [mastodon.social](https://mastodon.social/@benasher44) or via email at hello @ this domain. You can find some of my work on [github](https://github.com/benasher44).
 
 #### Speaking
 
