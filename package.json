@@ -4,7 +4,7 @@
   },
   "devDependencies": {
     "@benasher44/danger-plugin-spellcheck": "^2.1.1",
-    "danger": "^12.1.0",
+    "danger": "^13.0.8",
     "typescript": "^5.4.5"
   },
   "packageManager": "yarn@4.0.2"
