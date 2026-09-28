@@ -1,6 +1,8 @@
 vendor
 .bundle
 _site
+dist
+.astro
 .jekyll-cache
 node_modules
 cached_assets.yml

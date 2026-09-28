@@ -1,11 +1,22 @@
 {
   "dependencies": {
+    "astro": "^7.3.5",
     "bulma": "^0.9.4"
   },
   "devDependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@aws-sdk/client-cloudfront": "^3.1142.0",
+    "@aws-sdk/client-s3": "^3.1142.0",
     "@benasher44/danger-plugin-spellcheck": "^2.1.1",
     "danger": "^12.1.0",
+    "marked": "^18.0.14",
     "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "node scripts/deploy.mjs"
   },
   "packageManager": "yarn@4.0.2"
 }
