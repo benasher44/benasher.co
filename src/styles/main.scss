@@ -1,0 +1,94 @@
+// main.scss — Astro port of css/main.scss
+//
+// bulma 1.x port: the old "set Sass vars before @import" pattern no longer
+// works for theme colors — bulma 1.x components are sass modules that read
+// CSS variables (cv.getVar). Build-time overrides go through `@use ... with`
+// configuration of the module that defines each !default var; the configured
+// module instance is shared through bulma's internal @use graph.
+
+// github.css first, so bulma rules keep the same cascade order as the old
+// main.scss (github imported before the bulma partials).
+@use "./github.css";
+
+// ——— build-time configuration (replaces the old pre-import var block) ———
+@use "bulma/sass/utilities/initial-variables" as iv with (
+  $fullhd: 700px
+);
+
+@use "bulma/sass/utilities/derived-variables" as dv with (
+  $link: #76323F, // was $link: $ben-red
+  $code: inherit  // was $code: inherit
+);
+
+@use "bulma/sass/base/generic" as generic with (
+  $body-font-size: 1.1em, // was $body-font-size: 1.1em
+  $code-weight: bold      // was $code-weight: bold
+);
+
+@use "bulma/sass/elements/content" as content with (
+  $content-heading-color: #76323F // was $content-heading-color: $ben-red
+);
+
+@use "bulma/sass/components/navbar" as navbar with (
+  $navbar-background-color: #233237, // was $navbar-background-color: $ben-gray
+  $navbar-item-color-l: 100%,        // was $navbar-item-color: white
+  // old hover/active bg = lighten($ben-gray, 10%) → same lightness for both
+  $navbar-item-background-l: 28%,
+  $navbar-item-hover-background-l-delta: 0%,
+  $navbar-item-active-background-l-delta: 0%,
+  $navbar-item-selected-color-l: 90%, // was $navbar-item-active-color: darken(white, 10%)
+  $navbar-breakpoint: 10px            // was $navbar-breakpoint: 10px
+);
+
+// ——— plain bulma partials (same subset as the old main.scss) ———
+@use "bulma/sass/utilities/mixins";
+@use "bulma/sass/utilities/controls";
+@use "bulma/sass/utilities/extends";
+@use "bulma/sass/base"; // index: minireset + generic (configured above) + animations
+@use "bulma/sass/layout/container"; // was elements/container in 0.9
+@use "bulma/sass/elements/tag";
+@use "bulma/sass/elements/title";
+@use "bulma/sass/layout/footer";
+@use "bulma/sass/layout/section";
+@use "bulma/sass/helpers/color";
+@use "bulma/sass/helpers/typography";
+
+// Light theme registration (single light theme, like the old site).
+// Registering here so :root has every --bulma-* var the components read.
+@use "bulma/sass/themes/light" as light;
+@use "bulma/sass/themes/setup" as setup;
+
+:root {
+  @include light.light-theme;
+  @include setup.setup-theme;
+}
+
+// ——— site rules (verbatim from old css/main.scss) ———
+.content h1 {
+    font-weight: 300;
+}
+
+.content h1 a {
+    font-weight: 300;
+}
+
+.navbar-brand a {
+    font-weight: 100;
+    font-size: 1.5em;
+}
+
+.navbar-brand {
+    padding: 0 10pt 0 0;
+}
+
+.navbar-end a.navbar-item:hover {
+    background-color: transparent
+}
+
+figure.highlight {
+    text-align: left;
+}
+
+.content a {
+    font-weight: 600;
+}

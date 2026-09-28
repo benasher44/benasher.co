@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "astro": "^7.3.5",
-    "bulma": "^0.9.4"
+    "bulma": "^1.0.4"
   },
   "devDependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -10,6 +10,7 @@
     "@benasher44/danger-plugin-spellcheck": "^2.1.1",
     "danger": "^12.1.0",
     "marked": "^18.0.14",
+    "sass-embedded": "^1.105.0",
     "typescript": "^5.4.5"
   },
   "scripts": {
