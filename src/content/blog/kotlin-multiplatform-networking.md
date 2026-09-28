@@ -2,7 +2,6 @@
 "title": "An Interface for Multiplatform Networking"
 "description": "An approach to networking with Kotlin multiplatform"
 "pubDate": 2021-04-04T00:00:00-07:00
----
 "tags": ["kotlin","multiplatform","kotlin/native","mobile","networking","ktor"]
 "categories": ["software"]
 ---

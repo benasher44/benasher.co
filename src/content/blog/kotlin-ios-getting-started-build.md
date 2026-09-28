@@ -2,7 +2,6 @@
 "title": "Getting Started with Kotlin on iOS, Part 3: The Build"
 "description": "An introduction to setting up your Kotlin multiplatform build for iOS."
 "pubDate": 2020-07-05T00:00:00-07:00
----
 "tags": ["kotlin","multiplatform","kotlin/native","ios","swift"]
 "categories": ["software"]
 ---

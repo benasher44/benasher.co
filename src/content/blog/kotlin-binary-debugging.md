@@ -2,7 +2,6 @@
 "title": "Debugging Binary Kotlin Frameworks"
 "description": "How to post-process a binary Kotlin/Native iOS framework, so you can debug it in Xcode"
 "pubDate": 2020-11-24T00:00:00-08:00
----
 "tags": ["kotlin","multiplatform","kotlin/native","ios","swift","debugging","Xcode"]
 "categories": ["software"]
 ---

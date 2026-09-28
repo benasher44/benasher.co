@@ -2,7 +2,6 @@
 "title": "Getting Started with Kotlin on iOS, Part 1"
 "description": "A brief introduction to Kotlin for Swift/iOS developers before diving into Kotlin multiplatform."
 "pubDate": 2020-02-09T00:00:00-08:00
----
 "updated": 2020-02-11T00:00:00-08:00
 "tags": ["kotlin","multiplatform","kotlin/native","ios","swift"]
 "categories": ["software"]

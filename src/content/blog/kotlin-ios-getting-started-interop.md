@@ -2,7 +2,6 @@
 "title": "Getting Started with Kotlin on iOS, Part 2: Interop"
 "description": "An introduction to interop between Kotlin and Swift in Kotlin multiplatform."
 "pubDate": 2020-03-22T00:00:00-07:00
----
 "tags": ["kotlin","multiplatform","kotlin/native","ios","swift"]
 "categories": ["software"]
 ---
