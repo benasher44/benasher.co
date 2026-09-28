@@ -1,0 +1,14 @@
+---
+// Port of index.md (homepage): all posts, newest first, card mode
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostEntry from '../components/PostEntry.astro';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Base pageTitle="Blog" path="/" type="website">
+  {posts.map((post) => <PostEntry post={post} />)}
+</Base>

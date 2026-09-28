@@ -1,0 +1,67 @@
+---
+// Port of _includes/post.html (+ minutes.html + updated.html), used both as
+// the homepage card (excerpt mode) and the post page renderer (full mode).
+import { marked } from 'marked';
+import { formatDateString } from '../lib/dates';
+
+interface Props {
+  post: any; // CollectionEntry<'blog'>
+  full?: boolean;
+}
+
+const { post, full = false } = Astro.props;
+
+const body: string = post.body ?? '';
+const raw = body.includes('<!--more-->') ? body.split('<!--more-->')[0] : body.split(/\n\n+/)[0];
+const excerptHtml = full ? null : (marked.parse(raw) as string);
+
+// minutes.html: (words >= 250) ? floor(words / 180) : none
+const words = body.trim().split(/\s+/).length;
+const minutes = words >= 250 ? Math.floor(words / 180) : null;
+
+const href = `/${post.id}/`;
+const hasExcerpt = !full;
+---
+
+<section class="section">
+  <div class="container">
+    <article class="content">
+      {
+        full ? (
+          <h1 class="title is-1">{post.data.title}</h1>
+        ) : (
+          <h1 class="title is-1">
+            <a href={href}>{post.data.title}</a>
+          </h1>
+        )
+      }
+      <h6 class="subtitle is-6">
+        {formatDateString(post.data.pubDate)}
+        {minutes && <span class="tag is-info is-light">{minutes} minute read</span>}
+        {post.data.updated && <span class="tag is-warning">Updated: {formatDateString(post.data.updated)}</span>}
+      </h6>
+      {
+        hasExcerpt ? (
+          <Fragment set:html={excerptHtml} />
+        ) : (
+          <>
+            <slot />
+            <div class="level is-size-7">
+              <p class="level-item" style="margin-top: 2rem;">
+                Questions or comments? Find me on <a href="https://mastodon.social/@benasher44">mastodon.social</a>.
+              </p>
+              <p class="level-item">Find a mistake or inaccuracy? Please open an issue or PR on <a href="https://github.com/benasher44/benasher.co">github</a>.</p>
+            </div>
+          </>
+        )
+      }
+      {
+        hasExcerpt && (
+          <p>
+            <a href={href}>Read more…</a>
+          </p>
+        )
+      }
+    </article>
+  </div>
+</section>

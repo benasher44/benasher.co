@@ -1,0 +1,67 @@
+---
+// Port of _layouts/default.html
+import '../styles/main.scss';
+import Seo from '../components/Seo.astro';
+import { formatShortDate } from '../lib/dates';
+
+interface Props {
+  pageTitle: string;
+  description?: string;
+  path: string;
+  type?: 'website' | 'article';
+  pubDate?: Date;
+}
+
+const { pageTitle, description, path, type, pubDate } = Astro.props;
+
+// Jekyll rendered nav from site pages with in-nav: true, sorted by nav-order
+const nav = [
+  { title: 'Blog', href: '/' },
+  { title: 'About', href: '/about/' },
+];
+
+const now = new Date(); // build time, like Liquid's "now"
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Ben Asher's personal website and blog" />
+    <Seo pageTitle={pageTitle} description={description} path={path} type={type} pubDate={pubDate} />
+  </head>
+  <body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">benasher.co</a>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-start">
+          {
+            nav.map((item) => (
+              <a
+                class={`navbar-item${Astro.url.pathname === item.href ? ' is-active' : ''}`}
+                href={item.href}
+              >
+                {item.title}
+              </a>
+            ))
+          }
+        </div>
+        <div class="navbar-end">
+          <a class="navbar-item" href="/feed.xml">RSS</a>
+        </div>
+      </div>
+    </nav>
+    <main>
+      <slot />
+    </main>
+    <footer class="footer">
+      <div class="content has-text-centered is-size-7">
+        <p>The source to build and deploy this site is available <a href="https://github.com/benasher44/benasher.co">here</a>. &copy; 2023 <a rel="me" href="https://mastodon.social/@benasher44">Ben Asher</a>.</p>
+        <p>This site was last updated on {formatShortDate(now)}.</p>
+      </div>
+    </footer>
+  </body>
+</html>
