@@ -105,3 +105,10 @@ a.navbar-item.is-active {
     background-color: hsl(195, 22.2222222222%, 27.6470588235%);
     color: hsl(0, 0%, 90%);
 }
+
+// Restore 0.9.x title→subtitle gap (old: 1.5rem title margin-bottom
+// cancelled by a -1.25rem subtitle margin-top → net 0.25rem; 1.x zeroes
+// the title margin instead).
+.title:not(.is-spaced) + .subtitle {
+    margin-top: 0.25rem;
+}
