@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # the spellcheck gate's PR comment
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
