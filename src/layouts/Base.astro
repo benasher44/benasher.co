@@ -38,14 +38,15 @@ const now = new Date(); // build time
     <script is:inline>
       // set the theme before first paint — no flash.
       // ?theme=light|dark wins (shareable/previewable), then localStorage, then system.
+      // Always resolves to an explicit data-theme so the icon-swap CSS can rely on it.
       const qsTheme = new URLSearchParams(location.search).get('theme');
       const stored = localStorage.getItem('theme');
       if (qsTheme === 'light' || qsTheme === 'dark') {
         document.documentElement.dataset.theme = qsTheme;
-      } else if (stored) {
+      } else if (stored === 'light' || stored === 'dark') {
         document.documentElement.dataset.theme = stored;
-      } else if (matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.dataset.theme = 'dark';
+      } else {
+        document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
     </script>
   </head>
@@ -74,7 +75,15 @@ const now = new Date(); // build time
       type="button"
       aria-label="Toggle dark mode"
       aria-pressed="false"
-    >☾</button>
+    >
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" aria-hidden="true">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+      </svg>
+    </button>
     <main id="main">
       <slot />
     </main>
@@ -88,7 +97,6 @@ const now = new Date(); // build time
     <script>
       const btn = document.getElementById('theme-toggle') as HTMLButtonElement;
       const apply = (t: string) => {
-        btn.textContent = t === 'dark' ? '☀' : '☾';
         btn.setAttribute('aria-pressed', String(t === 'dark'));
       };
       apply(document.documentElement.dataset.theme ?? 'light');
