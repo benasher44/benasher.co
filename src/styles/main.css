@@ -22,6 +22,10 @@
 
 /* ——— layer 2a: brand tokens ——— */
 :root {
+  /* pin pico's fluid root scaling (it bumps --pico-font-size to 131.25% at
+     wide breakpoints, inflating everything ~30% vs the approved sketch) */
+  --pico-font-size: 100%;
+
   /* site tokens (the 003 sketch) */
   --site-bg: #fcfcfb;
   --site-surface: #f5f6f5;
@@ -152,7 +156,7 @@ body {
     -apple-system,
     'Segoe UI',
     sans-serif;
-  font-size: 1.05rem;
+  font-size: 1rem;
   line-height: 1.7;
 }
 
