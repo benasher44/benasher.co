@@ -5,7 +5,7 @@
 import '../styles/main.css';
 import Seo from '../components/Seo.astro';
 import { formatShortDate } from '../lib/dates';
-import { SITE_DESCRIPTION, MASTODON_URL, REPO_URL } from '../lib/site';
+import { SITE_AUTHOR, SITE_DESCRIPTION, MASTODON_URL, REPO_URL } from '../lib/site';
 
 interface Props {
   pageTitle: string;
@@ -89,7 +89,7 @@ const now = new Date(); // build time
     </main>
     <footer>
       <p>
-        © {now.getFullYear()} <a rel="me" href={MASTODON_URL}>Ben Asher</a> · <a href={REPO_URL}>source</a>
+        © {now.getFullYear()} <a rel="me" href={MASTODON_URL}>{SITE_AUTHOR}</a> · <a href={REPO_URL}>source</a>
       </p>
       <p>This site was last updated on {formatShortDate(now)}.</p>
     </footer>
