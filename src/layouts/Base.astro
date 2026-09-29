@@ -2,10 +2,21 @@
 // Base layout: head, nav, footer, theme machinery.
 // Pico CSS + brand tokens live in main.css; fonts are self-hosted via
 // fontsource variable packages (content-hashed _astro/ assets).
+import '../styles/pico-trim.scss';
 import '../styles/main.css';
 import Seo from '../components/Seo.astro';
 import { formatShortDate } from '../lib/dates';
 import { SITE_AUTHOR, SITE_DESCRIPTION, MASTODON_URL, REPO_URL } from '../lib/site';
+
+// The latin woff2 files the browser actually downloads for this site's
+// content (unicode-range picks exactly these). Fonts are only discovered
+// after the css downloads+parses; preloading starts them in parallel with
+// the css, so real typography lands ~1 RTT sooner on first visits.
+// Content-hashed by vite (same asset the css references — no dupes).
+import interLatinUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import frauncesLatinUrl from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+import frauncesItalicUrl from '@fontsource-variable/fraunces/files/fraunces-latin-wght-italic.woff2?url';
+import jetbrainsMonoUrl from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 
 interface Props {
   pageTitle: string;
@@ -13,9 +24,21 @@ interface Props {
   path: string;
   type?: 'website' | 'article';
   pubDate?: Date;
+  /** page renders mono code faces — preload jetbrains-mono latin */
+  preloadMono?: boolean;
+  /** page renders serif-italic blockquotes — preload fraunces italic */
+  preloadSerifItalic?: boolean;
 }
 
-const { pageTitle, description, path, type, pubDate } = Astro.props;
+const {
+  pageTitle,
+  description,
+  path,
+  type,
+  pubDate,
+  preloadMono = false,
+  preloadSerifItalic = false,
+} = Astro.props;
 
 const nav = [
   { title: 'Blog', href: '/' },
@@ -35,6 +58,16 @@ const now = new Date(); // build time
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fcfcfb" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121514" />
     <Seo pageTitle={pageTitle} description={description} path={path} type={type} pubDate={pubDate} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={interLatinUrl} />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={frauncesLatinUrl} />
+    {
+      preloadSerifItalic && (
+        <link rel="preload" as="font" type="font/woff2" crossorigin href={frauncesItalicUrl} />
+      )
+    }
+    {preloadMono && (
+      <link rel="preload" as="font" type="font/woff2" crossorigin href={jetbrainsMonoUrl} />
+    )}
     <script is:inline>
       // set the theme before first paint — no flash.
       // ?theme=light|dark wins (shareable/previewable), then localStorage, then system.

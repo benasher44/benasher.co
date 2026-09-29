@@ -17,8 +17,59 @@
 @import '@fontsource-variable/fraunces/wght-italic.css';
 @import '@fontsource-variable/jetbrains-mono';
 
-/* ——— layer 1: pico ——— */
-@import '@picocss/pico/css/pico.classless.min.css';
+/* metric-matched fallback faces — the swap-period font sits second in each
+   stack so text renders at the webfont's metrics while it loads: no reflow
+   (width via size-adjust, baseline via ascent/descent/line-gap overrides).
+   Values computed from the shipped latin woff2s' hhea/hmtx against the local
+   fallbacks (Arial / Georgia / Menlo), @next/font's formula: size-adjust =
+   avgWidth ratio; overrides = main metric/upm divided by the size-adjust
+   ratio; descent-override is the descent magnitude (spec caps it at [0,∞]).
+   Fraunces has normal + italic faces (headings vs blockquotes — different
+   advances). If the fontsource majors ever bump, recompute — a stale face
+   just re-introduces swap reflow, it never affects loaded-font rendering. */
+@font-face {
+  font-family: 'Inter Fallback';
+  font-style: normal;
+  src: local('Arial'), local('Helvetica');
+  size-adjust: 108.66%;
+  ascent-override: 89.15%;
+  descent-override: 22.2%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Fraunces Fallback';
+  font-style: normal;
+  src: local('Georgia');
+  size-adjust: 118.82%;
+  ascent-override: 82.31%;
+  descent-override: 21.46%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Fraunces Fallback';
+  font-style: italic;
+  src: local('Georgia Italic'), local('Georgia');
+  size-adjust: 114.92%;
+  ascent-override: 85.1%;
+  descent-override: 22.19%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  font-style: normal;
+  src: local('Menlo'), local('Consolas'), local('DejaVu Sans Mono');
+  size-adjust: 99.66%;
+  ascent-override: 102.35%;
+  descent-override: 30.1%;
+  line-gap-override: 0%;
+}
+
+/* pico is imported as sass in src/styles/pico-trim.scss (imported by
+   Base.astro ahead of this file) so the build compiles only the modules we
+   use — see that file's header for the module decisions. */
 
 /* ——— layer 2a: brand tokens ——— */
 
@@ -31,9 +82,12 @@
 }
 
 :root {
-  --site-font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --site-font-serif: var(--site-font-serif);
-  --site-font-mono: var(--site-font-mono);
+  --site-font-sans:
+    'Inter Variable', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --site-font-serif: 'Fraunces Variable', 'Fraunces Fallback', Georgia, serif;
+  --site-font-mono:
+    'JetBrains Mono Variable', 'JetBrains Mono Fallback', ui-monospace, SFMono-Regular, Menlo,
+    monospace;
 }
 
 :root {
