@@ -10,22 +10,21 @@
     "format:check": "oxfmt --check ."
   },
   "dependencies": {
-    "astro": "^7.3.5",
-    "bulma": "^1.0.4"
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@picocss/pico": "^2.1.1",
+    "astro": "^7.3.5"
   },
   "devDependencies": {
     "@astrojs/rss": "^4.0.19",
     "@aws-sdk/client-cloudfront": "^3.1142.0",
     "@aws-sdk/client-s3": "^3.1142.0",
     "@types/node": "^24",
-    "astro-purgecss": "^7.0.0",
     "cspell": "^10.3.5",
     "marked": "^18.0.14",
     "oxfmt": "^0.71.0",
-    "oxlint": "^1.86.0",
-    "prism-themes": "^1.9.0",
-    "purgecss": "^8",
-    "sass-embedded": "^1.105.0"
+    "oxlint": "^1.86.0"
   },
   "resolutions": {
     "tmp@^0.0.29": "^0.2.6"

@@ -1,0 +1,571 @@
+/*
+ * main.css — benasher.co
+ *
+ * Layer 1: Pico CSS (classless) — pre-tested semantic HTML styling,
+ *          responsive spacing, light/dark color-scheme machinery.
+ * Layer 2: brand tokens + site-specific components (cards, pills,
+ *          pills, buttons). Overriding a *variable* beats fighting a
+ *          framework, so brand colors go through Pico's own vars.
+ *
+ * Dark mode: system preference by default; an explicit data-theme
+ * attribute (set before paint by the snippet in Base.astro) wins.
+ */
+
+/* ——— fonts (self-hosted, content-hashed by astro) ——— */
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/fraunces/wght-italic.css';
+@import '@fontsource-variable/jetbrains-mono';
+
+/* ——— layer 1: pico ——— */
+@import '@picocss/pico/css/pico.classless.min.css';
+
+/* ——— layer 2a: brand tokens ——— */
+
+/* pin pico's fluid root scaling. pico bumps --pico-font-size up to 131.25%
+   at wide breakpoints (media-query :root rules); the doubled :root:root
+   specificity wins regardless of bundle order, since @imports hoist ahead
+   of this file's own rules. root = 16px, matching the 003 sketch. */
+:root:root {
+  --pico-font-size: 100%;
+}
+
+:root {
+  /* site tokens (the 003 sketch) */
+  --site-bg: #fcfcfb;
+  --site-surface: #f5f6f5;
+  --site-text: #181a1b;
+  --site-muted: #676d6c;
+  --site-accent: #0d6e5f;
+  --site-hairline: #e5e6e4;
+  --site-code-bg: #f0f1f0;
+  --site-pre-bg: #121514;
+  --site-pre-text: #e2e6e4;
+
+  /* map onto pico */
+  --pico-background-color: var(--site-bg);
+  --pico-color: var(--site-text);
+  --pico-muted-color: var(--site-muted);
+  --pico-muted-border-color: var(--site-hairline);
+  --pico-h1-color: var(--site-text);
+  --pico-h2-color: var(--site-text);
+  --pico-h3-color: var(--site-text);
+  --pico-h4-color: var(--site-text);
+  --pico-h5-color: var(--site-text);
+  --pico-h6-color: var(--site-text);
+  --pico-text-selection-color: rgba(13, 110, 95, 0.22);
+  --pico-primary: var(--site-accent);
+  --pico-primary-background: var(--site-accent);
+  --pico-primary-border: var(--site-accent);
+  --pico-primary-underline: rgba(13, 110, 95, 0.5);
+  --pico-primary-hover: #0a574c;
+  --pico-primary-hover-background: #0a574c;
+  --pico-primary-hover-border: #0a574c;
+  --pico-primary-focus: rgba(13, 110, 95, 0.35);
+  --pico-primary-inverse: #ffffff;
+  --pico-blockquote-border-color: var(--site-accent);
+  --pico-code-background-color: var(--site-code-bg);
+  --pico-code-color: var(--site-text);
+  color-scheme: light;
+}
+
+[data-theme='light'],
+:root:not([data-theme='dark']) {
+  --site-bg: #fcfcfb;
+  --site-surface: #f5f6f5;
+  --site-text: #181a1b;
+  --site-muted: #676d6c;
+  --site-accent: #0d6e5f;
+  --site-hairline: #e5e6e4;
+  --site-code-bg: #f0f1f0;
+  --site-pre-bg: #121514;
+  --site-pre-text: #e2e6e4;
+}
+
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --site-bg: #121514;
+    --site-surface: #181b1a;
+    --site-text: #e8eae8;
+    --site-muted: #9aa19e;
+    --site-accent: #4fc2ae;
+    --site-hairline: #242827;
+    --site-code-bg: #1b1f1e;
+    --site-pre-bg: #090b0a;
+    --site-pre-text: #e2e6e4;
+  }
+}
+
+[data-theme='dark'] {
+  --site-bg: #121514;
+  --site-surface: #181b1a;
+  --site-text: #e8eae8;
+  --site-muted: #9aa19e;
+  --site-accent: #4fc2ae;
+  --site-hairline: #242827;
+  --site-code-bg: #1b1f1e;
+  --site-pre-bg: #090b0a;
+  --site-pre-text: #e2e6e4;
+}
+
+/* dark pico mapping: same pattern pico's own themes use */
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --pico-text-selection-color: rgba(79, 194, 174, 0.25);
+    --pico-primary: var(--site-accent);
+    --pico-primary-background: var(--site-accent);
+    --pico-primary-border: var(--site-accent);
+    --pico-primary-underline: rgba(79, 194, 174, 0.5);
+    --pico-primary-hover: #6fd3c0;
+    --pico-primary-hover-background: #6fd3c0;
+    --pico-primary-hover-border: #6fd3c0;
+    --pico-primary-focus: rgba(79, 194, 174, 0.4);
+    --pico-primary-inverse: #08211c;
+    --pico-blockquote-border-color: var(--site-accent);
+    --pico-code-background-color: var(--site-code-bg);
+    --pico-code-color: var(--site-text);
+  }
+}
+
+[data-theme='dark'] {
+  --pico-text-selection-color: rgba(79, 194, 174, 0.25);
+  --pico-primary: var(--site-accent);
+  --pico-primary-background: var(--site-accent);
+  --pico-primary-border: var(--site-accent);
+  --pico-primary-underline: rgba(79, 194, 174, 0.5);
+  --pico-primary-hover: #6fd3c0;
+  --pico-primary-hover-background: #6fd3c0;
+  --pico-primary-hover-border: #6fd3c0;
+  --pico-primary-focus: rgba(79, 194, 174, 0.4);
+  --pico-primary-inverse: #08211c;
+  --pico-blockquote-border-color: var(--site-accent);
+  --pico-code-background-color: var(--site-code-bg);
+  --pico-code-color: var(--site-text);
+  color-scheme: dark;
+}
+
+/* ——— layer 2b: brand components ——— */
+
+/* readable prose column inside pico's responsive container */
+body > header,
+body > main,
+body > footer {
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+body {
+  font-family:
+    'Inter Variable',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Fraunces Variable', Georgia, serif;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+code,
+pre {
+  font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* visually hidden but screen-reader accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ——— skip link ——— */
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--site-accent);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+
+.skip:focus {
+  left: 0;
+}
+
+/* ——— nav ——— */
+body > header nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem 0 1.1rem;
+  border-bottom: 1px solid var(--site-hairline);
+}
+
+.brand {
+  font-family: 'Fraunces Variable', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+  color: var(--site-text);
+  text-decoration: none;
+}
+
+.brand:hover {
+  color: var(--site-accent);
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.nav-links a {
+  font-family: 'Inter Variable', sans-serif;
+  font-weight: 600;
+  font-size: 0.84rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--site-muted);
+  text-decoration: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.nav-links a:hover {
+  color: var(--site-text);
+}
+
+.nav-links a[aria-current='page'] {
+  color: var(--site-accent);
+  border-color: color-mix(in srgb, var(--site-accent) 35%, transparent);
+  background: color-mix(in srgb, var(--site-accent) 8%, transparent);
+}
+
+/* theme toggle — floats at the page's top-right corner, clear of the nav */
+#theme-toggle {
+  position: fixed;
+  top: 0.9rem;
+  right: 1rem;
+  z-index: 20;
+  width: 2.3rem;
+  height: 2.3rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 999px;
+  background: var(--site-bg);
+  border: 1px solid var(--site-hairline);
+  color: var(--site-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  box-shadow: none;
+  opacity: 1;
+}
+
+#theme-toggle:hover {
+  color: var(--site-accent);
+  border-color: var(--site-accent);
+}
+
+/* reserve corner space so nav links never slide under the floating toggle */
+body > header nav {
+  padding-right: 3.2rem;
+}
+
+/* dark mode: keep the floating toggle's border visible on a dark page */
+[data-theme='dark'] #theme-toggle {
+  border-color: color-mix(in srgb, var(--site-muted) 45%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) #theme-toggle {
+    border-color: color-mix(in srgb, var(--site-muted) 45%, transparent);
+  }
+}
+
+/* icon swap is pure css off data-theme (which the no-flash script always
+   sets explicitly); the button hides entirely for no-js visitors */
+#theme-toggle svg {
+  width: 15px;
+  height: 15px;
+}
+
+html[data-theme='dark'] #theme-toggle .icon-moon {
+  display: none;
+}
+
+html[data-theme='light'] #theme-toggle .icon-sun {
+  display: none;
+}
+
+html:not([data-theme]) #theme-toggle {
+  display: none;
+}
+
+/* ——— pills & buttons ——— */
+.pill {
+  display: inline-block;
+  font-family: 'Inter Variable', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--site-accent) 35%, transparent);
+  background: color-mix(in srgb, var(--site-accent) 8%, transparent);
+  color: var(--site-accent);
+}
+
+.pill--ghost {
+  border-color: var(--site-hairline);
+  background: transparent;
+  color: var(--site-muted);
+}
+
+.btn {
+  display: inline-block;
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--site-hairline);
+  color: var(--site-text);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--site-accent);
+  color: var(--site-accent);
+  text-decoration: none;
+}
+
+/* homepage list: breathing room between the nav hairline and first card */
+body > main {
+  padding-top: 2.2rem;
+}
+
+/* ——— post cards ——— */
+/* pico styles every <article> as a widget card; prose pages render plain,
+   and our .card is a flat hairline surface (no pico shadow) */
+body > main > article:not(.card) {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+body > main > article > header {
+  margin: 0 0 1.8rem;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+article.card {
+  border: 1px solid var(--site-hairline);
+  border-radius: 12px;
+  background: var(--site-surface);
+  box-shadow: none;
+  padding: 1.55rem 1.7rem 1.45rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.15s ease;
+}
+
+article.card:hover {
+  border-color: color-mix(in srgb, var(--site-accent) 45%, var(--site-hairline));
+}
+
+article.card h2 {
+  font-size: 1.85rem;
+  line-height: 1.16;
+  margin-bottom: 0.6rem;
+}
+
+article.card h2 a {
+  color: var(--site-text);
+  text-decoration: none;
+  background-image: linear-gradient(var(--site-accent), var(--site-accent));
+  background-repeat: no-repeat;
+  background-size: 0% 2px;
+  background-position: 0 96%;
+  transition: background-size 0.22s ease;
+}
+
+article.card h2 a:hover {
+  color: var(--site-text);
+  background-size: 100% 2px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.8rem;
+  align-items: center;
+  font-family: 'Inter Variable', sans-serif;
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: var(--site-muted);
+  margin-bottom: 0.9rem;
+}
+
+article.card .excerpt {
+  color: var(--site-muted);
+  margin-bottom: 1.05rem;
+}
+
+article.card .more {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--site-accent);
+  text-decoration: none;
+}
+
+article.card .more:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ——— article view ——— */
+.article-header h1 {
+  font-weight: 700;
+  font-size: clamp(2.1rem, 5.5vw, 2.8rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.9rem;
+}
+
+.article-header .meta {
+  padding-bottom: 1.3rem;
+  border-bottom: 1px solid var(--site-hairline);
+  margin-bottom: 1.8rem;
+}
+
+/* section tick: short accent rule above h2s in prose */
+article:not(.card) h2 {
+  position: relative;
+  padding-top: 0.95rem;
+}
+
+/* section tick: short accent rule above h2s in prose (not cards) */
+article:not(.card) h2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1.7rem;
+  height: 2px;
+  background: var(--site-accent);
+  border-radius: 1px;
+}
+
+article blockquote {
+  font-family: 'Fraunces Variable', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.24rem;
+  line-height: 1.55;
+  border-left: 2px solid var(--site-accent);
+  background: var(--site-surface);
+  border-radius: 0 10px 10px 0;
+  padding: 0.9rem 1.3rem;
+}
+
+article pre {
+  position: relative;
+  background-color: var(--site-pre-bg) !important; /* beats shiki's inline bg */
+  color: var(--site-pre-text);
+  padding: 1.15rem 1.3rem;
+  border-radius: 10px;
+}
+
+/* language tab, from shiki's data-language attribute — zero JS */
+pre[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border-bottom-left-radius: 8px;
+  background: color-mix(in srgb, var(--site-accent) 16%, transparent);
+  color: var(--site-accent);
+}
+
+.endlinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  margin-top: 2.2rem;
+}
+
+/* ——— footer ——— */
+body > footer {
+  border-top: 1px solid var(--site-hairline);
+  padding: 1.7rem 0 3rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--site-muted);
+}
+
+body > footer a {
+  color: var(--site-muted);
+}
+
+body > footer a:hover {
+  color: var(--site-accent);
+}
+
+@media (max-width: 560px) {
+  article.card {
+    padding: 1.25rem 1.2rem 1.2rem;
+  }
+
+  /* keep the nav clear of the floating toggle at phone widths */
+  .nav-links {
+    gap: 0.25rem;
+  }
+
+  .nav-links a {
+    padding: 0.3rem 0.5rem;
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
