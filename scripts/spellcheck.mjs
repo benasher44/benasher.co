@@ -30,14 +30,18 @@ function gh(args) {
 // so repeat runs don't pile up separate comments.
 function upsertComment(body) {
   if (!PR_NUMBER || !process.env.GH_TOKEN || !REPO) return;
-  const tmp = join(tmpdir(), `spellcheck-comment-${PR_NUMBER}.json`);
-  writeFileSync(tmp, JSON.stringify({ body }));
+  const tmpJson = join(tmpdir(), `spellcheck-comment-${PR_NUMBER}.json`);
+  const tmpMd = join(tmpdir(), `spellcheck-comment-${PR_NUMBER}.md`);
+  writeFileSync(tmpJson, JSON.stringify({ body }));
+  writeFileSync(tmpMd, body);
   try {
     const comments = JSON.parse(gh(`api repos/${REPO}/issues/${PR_NUMBER}/comments`));
-    const mine = comments.filter((c) => c.body.startsWith(COMMENT_HEADER)).map((c) => c.id);
+    // includes, not startsWith: self-heals the one malformed comment posted
+    // before the create path stopped sending the raw JSON envelope
+    const mine = comments.filter((c) => c.body.includes(COMMENT_HEADER)).map((c) => c.id);
     if (mine.length > 0) {
       gh(
-        `api repos/${REPO}/issues/${PR_NUMBER}/comments/${mine[mine.length - 1]} -X PATCH --input ${tmp}`,
+        `api repos/${REPO}/issues/${PR_NUMBER}/comments/${mine[mine.length - 1]} -X PATCH --input ${tmpJson}`,
       );
       console.log(`updated spellcheck comment on PR #${PR_NUMBER}`);
       return;
@@ -48,7 +52,8 @@ function upsertComment(body) {
     );
   }
   try {
-    gh(`pr comment ${PR_NUMBER} --body-file ${tmp}`);
+    // --body-file takes raw markdown, not a JSON envelope
+    gh(`pr comment ${PR_NUMBER} --body-file ${tmpMd}`);
     console.log(`posted spellcheck comment on PR #${PR_NUMBER}`);
   } catch (e) {
     console.log(`failed to post PR comment: ${e.message.split('\n')[0]}`);
