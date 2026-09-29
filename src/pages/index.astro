@@ -3,7 +3,7 @@
 // Post URLs are /<slug>/ derived from content-collection filenames
 // (see the benasher-co skill invariant — never title-slugify).
 import Base from '../layouts/Base.astro';
-import PostEntry from '../components/PostEntry.astro';
+import PostCard from '../components/PostCard.astro';
 import { sortedPosts } from '../lib/posts';
 
 const posts = await sortedPosts();
@@ -11,5 +11,5 @@ const posts = await sortedPosts();
 
 <Base pageTitle="Blog" path="/" type="website">
   <h1 class="sr-only">Blog</h1>
-  {posts.map((post) => <PostEntry post={post} />)}
+  {posts.map((post) => <PostCard post={post} />)}
 </Base>

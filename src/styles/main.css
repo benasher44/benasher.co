@@ -4,7 +4,7 @@
  * Layer 1: Pico CSS (classless) — pre-tested semantic HTML styling,
  *          responsive spacing, light/dark color-scheme machinery.
  * Layer 2: brand tokens + site-specific components (cards, pills,
- *          pills, buttons). Overriding a *variable* beats fighting a
+ *          buttons). Overriding a *variable* beats fighting a
  *          framework, so brand colors go through Pico's own vars.
  *
  * Dark mode: system preference by default; an explicit data-theme
@@ -31,6 +31,12 @@
 }
 
 :root {
+  --site-font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --site-font-serif: var(--site-font-serif);
+  --site-font-mono: var(--site-font-mono);
+}
+
+:root {
   /* site tokens (the 003 sketch) */
   --site-bg: #fcfcfb;
   --site-surface: #f5f6f5;
@@ -41,6 +47,9 @@
   --site-code-bg: #f0f1f0;
   --site-pre-bg: #121514;
   --site-pre-text: #e2e6e4;
+  --site-accent-soft-bg: color-mix(in srgb, var(--site-accent) 8%, transparent);
+  --site-accent-soft-border: color-mix(in srgb, var(--site-accent) 35%, transparent);
+  --site-toggle-border: var(--site-hairline);
 
   /* map onto pico */
   --pico-background-color: var(--site-bg);
@@ -53,33 +62,20 @@
   --pico-h4-color: var(--site-text);
   --pico-h5-color: var(--site-text);
   --pico-h6-color: var(--site-text);
-  --pico-text-selection-color: rgba(13, 110, 95, 0.22);
+  --pico-text-selection-color: color-mix(in srgb, var(--site-accent) 22%, transparent);
   --pico-primary: var(--site-accent);
   --pico-primary-background: var(--site-accent);
   --pico-primary-border: var(--site-accent);
-  --pico-primary-underline: rgba(13, 110, 95, 0.5);
+  --pico-primary-underline: color-mix(in srgb, var(--site-accent) 50%, transparent);
   --pico-primary-hover: #0a574c;
   --pico-primary-hover-background: #0a574c;
   --pico-primary-hover-border: #0a574c;
-  --pico-primary-focus: rgba(13, 110, 95, 0.35);
+  --pico-primary-focus: color-mix(in srgb, var(--site-accent) 35%, transparent);
   --pico-primary-inverse: #ffffff;
   --pico-blockquote-border-color: var(--site-accent);
   --pico-code-background-color: var(--site-code-bg);
   --pico-code-color: var(--site-text);
   color-scheme: light;
-}
-
-[data-theme='light'],
-:root:not([data-theme='dark']) {
-  --site-bg: #fcfcfb;
-  --site-surface: #f5f6f5;
-  --site-text: #181a1b;
-  --site-muted: #676d6c;
-  --site-accent: #0d6e5f;
-  --site-hairline: #e5e6e4;
-  --site-code-bg: #f0f1f0;
-  --site-pre-bg: #121514;
-  --site-pre-text: #e2e6e4;
 }
 
 @media only screen and (prefers-color-scheme: dark) {
@@ -108,39 +104,26 @@
   --site-pre-text: #e2e6e4;
 }
 
-/* dark pico mapping: same pattern pico's own themes use */
+/* dark pico deltas: only what actually DIFFERS per theme. Everything else
+   (--pico-primary*, selection/underline/focus tints, blockquote border, code
+   colors) is declared once on :root as var()/color-mix() chains and resolves
+   lazily against the dark --site-* values here — no re-declaration needed. */
 @media only screen and (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --pico-text-selection-color: rgba(79, 194, 174, 0.25);
-    --pico-primary: var(--site-accent);
-    --pico-primary-background: var(--site-accent);
-    --pico-primary-border: var(--site-accent);
-    --pico-primary-underline: rgba(79, 194, 174, 0.5);
+  :root:not([data-theme]) {
     --pico-primary-hover: #6fd3c0;
     --pico-primary-hover-background: #6fd3c0;
     --pico-primary-hover-border: #6fd3c0;
-    --pico-primary-focus: rgba(79, 194, 174, 0.4);
     --pico-primary-inverse: #08211c;
-    --pico-blockquote-border-color: var(--site-accent);
-    --pico-code-background-color: var(--site-code-bg);
-    --pico-code-color: var(--site-text);
+    --site-toggle-border: color-mix(in srgb, var(--site-muted) 45%, transparent);
   }
 }
 
 [data-theme='dark'] {
-  --pico-text-selection-color: rgba(79, 194, 174, 0.25);
-  --pico-primary: var(--site-accent);
-  --pico-primary-background: var(--site-accent);
-  --pico-primary-border: var(--site-accent);
-  --pico-primary-underline: rgba(79, 194, 174, 0.5);
   --pico-primary-hover: #6fd3c0;
   --pico-primary-hover-background: #6fd3c0;
   --pico-primary-hover-border: #6fd3c0;
-  --pico-primary-focus: rgba(79, 194, 174, 0.4);
   --pico-primary-inverse: #08211c;
-  --pico-blockquote-border-color: var(--site-accent);
-  --pico-code-background-color: var(--site-code-bg);
-  --pico-code-color: var(--site-text);
+  --site-toggle-border: color-mix(in srgb, var(--site-muted) 45%, transparent);
   color-scheme: dark;
 }
 
@@ -155,12 +138,7 @@ body > footer {
 }
 
 body {
-  font-family:
-    'Inter Variable',
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    sans-serif;
+  font-family: var(--site-font-sans);
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -171,14 +149,14 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Fraunces Variable', Georgia, serif;
+  font-family: var(--site-font-serif);
   letter-spacing: -0.02em;
   font-weight: 600;
 }
 
 code,
 pre {
-  font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--site-font-mono);
 }
 
 /* visually hidden but screen-reader accessible */
@@ -214,12 +192,13 @@ body > header nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.4rem 0 1.1rem;
+  /* right padding reserves corner space for the floating theme toggle */
+  padding: 1.4rem 3.2rem 1.1rem 0;
   border-bottom: 1px solid var(--site-hairline);
 }
 
 .brand {
-  font-family: 'Fraunces Variable', Georgia, serif;
+  font-family: var(--site-font-serif);
   font-weight: 600;
   font-size: 1.3rem;
   letter-spacing: -0.01em;
@@ -238,7 +217,7 @@ body > header nav {
 }
 
 .nav-links a {
-  font-family: 'Inter Variable', sans-serif;
+  font-family: var(--site-font-sans);
   font-weight: 600;
   font-size: 0.84rem;
   letter-spacing: 0.07em;
@@ -256,8 +235,8 @@ body > header nav {
 
 .nav-links a[aria-current='page'] {
   color: var(--site-accent);
-  border-color: color-mix(in srgb, var(--site-accent) 35%, transparent);
-  background: color-mix(in srgb, var(--site-accent) 8%, transparent);
+  border-color: var(--site-accent-soft-border);
+  background: var(--site-accent-soft-bg);
 }
 
 /* theme toggle — floats at the page's top-right corner, clear of the nav */
@@ -273,7 +252,7 @@ body > header nav {
   padding: 0;
   border-radius: 999px;
   background: var(--site-bg);
-  border: 1px solid var(--site-hairline);
+  border: 1px solid var(--site-toggle-border);
   color: var(--site-muted);
   cursor: pointer;
   font-size: 0.9rem;
@@ -285,22 +264,6 @@ body > header nav {
 #theme-toggle:hover {
   color: var(--site-accent);
   border-color: var(--site-accent);
-}
-
-/* reserve corner space so nav links never slide under the floating toggle */
-body > header nav {
-  padding-right: 3.2rem;
-}
-
-/* dark mode: keep the floating toggle's border visible on a dark page */
-[data-theme='dark'] #theme-toggle {
-  border-color: color-mix(in srgb, var(--site-muted) 45%, transparent);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) #theme-toggle {
-    border-color: color-mix(in srgb, var(--site-muted) 45%, transparent);
-  }
 }
 
 /* icon swap is pure css off data-theme (which the no-flash script always
@@ -325,15 +288,15 @@ html:not([data-theme]) #theme-toggle {
 /* ——— pills & buttons ——— */
 .pill {
   display: inline-block;
-  font-family: 'Inter Variable', sans-serif;
+  font-family: var(--site-font-sans);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 1;
   padding: 0.28rem 0.65rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--site-accent) 35%, transparent);
-  background: color-mix(in srgb, var(--site-accent) 8%, transparent);
+  border: 1px solid var(--site-accent-soft-border);
+  background: var(--site-accent-soft-bg);
   color: var(--site-accent);
 }
 
@@ -427,7 +390,7 @@ article.card h2 a:hover {
   flex-wrap: wrap;
   gap: 0.45rem 0.8rem;
   align-items: center;
-  font-family: 'Inter Variable', sans-serif;
+  font-family: var(--site-font-sans);
   font-weight: 500;
   font-size: 0.8rem;
   letter-spacing: 0.02em;
@@ -473,7 +436,6 @@ article:not(.card) h2 {
   padding-top: 0.95rem;
 }
 
-/* section tick: short accent rule above h2s in prose (not cards) */
 article:not(.card) h2::before {
   content: '';
   position: absolute;
@@ -486,7 +448,7 @@ article:not(.card) h2::before {
 }
 
 article blockquote {
-  font-family: 'Fraunces Variable', Georgia, serif;
+  font-family: var(--site-font-serif);
   font-style: italic;
   font-weight: 400;
   font-size: 1.24rem;
@@ -499,10 +461,17 @@ article blockquote {
 
 article pre {
   position: relative;
-  background-color: var(--site-pre-bg) !important; /* beats shiki's inline bg */
+  /* no !important needed: defaultColor:false keeps shiki from inlining a bg */
+  background-color: var(--site-pre-bg);
   color: var(--site-pre-text);
   padding: 1.15rem 1.3rem;
   border-radius: 10px;
+}
+
+/* token colors: shiki emits --shiki-dark custom props (defaultColor:false),
+   so spans get their color from their own vars — no inline-style fight */
+pre.astro-code span {
+  color: var(--shiki-dark);
 }
 
 /* language tab, from shiki's data-language attribute — zero JS */

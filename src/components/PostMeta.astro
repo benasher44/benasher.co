@@ -1,0 +1,19 @@
+---
+// Shared byline row: date + read-time pill (+ optional updated pill).
+// One source of truth for both the homepage card and the article view.
+import { formatDateString, laIso } from '../lib/dates';
+
+interface Props {
+  pubDate: Date;
+  minutes?: number | null;
+  updated?: Date;
+}
+
+const { pubDate, minutes = null, updated } = Astro.props;
+---
+
+<p class="meta">
+  <time datetime={laIso(pubDate)}>{formatDateString(pubDate)}</time>
+  {minutes && <span class="pill">{minutes} min read</span>}
+  {updated && <span class="pill pill--ghost">Updated: {formatDateString(updated)}</span>}
+</p>

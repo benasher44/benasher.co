@@ -112,5 +112,14 @@ if (byFile.size > 0) {
   process.exit(1);
 }
 
+if (res.status !== 0) {
+  // cspell failed (status 1) but nothing matched the expected output format —
+  // the format may have drifted in a cspell upgrade. Fail loudly instead of
+  // reporting a false-positive clean pass.
+  console.error('cspell exited non-zero but no findings could be parsed:');
+  console.error(res.stderr || res.stdout);
+  process.exit(res.status ?? 1);
+}
+
 upsertComment(`${COMMENT_HEADER}\n\n✅ All clean across ${files.length} file(s).`);
 console.log(`spellcheck: ${files.length} file(s) clean`);
