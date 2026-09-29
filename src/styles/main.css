@@ -146,7 +146,12 @@ body > footer {
 }
 
 body {
-  font-family: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family:
+    'Inter Variable',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
   font-size: 1.05rem;
   line-height: 1.7;
 }
