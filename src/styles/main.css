@@ -247,14 +247,23 @@ body > header nav {
   background: color-mix(in srgb, var(--site-accent) 8%, transparent);
 }
 
+/* theme toggle — floats at the page's top-right corner, clear of the nav */
 #theme-toggle {
-  background: none;
-  border: 1px solid var(--site-hairline);
+  position: fixed;
+  top: 0.9rem;
+  right: 1rem;
+  z-index: 20;
+  width: 2.3rem;
+  height: 2.3rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
   border-radius: 999px;
+  background: var(--site-bg);
+  border: 1px solid var(--site-hairline);
   color: var(--site-muted);
   cursor: pointer;
-  padding: 0.28rem 0.6rem;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   line-height: 1;
   box-shadow: none;
   opacity: 1;
@@ -263,6 +272,22 @@ body > header nav {
 #theme-toggle:hover {
   color: var(--site-accent);
   border-color: var(--site-accent);
+}
+
+/* reserve corner space so nav links never slide under the floating toggle */
+body > header nav {
+  padding-right: 3.2rem;
+}
+
+/* dark mode: keep the floating toggle's border visible on a dark page */
+[data-theme='dark'] #theme-toggle {
+  border-color: color-mix(in srgb, var(--site-muted) 45%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) #theme-toggle {
+    border-color: color-mix(in srgb, var(--site-muted) 45%, transparent);
+  }
 }
 
 /* ——— pills & buttons ——— */
@@ -529,6 +554,16 @@ body > footer a:hover {
 
   article.card {
     padding: 1.25rem 1.2rem 1.2rem;
+  }
+
+  /* keep the nav clear of the floating toggle at phone widths */
+  .nav-links {
+    gap: 0.25rem;
+  }
+
+  .nav-links a {
+    padding: 0.3rem 0.5rem;
+    letter-spacing: 0.04em;
   }
 }
 
