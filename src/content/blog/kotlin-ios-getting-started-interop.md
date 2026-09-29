@@ -239,7 +239,7 @@ __attribute__((swift_name("Logger.default")))
 
 ```swift
 // Swift
-Logger.default.log(.error, "An error ocurred") {
+Logger.default.log(.error, "An error occurred") {
     // Closure
 }
 ```
