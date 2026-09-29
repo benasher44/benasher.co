@@ -9,7 +9,7 @@ I am a software developer primarily focused on web, though I used to do mobile/i
 
 You can find me on [mastodon.social](https://mastodon.social/@benasher44) or via email at hello @ this domain. You can find some of my work on [github](https://github.com/benasher44).
 
-#### Speaking
+### Speaking
 
 - [KotlinConf 2019: Shipping a Mobile Multiplatform Project on iOS & Android](https://bit.ly/basher_kotlinconf_2019)
 - [droidcon NYC 2019: Native Concurrency and Coroutines](https://bit.ly/basher_droidcon_2019)

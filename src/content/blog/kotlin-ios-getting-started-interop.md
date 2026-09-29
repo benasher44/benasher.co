@@ -6,7 +6,7 @@
 'categories': ['software']
 ---
 
-###### Co-authored by [Phill Farrugia](https://github.com/phillfarrugia)
+Co-authored by [Phill Farrugia](https://github.com/phillfarrugia)
 
 After you get a [feel for the language](https://benasher.co/kotlin-ios-getting-started/) and do some [Koans](https://play.kotlinlang.org/koans/), the next step in your journey to writing Kotlin for iOS is understanding what that Kotlin is going to look like from the Swift in your iOS app. The way Kotlin reverse interop (Swift talking to Kotlin) works is via Objective-C. For some, discovering that they get an Obj-C header from their Kotlin library, instead of a Swift one, is disappointing. That’s an understandable reaction. In a all (or majority) Swift code base, you and your team may have spent a lot of time building out your project using all that Swift has to offer — even the stuff that’s not compatible with Obj-C.
 <!--more-->
