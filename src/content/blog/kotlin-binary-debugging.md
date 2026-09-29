@@ -48,7 +48,7 @@ The good news though is that there is a way to make Xcode and LLDB understand ju
    <key>DBGDSYMPath</key>
    <string>/path/to/foo.dSYM/Contents/Resources/DWARF/foo</string>
    <key>DBGSymbolRichExecutable</key>
-   <string>/path/to/unstripped/exectuable</string>
+   <string>/path/to/unstripped/executable</string>
 </dict>
 </plist>
 ```

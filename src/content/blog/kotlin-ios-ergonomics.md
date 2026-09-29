@@ -53,7 +53,7 @@ class Logger {
 
 ```swift
 // Swift
-Logger.default.log(.error, "An error ocurred") {
+Logger.default.log(.error, "An error occurred") {
     // Closure
 }
 ```
@@ -76,7 +76,7 @@ In [my first article](/kotlin-ios-getting-started/), I mentioned how, as an iOS 
 
 ```swift
 // Swift
-Logger.Companion().log(.error, "An error ocurred") {
+Logger.Companion().log(.error, "An error occurred") {
     // Closure
 }
 ```

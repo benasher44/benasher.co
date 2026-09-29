@@ -1,27 +1,22 @@
 #!/usr/bin/env node
-// Markdown spellcheck gate — replaces the old danger-based gate (same engine:
-// markdown-spellcheck, same word list: spellcheck.json "ignore").
+// Markdown spellcheck gate via cspell (replaced the old danger-based gate,
+// then the markdown-spellcheck engine whose tree carried the vulnerable tmp).
 //
 // Usage:
 //   yarn spellcheck                 # check .md files changed vs origin/main
 //   yarn spellcheck <file.md>...    # check specific files
 //
 // In a PR context (PR_NUMBER + GH_TOKEN env, set by pr.yml), findings or an
-// all-clean message are posted as an upserted PR comment, like danger did.
-// Exits 1 if any non-ignored misspellings are found.
+// all-clean message are posted as an upserted PR comment.
+// Exits 1 if any unknown words are found (add them to cspell.json "words").
 
-import { execSync } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import mdspellPkg from 'markdown-spellcheck';
 
-const spell = (mdspellPkg.default ?? mdspellPkg).spell;
-
-const settings = JSON.parse(readFileSync('spellcheck.json', 'utf8'));
-const ignoredWords = (settings.ignore || settings['cSpell.words'] || []).map((w) =>
-  w.toLowerCase(),
-);
+const NODE = process.execPath;
+const YARN_RELEASE = '.yarn/releases/yarn-4.18.1.cjs';
 
 const COMMENT_HEADER = '## 📝 Spellcheck';
 const PR_NUMBER = process.env.PR_NUMBER;
@@ -78,33 +73,34 @@ if (files.length === 0) {
   process.exit(0);
 }
 
+// cspell lint <files> --no-progress --no-summary
+// output lines: "file:line:col - Unknown word (theWord)"
+const res = spawnSync(
+  NODE,
+  [YARN_RELEASE, 'cspell', 'lint', ...files, '--no-progress', '--no-summary'],
+  {
+    encoding: 'utf8',
+  },
+);
+if (res.status !== 0 && res.status !== 1) {
+  console.error(res.stderr || res.stdout);
+  process.exit(res.status ?? 1);
+}
+
 const byFile = new Map();
-for (const file of files) {
-  const sourceText = readFileSync(file, 'utf8');
-  const misspellings = spell(sourceText, { ignoreNumbers: true, ignoreAcronyms: true }).filter(
-    (e) => {
-      // normalize possessives ("Galligan's" -> "galligan") so the ignore
-      // list doesn't need every possessive form
-      const base = e.word
-        .toLowerCase()
-        .replace(/['’]+s$/, '')
-        .replace(/['’]+$/, '');
-      return !ignoredWords.includes(base);
-    },
-  );
-  if (misspellings.length > 0)
-    byFile.set(
-      file,
-      misspellings.map((e) => e.word),
-    );
+for (const line of res.stdout.split('\n')) {
+  const m = line.match(/^(.+?):\d+:\d+ - Unknown word \((.+?)\)/);
+  if (!m) continue;
+  if (!byFile.has(m[1])) byFile.set(m[1], []);
+  byFile.get(m[1]).push(m[2]);
 }
 
 if (byFile.size > 0) {
-  const lines = [`${COMMENT_HEADER} — ${[...byFile.values()].flat().length} misspelling(s)`, ''];
+  const lines = [`${COMMENT_HEADER} — ${[...byFile.values()].flat().length} unknown word(s)`, ''];
   for (const [file, words] of byFile) {
     lines.push(`**${file}**`, ...words.map((w) => `- \`${w}\``), '');
   }
-  lines.push('Add deliberate words to `spellcheck.json` "ignore", or fix the spelling.');
+  lines.push('Add deliberate words to `cspell.json` "words", or fix the spelling.');
   const body = lines.join('\n');
   upsertComment(body);
   console.log(body);
