@@ -21,11 +21,16 @@
 @import '@picocss/pico/css/pico.classless.min.css';
 
 /* ——— layer 2a: brand tokens ——— */
-:root {
-  /* pin pico's fluid root scaling (it bumps --pico-font-size to 131.25% at
-     wide breakpoints, inflating everything ~30% vs the approved sketch) */
-  --pico-font-size: 100%;
 
+/* pin pico's fluid root scaling. pico bumps --pico-font-size up to 131.25%
+   at wide breakpoints (media-query :root rules); the doubled :root:root
+   specificity wins regardless of bundle order, since @imports hoist ahead
+   of this file's own rules. root = 16px, matching the 003 sketch. */
+:root:root {
+  --pico-font-size: 100%;
+}
+
+:root {
   /* site tokens (the 003 sketch) */
   --site-bg: #fcfcfb;
   --site-surface: #f5f6f5;
