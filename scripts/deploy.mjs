@@ -107,7 +107,7 @@ if (existingKeys.size > 0) {
     await s3.send(
       new DeleteObjectsCommand({
         Bucket: BUCKET,
-        Delete: { Objects: orphans.slice(i, i + 1000).map((key) => ({ key })) },
+        Delete: { Objects: orphans.slice(i, i + 1000).map((key) => ({ Key: key })) },
       }),
     );
   }
