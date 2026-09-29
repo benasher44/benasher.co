@@ -107,12 +107,19 @@ if (existingKeys.size > 0) {
   const orphans = [...existingKeys];
   console.log(`Deleting ${orphans.join(', ')}`);
   for (let i = 0; i < orphans.length; i += 1000) {
-    await s3.send(
+    const res = await s3.send(
       new DeleteObjectsCommand({
         Bucket: BUCKET,
         Delete: { Objects: orphans.slice(i, i + 1000).map((key) => ({ Key: key })) },
       }),
     );
+    // per-object delete failures are reported IN the 200 response — if we
+    // ignore them, orphans silently survive on S3 (the MalformedXML incident)
+    if (res.Errors?.length) {
+      console.error(`Failed to delete ${res.Errors.length} orphan key(s):`);
+      for (const err of res.Errors) console.error(`  ${err.Key}: ${err.Message}`);
+      process.exit(1);
+    }
   }
 }
 
