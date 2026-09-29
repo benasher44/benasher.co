@@ -6,9 +6,11 @@
 // configuration of the module that defines each !default var; the configured
 // module instance is shared through bulma's internal @use graph.
 
-// github.css first, so bulma rules keep the same cascade order as the old
-// main.scss (github imported before the bulma partials).
-@use './github.css';
+// ——— site identity colors (the old css/main.scss constants) ———
+$ben-red: #76323f;
+$ben-gray: #233237;
+
+@use 'sass:color' as c;
 
 // ——— build-time configuration (replaces the old pre-import var block) ———
 @use 'bulma/sass/utilities/initial-variables' as iv with (
@@ -31,29 +33,30 @@
 );
 
 @use 'bulma/sass/utilities/derived-variables' as dv with (
-  $link: #76323f, // was $link: $ben-red
-  $code: inherit // was $code: inherit
+  $link: $ben-red,
+  $code: inherit
 );
 
 @use 'bulma/sass/base/generic' as generic with (
-  $body-font-size: 1.1em, // was $body-font-size: 1.1em
-  $code-weight: bold // was $code-weight: bold
+  $body-font-size: 1.1em,
+  $code-weight: bold
 );
 
 @use 'bulma/sass/elements/content' as content with (
-  $content-heading-color: #76323f, // was $content-heading-color: $ben-red
+  $content-heading-color: $ben-red,
   $content-heading-weight: 600 // 0.9.x compiled weight; 1.x defaults to extrabold (800)
 );
 
 @use 'bulma/sass/components/navbar' as navbar with (
-  $navbar-background-color: #233237, // was $navbar-background-color: $ben-gray
-  $navbar-item-color-l: 100%, // was $navbar-item-color: white
-  // old hover/active bg = lighten($ben-gray, 10%) → same lightness for both
-  $navbar-item-background-l: 28%,
+  $navbar-background-color: $ben-gray,
+  // old item colors: white text, hover/active bg = lighten($ben-gray, 10%),
+  // active text = darken(white, 10%) — expressed as lightness channels in 1.x
+  $navbar-item-color-l: 100%,
+  $navbar-item-background-l: c.lightness(c.adjust($ben-gray, $lightness: 10%)),
   $navbar-item-hover-background-l-delta: 0%,
   $navbar-item-active-background-l-delta: 0%,
-  $navbar-item-selected-color-l: 90%, // was $navbar-item-active-color: darken(white, 10%)
-  $navbar-breakpoint: 10px // was $navbar-breakpoint: 10px
+  $navbar-item-selected-color-l: c.lightness(c.adjust(white, $lightness: -10%)),
+  $navbar-breakpoint: 10px
 );
 
 // ——— plain bulma partials (same subset as the old main.scss) ———
@@ -116,8 +119,8 @@ a.navbar-item:focus,
 a.navbar-item:focus-within,
 a.navbar-item:hover,
 a.navbar-item.is-active {
-  background-color: hsl(195, 22.2222222222%, 27.6470588235%);
-  color: hsl(0, 0%, 90%);
+  background-color: c.adjust($ben-gray, $lightness: 10%);
+  color: c.adjust(white, $lightness: -10%);
 }
 
 // Restore 0.9.x title→subtitle gap (old: 1.5rem title margin-bottom
