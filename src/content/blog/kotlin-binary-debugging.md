@@ -1,9 +1,9 @@
 ---
-"title": "Debugging Binary Kotlin Frameworks"
-"description": "How to post-process a binary Kotlin/Native iOS framework, so you can debug it in Xcode"
-"pubDate": 2020-11-24T00:00:00-08:00
-"tags": ["kotlin","multiplatform","kotlin/native","ios","swift","debugging","Xcode"]
-"categories": ["software"]
+'title': 'Debugging Binary Kotlin Frameworks'
+'description': 'How to post-process a binary Kotlin/Native iOS framework, so you can debug it in Xcode'
+'pubDate': 2020-11-24T00:00:00-08:00
+'tags': ['kotlin', 'multiplatform', 'kotlin/native', 'ios', 'swift', 'debugging', 'Xcode']
+'categories': ['software']
 ---
 
 When getting Kotlin integrated into your iOS and Android teams' workflows, something you will need to tackle is figuring out how to debug your iOS-ready Kotlin from Xcode. This quest may lead you to some of the following resources:
@@ -52,6 +52,7 @@ The good news though is that there is a way to make Xcode and LLDB understand ju
 </dict>
 </plist>
 ```
+
 I won't spend too much time in here, but we can eyeball the plist and see that there's a key called `DBGBuildSourcePath` and `DBGSourcePath`, which together create the mapping we want (from CI sources to local sources). If you read through the Apple page a bit, you'll find that once such plist per architecture included in your binary is needed to make this work. Each file is named `<UUID>.plist` with the UUID that identifies the architecture slice in your binary (`dwarfdump --uuid <path_to_framework_binary>` to see these).
 
 Stepping back a bit, our goal is to be able to debug our pre-built Kotlin framework from Xcode, which we can't do (without making some changes) because the dSYM we have with our framework contains absolute paths on a machine (the CI machine that built the framework) that isn't our local machine. To make this work we need to:

@@ -1,15 +1,16 @@
 ---
-"title": "Getting Started with Kotlin on iOS, Part 2: Interop"
-"description": "An introduction to interop between Kotlin and Swift in Kotlin multiplatform."
-"pubDate": 2020-03-22T00:00:00-07:00
-"tags": ["kotlin","multiplatform","kotlin/native","ios","swift"]
-"categories": ["software"]
+'title': 'Getting Started with Kotlin on iOS, Part 2: Interop'
+'description': 'An introduction to interop between Kotlin and Swift in Kotlin multiplatform.'
+'pubDate': 2020-03-22T00:00:00-07:00
+'tags': ['kotlin', 'multiplatform', 'kotlin/native', 'ios', 'swift']
+'categories': ['software']
 ---
 
 ###### Co-authored by [Phill Farrugia](https://github.com/phillfarrugia)
 
 After you get a [feel for the language](https://benasher.co/kotlin-ios-getting-started/) and do some [Koans](https://play.kotlinlang.org/koans/), the next step in your journey to writing Kotlin for iOS is understanding what that Kotlin is going to look like from the Swift in your iOS app. The way Kotlin reverse interop (Swift talking to Kotlin) works is via Objective-C. For some, discovering that they get an Obj-C header from their Kotlin library, instead of a Swift one, is disappointing. That’s an understandable reaction. In a all (or majority) Swift code base, you and your team may have spent a lot of time building out your project using all that Swift has to offer — even the stuff that’s not compatible with Obj-C.
 <!--more-->
+
 ## But my Swift!
 
 The first thing to understand here is that Kotlin/Native — the member of the Kotlin multiplatform family responsible for this part — predates the Swift language features (Swift ABI, and module ABI, stability) that would make Swift-only reverse interop for Kotlin possible. We know, and JetBrains knows, that Apple has (some) Swift-only system frameworks now, and Apple’s ecosystem is moving in that direction. If JetBrains wants developers to [build iOS (and Android) apps in Android Studio](https://blog.jetbrains.com/kotlin/2019/12/what-to-expect-in-kotlin-1-4-and-beyond/) this year, I think we can expect Swift reverse interop in the future 🙏.
@@ -44,12 +45,13 @@ From here on out, you can try out the below samples from [this sample project](h
 
 ## Classes
 
-One of the most common features of the Kotlin language you’ll work with is a class, which for the most part works exactly as you would expect it to in Swift and Obj-C. Define a `class` (or a `data class`) `Sample` in Kotlin and a corresponding class will be defined in Obj-C. 
+One of the most common features of the Kotlin language you’ll work with is a class, which for the most part works exactly as you would expect it to in Swift and Obj-C. Define a `class` (or a `data class`) `Sample` in Kotlin and a corresponding class will be defined in Obj-C.
 
 ```kotlin
 // Kotlin
 class Sample
 ```
+
 ```objc
 // Obj-C
 __attribute__((objc_subclassing_restricted))
@@ -59,6 +61,7 @@ __attribute__((swift_name("Sample")))
 + (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
 @end;
 ```
+
 Notice that generated Obj-C classes inherit from the `KotlinIos2Base` super class, which itself inherits from `NSObject`. Generated classes are prefixed with a prefix that is derived from the framework name, in this case “KotlinIos2”. [Attributes](https://clang.llvm.org/docs/AttributeReference.html) are used to ensure this prefix is omitted from Swift, and that methods and initializers look and behave natively to Swift language conventions.
 
 ### Inheritance
@@ -67,6 +70,7 @@ Notice that generated Obj-C classes inherit from the `KotlinIos2Base` super clas
 // Kotlin
 open class Sample
 ```
+
 ```objc
 // Obj-C
 __attribute__((swift_name("Sample")))
@@ -75,6 +79,7 @@ __attribute__((swift_name("Sample")))
 + (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
 @end;
 ```
+
 Since classes in Kotlin are final by default, their native counterpart is annotated to restrict subclassing with the `__attribute__((objc_subclassing_restricted))` attribute. By specifying `open` on your Kotlin class, the generated Obj-C class will also support subclassing.
 
 ### Protocol Conformance
@@ -87,6 +92,7 @@ interface SampleInterface
 
 class SampleClass: SampleInterface
 ```
+
 ```objc
 // Obj-C
 __attribute__((swift_name("SampleInterface")))
@@ -101,6 +107,7 @@ __attribute__((swift_name("SampleClass")))
 + (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
 @end;
 ```
+
 ### Constructors and Properties
 
 Using a primary constructor in Kotlin to define a set of parameters directly after the class name will generate a designated initializer in Obj-C. It will also generate `@property` members on the public interface of the class, marked with `readonly` if defined as a `val`, or not if the property is a `var`.
@@ -109,6 +116,7 @@ Using a primary constructor in Kotlin to define a set of parameters directly aft
 // Kotlin
 class MyClass(val str1: String, var str2: String)
 ```
+
 ```objc
 // Obj-C
 __attribute__((objc_subclassing_restricted))
@@ -119,6 +127,7 @@ __attribute__((swift_name("MyClass")))
 @property NSString *str2 __attribute__((swift_name("str2")));
 @end;
 ```
+
 Initializers and functions will concatenate parameter names into an Obj-C-friendly camel case method name, such as `initWithStr1:str2:` and provide a more concise Swift-friendly function name annotation.
 
 ## Value Types
@@ -129,6 +138,7 @@ Coming from the world of Swift, you're probably used to defining structs but you
 // Kotlin
 data class MyDataClass(val str1: String, var str2: String)
 ```
+
 ```objc
 // Obj-C
 __attribute__((objc_subclassing_restricted))
@@ -145,6 +155,7 @@ __attribute__((swift_name("MyDataClass")))
 @property NSString *str2 __attribute__((swift_name("str2")));
 @end;
 ```
+
 If you inspect the Obj-C output of a Kotlin data class, you'll see that the compiler has mapped these derived methods into their Obj-C equivalents on `NSObject` such as `isEqual`, `hash` and `description`.
 
 ## Enums
@@ -155,6 +166,7 @@ Enums are actually a special type of class in Kotlin, but they work in much the 
 // Kotlin
 enum class MyEnum { CASE1, CASE2 }
 ```
+
 ```objc
 // Obj-C
 __attribute__((objc_subclassing_restricted))
@@ -168,6 +180,7 @@ __attribute__((swift_name("MyEnum")))
 - (int32_t)compareToOther:(KotlinIos2MyEnum *)other __attribute__((swift_name("compareTo(other:)")));
 @end;
 ```
+
 Since enums are just classes in Kotlin, the compiler generates an Obj-C class with each enum case defined as a `readonly` class property on the type. This generated class inherits from a `KotlinIos2KotlinEnum` superclass, which is another generated class that utilizes Obj-C lightweight generics to provide base-layer enum functionality including case comparison, equality and initialization.
 
 ## Method Calls
@@ -191,6 +204,7 @@ class Logger {
     }
 }
 ```
+
 ```objc
 // Obj-C
 __attribute__((objc_subclassing_restricted))
@@ -222,12 +236,14 @@ __attribute__((swift_name("Logger.default")))
 - (void)logLevel:(KotlinIos2LogLevel *)level message:(NSString *)message completion:(void (^)(KotlinIos2Boolean *))completion __attribute__((swift_name("log(level:message:completion:)")));
 @end;
 ```
+
 ```swift
 // Swift
 Logger.default.log(.error, "An error ocurred") {
     // Closure
 }
 ```
+
 ## Integrating Kotlin on iOS
 
 Kotlin's Kotlin/Native backend does a good job of setting you up with the basics you need to integrate Kotlin on iOS. There are some rough edges, and I'll dig into some of those in a future post. For now, I wanted to focus on the basics of what you can expect from Kotlin/Native, so that you can get started. And with that, my next and final post in this "getting started" series will focus on the build and integrating your Kotlin-based library, which I think is one of the more intimidating parts of making Kotlin a part of your team's workflow.

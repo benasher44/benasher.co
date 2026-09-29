@@ -16,10 +16,7 @@ import {
   PutObjectCommand,
   DeleteObjectsCommand,
 } from '@aws-sdk/client-s3';
-import {
-  CloudFrontClient,
-  CreateInvalidationCommand,
-} from '@aws-sdk/client-cloudfront';
+import { CloudFrontClient, CreateInvalidationCommand } from '@aws-sdk/client-cloudfront';
 
 const BUCKET = 'benasher.co';
 const SITE_ROOT = 'dist';
@@ -80,9 +77,7 @@ const s3 = new S3Client({ region: process.env.AWS_DEFAULT_REGION || 'us-west-2' 
 const existingKeys = new Set();
 let token;
 do {
-  const res = await s3.send(
-    new ListObjectsV2Command({ Bucket: BUCKET, ContinuationToken: token })
-  );
+  const res = await s3.send(new ListObjectsV2Command({ Bucket: BUCKET, ContinuationToken: token }));
   for (const obj of res.Contents ?? []) existingKeys.add(obj.Key);
   token = res.IsTruncated ? res.NextContinuationToken : undefined;
 } while (token);
@@ -113,7 +108,7 @@ if (existingKeys.size > 0) {
       new DeleteObjectsCommand({
         Bucket: BUCKET,
         Delete: { Objects: orphans.slice(i, i + 1000).map((key) => ({ key })) },
-      })
+      }),
     );
   }
 }
@@ -127,6 +122,6 @@ await cf.send(
       Paths: { Quantity: 1, Items: ['/*'] },
       CallerReference: `${Date.now()}`,
     },
-  })
+  }),
 );
 console.log('Invalidation requested');

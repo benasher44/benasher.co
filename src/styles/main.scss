@@ -8,57 +8,71 @@
 
 // github.css first, so bulma rules keep the same cascade order as the old
 // main.scss (github imported before the bulma partials).
-@use "./github.css";
+@use './github.css';
 
 // ——— build-time configuration (replaces the old pre-import var block) ———
-@use "bulma/sass/utilities/initial-variables" as iv with (
+@use 'bulma/sass/utilities/initial-variables' as iv with (
   $fullhd: 700px,
-  $family-sans-serif: (BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif) // restore 0.9.4 stack (1.x defaults to Inter)
+  $family-sans-serif: (
+    BlinkMacSystemFont,
+    -apple-system,
+    'Segoe UI',
+    'Roboto',
+    'Oxygen',
+    'Ubuntu',
+    'Cantarell',
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    'Helvetica',
+    'Arial',
+    sans-serif,
+  ) // restore 0.9.4 stack (1.x defaults to Inter)
 );
 
-@use "bulma/sass/utilities/derived-variables" as dv with (
-  $link: #76323F, // was $link: $ben-red
-  $code: inherit  // was $code: inherit
+@use 'bulma/sass/utilities/derived-variables' as dv with (
+  $link: #76323f, // was $link: $ben-red
+  $code: inherit // was $code: inherit
 );
 
-@use "bulma/sass/base/generic" as generic with (
+@use 'bulma/sass/base/generic' as generic with (
   $body-font-size: 1.1em, // was $body-font-size: 1.1em
-  $code-weight: bold      // was $code-weight: bold
+  $code-weight: bold // was $code-weight: bold
 );
 
-@use "bulma/sass/elements/content" as content with (
-  $content-heading-color: #76323F, // was $content-heading-color: $ben-red
+@use 'bulma/sass/elements/content' as content with (
+  $content-heading-color: #76323f, // was $content-heading-color: $ben-red
   $content-heading-weight: 600 // 0.9.x compiled weight; 1.x defaults to extrabold (800)
 );
 
-@use "bulma/sass/components/navbar" as navbar with (
+@use 'bulma/sass/components/navbar' as navbar with (
   $navbar-background-color: #233237, // was $navbar-background-color: $ben-gray
-  $navbar-item-color-l: 100%,        // was $navbar-item-color: white
+  $navbar-item-color-l: 100%, // was $navbar-item-color: white
   // old hover/active bg = lighten($ben-gray, 10%) → same lightness for both
   $navbar-item-background-l: 28%,
   $navbar-item-hover-background-l-delta: 0%,
   $navbar-item-active-background-l-delta: 0%,
   $navbar-item-selected-color-l: 90%, // was $navbar-item-active-color: darken(white, 10%)
-  $navbar-breakpoint: 10px            // was $navbar-breakpoint: 10px
+  $navbar-breakpoint: 10px // was $navbar-breakpoint: 10px
 );
 
 // ——— plain bulma partials (same subset as the old main.scss) ———
-@use "bulma/sass/utilities/mixins";
-@use "bulma/sass/utilities/controls";
-@use "bulma/sass/utilities/extends";
-@use "bulma/sass/base"; // index: minireset + generic (configured above) + animations
-@use "bulma/sass/layout/container"; // was elements/container in 0.9
-@use "bulma/sass/elements/tag";
-@use "bulma/sass/elements/title";
-@use "bulma/sass/layout/footer";
-@use "bulma/sass/layout/section";
-@use "bulma/sass/helpers/color";
-@use "bulma/sass/helpers/typography";
+@use 'bulma/sass/utilities/mixins';
+@use 'bulma/sass/utilities/controls';
+@use 'bulma/sass/utilities/extends';
+@use 'bulma/sass/base'; // index: minireset + generic (configured above) + animations
+@use 'bulma/sass/layout/container'; // was elements/container in 0.9
+@use 'bulma/sass/elements/tag';
+@use 'bulma/sass/elements/title';
+@use 'bulma/sass/layout/footer';
+@use 'bulma/sass/layout/section';
+@use 'bulma/sass/helpers/color';
+@use 'bulma/sass/helpers/typography';
 
 // Light theme registration (single light theme, like the old site).
 // Registering here so :root has every --bulma-* var the components read.
-@use "bulma/sass/themes/light" as light;
-@use "bulma/sass/themes/setup" as setup;
+@use 'bulma/sass/themes/light' as light;
+@use 'bulma/sass/themes/setup' as setup;
 
 :root {
   @include light.light-theme;
@@ -67,32 +81,32 @@
 
 // ——— site rules (verbatim from old css/main.scss) ———
 .content h1 {
-    font-weight: 300;
+  font-weight: 300;
 }
 
 .content h1 a {
-    font-weight: 300;
+  font-weight: 300;
 }
 
 .navbar-brand a {
-    font-weight: 100;
-    font-size: 1.5em;
+  font-weight: 100;
+  font-size: 1.5em;
 }
 
 .navbar-brand {
-    padding: 0 10pt 0 0;
+  padding: 0 10pt 0 0;
 }
 
 .navbar-end a.navbar-item:hover {
-    background-color: transparent
+  background-color: transparent;
 }
 
 figure.highlight {
-    text-align: left;
+  text-align: left;
 }
 
 .content a {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 // Restore 0.9.x navbar hover/active styling (bulma 1.x derives is-active
@@ -102,20 +116,20 @@ a.navbar-item:focus,
 a.navbar-item:focus-within,
 a.navbar-item:hover,
 a.navbar-item.is-active {
-    background-color: hsl(195, 22.2222222222%, 27.6470588235%);
-    color: hsl(0, 0%, 90%);
+  background-color: hsl(195, 22.2222222222%, 27.6470588235%);
+  color: hsl(0, 0%, 90%);
 }
 
 // Restore 0.9.x title→subtitle gap (old: 1.5rem title margin-bottom
 // cancelled by a -1.25rem subtitle margin-top → net 0.25rem; 1.x zeroes
 // the title margin instead).
 .title:not(.is-spaced) + .subtitle {
-    margin-top: 0.25rem;
+  margin-top: 0.25rem;
 }
 
 // Restore 0.9.x "N minute read" badge colors (1.x derives the light-variant
 // text from info-15-l; 0.9 used hsl(207, 61%, 41%) on hsl(207, 61%, 96%)).
 .tag.is-info.is-light {
-    background-color: hsl(207, 61%, 96%);
-    color: hsl(207, 61%, 41%);
+  background-color: hsl(207, 61%, 96%);
+  color: hsl(207, 61%, 41%);
 }

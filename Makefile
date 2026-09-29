@@ -15,3 +15,11 @@ preview:
 .PHONY: deploy
 deploy:
 	corepack yarn deploy
+
+.PHONY: lint
+lint:
+	corepack yarn lint
+
+.PHONY: fmt
+fmt:
+	corepack yarn format

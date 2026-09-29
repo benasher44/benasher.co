@@ -1,9 +1,10 @@
 ---
-"title": "Leaving Mobile for Web"
-"description": "A reflection on leaving iOS development for web"
-"pubDate": 2024-05-04T00:00:00-07:00
-"tags": ["kotlin","multiplatform","mobile","web","node","javascript","typescript","iOS","Xcode"]
-"categories": ["software"]
+'title': 'Leaving Mobile for Web'
+'description': 'A reflection on leaving iOS development for web'
+'pubDate': 2024-05-04T00:00:00-07:00
+'tags':
+  ['kotlin', 'multiplatform', 'mobile', 'web', 'node', 'javascript', 'typescript', 'iOS', 'Xcode']
+'categories': ['software']
 ---
 
 I wrote my last post about a month before I left Autodesk (what may be my last iOS development role). After 10 years of doing iOS development in some form, I got an opportunity to switch to web at another company, and I took it.

@@ -1,9 +1,9 @@
 ---
-"title": "Getting Started with Kotlin on iOS, Part 3: The Build"
-"description": "An introduction to setting up your Kotlin multiplatform build for iOS."
-"pubDate": 2020-07-05T00:00:00-07:00
-"tags": ["kotlin","multiplatform","kotlin/native","ios","swift"]
-"categories": ["software"]
+'title': 'Getting Started with Kotlin on iOS, Part 3: The Build'
+'description': 'An introduction to setting up your Kotlin multiplatform build for iOS.'
+'pubDate': 2020-07-05T00:00:00-07:00
+'tags': ['kotlin', 'multiplatform', 'kotlin/native', 'ios', 'swift']
+'categories': ['software']
 ---
 
 Once you get your Kotlin multiplatform proof-of-concept in a working state, you'll want to get your build ready for integration into your team's workflow. This means CI that builds your library and runs the tests on every platform you support. This also means a build setup that allows playing with changes to your multiplatform library in a local debug build of your app. And finally, you'll want to distribute the library for consumption in your application. Now, each of those pieces could be its own article. My goal here is to help you understand the basics that, when put together, can be used to accomplish each of those goals.

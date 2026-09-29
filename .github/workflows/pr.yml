@@ -19,6 +19,8 @@ jobs:
         run: corepack enable
       - name: Install deps
         run: corepack yarn install --immutable
+      - name: Lint
+        run: corepack yarn lint && corepack yarn format:check
       - name: Danger
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

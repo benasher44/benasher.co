@@ -1,10 +1,10 @@
 ---
-"title": "An Ergonomics Review of Using Kotlin from Swift"
-"description": "A review of using Kotlin from Swift— good parts and those that could use improvement."
-"pubDate": 2020-08-16T00:00:00-07:00
-"updated": 2021-02-16T00:00:00-08:00
-"tags": ["kotlin","multiplatform","kotlin/native","ios","swift"]
-"categories": ["software"]
+'title': 'An Ergonomics Review of Using Kotlin from Swift'
+'description': 'A review of using Kotlin from Swift— good parts and those that could use improvement.'
+'pubDate': 2020-08-16T00:00:00-07:00
+'updated': 2021-02-16T00:00:00-08:00
+'tags': ['kotlin', 'multiplatform', 'kotlin/native', 'ios', 'swift']
+'categories': ['software']
 ---
 
 At Autodesk, my colleagues and I are more than a year and a half into our Kotlin multiplatform (KMP) shared library journey. That's one Kotlin shared library, shared among our three mobile platforms that we support for the PlanGrid app (iOS, Android, and Windows).
@@ -19,7 +19,7 @@ While testing out KMP-based functionality alongside all of the other work going 
 
 This again takes us back to developer experience. Lucky for us, KMP comes with iOS interop out-of-the-box. It's so good that one of my colleagues thought they were using some kind of bridging layer that we must have written to make Kotlin feel Swift-y. When they command-clicked through to source, they were surprised to find the KMP-generated shared library header.
 
-### Having a Good Team Helps 
+### Having a Good Team Helps
 
 Did I mention we have a Windows team? For that side of things, we got lucky. The level of support from KMP you get for Windows does not measure up to what you get for iOS. On the Windows side, my colleagues would like to have a C# library in the style of the KMP-generated Obj-C library with the nice, generated headers that we get on iOS. Instead, they get a library that uses C-interop— quite a different experience. Fortunate for us, a few folks on our Windows team were experienced and interested enough to write and maintain their own C# code generation on top of that. We hope to open source it later this year.
 
@@ -50,12 +50,14 @@ class Logger {
     }
 }
 ```
+
 ```swift
 // Swift
 Logger.default.log(.error, "An error ocurred") {
     // Closure
 }
 ```
+
 This example highlights some idiomatic Kotlin that allows you to write idiomatic-looking Swift. It's impressive. However, this example has a secret. It also highlights many of the areas where Kotlin/Native interop with iOS has room for improvement. With Kotlin 1.4.0 out the door, I hope now is a good time to raise these issues. Fixing them would take the sell to iOS teams to the next level, at least in terms of having excellent interop. I'll discuss the issues in increasing in order of how long it took our team to notice and bump into them.
 
 ### Exhaustive Enums
@@ -78,6 +80,7 @@ Logger.Companion().log(.error, "An error ocurred") {
     // Closure
 }
 ```
+
 As someone who writes a lot of Swift, this looks funny at first. Are we creating a new `Logger.Companion`? If so, where can I see what this does in Kotlin? The ergonomics of the unnamed `companion object` is another issue that [I filed early on](https://github.com/JetBrains/kotlin-native/issues/2757). To answer the question, [you aren't creating a new](https://github.com/JetBrains/kotlin-native/issues/2757#issuecomment-472866293) `Logger.Companion`.
 
 The fix here isn't straightforward. You can convince your team to prefer naming a `companion object`, but that doesn't always make sense, if say your goal is to use a `companion object` to namespace a public constant. Solutions discussed in the ticket would be breaking changes. That said, I think improving the ergonomics here would be an easy way to prevent less enthusiastic iOS developers from having this easy (and small) thing to point at. At Autodesk, we just acknowledge this quirk of the Obj-C export and move on. But, that's easy for us to do now, as we have a critical mass.
@@ -111,6 +114,7 @@ extension Array where Element: AnyObject {
     }
 }
 ```
+
 This will let you bridge `KotlinArray` to `Swift.Array` like so: `Array(MyEnum.values())`. Not bad! I also tried adding some kind of Swift extension to enable bridging like `MyEnum.values().toArray()`, but I ran into Obj-C to Swift generics compatibility issues. If you find a way to make that work though, please let me know on mastodon!
 
 ### Translation to Obj-C Primitives
@@ -129,6 +133,7 @@ interface FishRepository {
    fun fetchById(id: String): Fish?
 }
 ```
+
 Over time, other people on my team will also add repositories with `fetchById` methods with the same name. Why not? `fetchById` is a reasonable way to name that method. However, every time you add such a method, methods with the same name generated for Obj-C will get an underscore added to the end to disambiguate them from others. But why you ask? Again, the explanation has to do with Kotlin vs. Obj-C. Read [this issue](https://github.com/JetBrains/kotlin-native/issues/3293) for the full details. At the time of this writing, one of our `fetchById` methods is up to seven underscores in Obj-C 😂.
 
 If you have a look at the GitHub issue, there doesn't appear to be an easy solution from the Kotlin/Native side. What we've started doing is just naming our methods better. In this case, renaming the method to `fetchFishById` should prevent this from happening (until we add another fishy repository). That said, it would be great if Kotlin/Native could emit a warning about such issues. Then, we can catch these during development before the Obj-C export happens, and a random API gets an extra underscore (making the overall change breaking). Kotlin 1.4.0 has new native-specific frontend checkers. A new one that helps us out here would be most welcome.
