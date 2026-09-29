@@ -32,8 +32,8 @@
 
 :root {
   --site-font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --site-font-serif: var(--site-font-serif);
-  --site-font-mono: var(--site-font-mono);
+  --site-font-serif: 'Fraunces Variable', Georgia, serif;
+  --site-font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 :root {
