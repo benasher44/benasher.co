@@ -99,6 +99,18 @@
     "plugin",
     "setups",
     "specs",
-    "x86_64"
-  ]
-}
+    "x86_64",
+    "mastodon.social",
+    "github",
+    "Github",
+    "droidcon",
+    "Conf",
+    "Mdevcon",
+    "astro",
+    "bulma",
+    "jessesquires.com",
+    "url",
+    "Cloudfront",
+    "corepack"
+    ]
+    }
