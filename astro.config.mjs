@@ -9,9 +9,10 @@ export default defineConfig({
     format: 'directory',
   },
   markdown: {
-    // code blocks stay dark in both themes (see main.css: pre background)
+    // code blocks stay dark in both themes (see main.css: pre background);
+    // high-contrast variant keeps even comment grays WCAG-AA on near-black
     shikiConfig: {
-      theme: 'github-dark',
+      theme: 'github-dark-high-contrast',
     },
   },
 });

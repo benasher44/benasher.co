@@ -10,9 +10,11 @@ const posts = await sortedPosts();
 const oldestYear = posts.length > 0 ? posts[posts.length - 1].data.pubDate.getFullYear() : null;
 ---
 
-<div class="masthead">
-  <h1>Writing</h1>
-  <span class="count"><b>{posts.length}</b> posts · since {oldestYear}</span>
-</div>
-<p class="intro">Kotlin, the web, and the systems in between — long-form notes from ten years of building things that ship.</p>
-{posts.map((post) => <PostEntry post={post} />)}
+<Base pageTitle="Blog" path="/" type="website">
+  <div class="masthead">
+    <h1>Writing</h1>
+    <span class="count"><b>{posts.length}</b> posts · since {oldestYear}</span>
+  </div>
+  <p class="intro">Kotlin, the web, and the systems in between — long-form notes from ten years of building things that ship.</p>
+  {posts.map((post) => <PostEntry post={post} />)}
+</Base>

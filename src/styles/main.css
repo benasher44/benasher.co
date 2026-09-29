@@ -335,10 +335,28 @@ body > header nav {
 }
 
 /* ——— post cards ——— */
+/* pico styles every <article> as a widget card; prose pages render plain,
+   and our .card is a flat hairline surface (no pico shadow) */
+body > main > article:not(.card) {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+body > main > article > header {
+  margin: 0 0 1.8rem;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
 article.card {
   border: 1px solid var(--site-hairline);
   border-radius: 12px;
   background: var(--site-surface);
+  box-shadow: none;
   padding: 1.55rem 1.7rem 1.45rem;
   margin-bottom: 1rem;
   transition: border-color 0.15s ease;
@@ -415,12 +433,13 @@ article.card .more:hover {
 }
 
 /* section tick: short accent rule above h2s in prose */
-article h2 {
+article:not(.card) h2 {
   position: relative;
   padding-top: 0.95rem;
 }
 
-article h2::before {
+/* section tick: short accent rule above h2s in prose (not cards) */
+article:not(.card) h2::before {
   content: '';
   position: absolute;
   top: 0;
