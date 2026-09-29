@@ -94,6 +94,8 @@
     "objc",
     "instancetype",
     "cspell",
+    "cspell.json",
+    "gradlew",
     "mastodon.social",
     "jessesquires.com",
     "droidcon",
