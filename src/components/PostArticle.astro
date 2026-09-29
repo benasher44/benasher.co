@@ -1,0 +1,30 @@
+---
+// Full post view: title, byline, content slot, action links.
+import { MASTODON_URL, REPO_URL } from '../lib/site';
+import { readMinutes } from '../lib/posts';
+import type { CollectionEntry } from 'astro:content';
+import PostMeta from './PostMeta.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+---
+
+<article>
+  <header class="article-header">
+    <h1>{post.data.title}</h1>
+    <PostMeta
+      pubDate={post.data.pubDate}
+      minutes={readMinutes(post.body ?? '')}
+      updated={post.data.updated}
+    />
+  </header>
+  <slot />
+  <div class="endlinks">
+    <a class="btn" href={MASTODON_URL}>Discuss on Mastodon</a>
+    <a class="btn" href={`${REPO_URL}/issues`}>Report an issue</a>
+    <a class="btn" href={REPO_URL}>Edit on GitHub</a>
+  </div>
+</article>

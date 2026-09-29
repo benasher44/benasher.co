@@ -2,7 +2,7 @@
 // Port of the `/:title/` permalink: slug = collection id = filename slug
 import { getCollection, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import PostEntry from '../components/PostEntry.astro';
+import PostArticle from '../components/PostArticle.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -20,7 +20,7 @@ const { Content } = await render(post);
   type="article"
   pubDate={post.data.pubDate}
 >
-  <PostEntry post={post} full>
+  <PostArticle post={post}>
     <Content />
-  </PostEntry>
+  </PostArticle>
 </Base>
