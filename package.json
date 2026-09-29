@@ -4,6 +4,7 @@
     "build": "astro build && mkdir -p dist/404 && cp dist/404.html dist/404/index.html && rm dist/404.html",
     "preview": "astro preview",
     "deploy": "node scripts/deploy.mjs",
+    "spellcheck": "node scripts/spellcheck.mjs",
     "lint": "oxlint",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check ."
@@ -16,14 +17,12 @@
     "@astrojs/rss": "^4.0.19",
     "@aws-sdk/client-cloudfront": "^3.1142.0",
     "@aws-sdk/client-s3": "^3.1142.0",
-    "@benasher44/danger-plugin-spellcheck": "^2.1.1",
     "@types/node": "^24",
-    "danger": "^14.0.7",
+    "markdown-spellcheck": "^1.3.1",
     "marked": "^18.0.14",
     "oxfmt": "^0.71.0",
     "oxlint": "^1.86.0",
-    "sass-embedded": "^1.105.0",
-    "typescript": "^5.4.5"
+    "sass-embedded": "^1.105.0"
   },
   "engines": {
     "node": ">=24"
