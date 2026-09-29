@@ -11,6 +11,15 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+
+// Preload exactly the variable fonts a page's rendered content needs, so the
+// head links stay truthful (a preloaded-but-unused font is a console warning
+// and wasted bytes). Fenced code first (indented code doesn't occur in this
+// corpus), blockquote lines after stripping those fences — a `>` inside a
+// code sample must not preload the serif-italic face.
+const markdownWithoutFences = (post.body ?? '').replace(/^```[^\n]*$[\s\S]*?^```$/gm, '');
+const preloadMono = (post.body ?? '').includes('```');
+const preloadSerifItalic = /^\s*>/m.test(markdownWithoutFences);
 ---
 
 <Base
@@ -19,6 +28,8 @@ const { Content } = await render(post);
   path={`/${post.id}/`}
   type="article"
   pubDate={post.data.pubDate}
+  preloadMono={preloadMono}
+  preloadSerifItalic={preloadSerifItalic}
 >
   <PostArticle post={post}>
     <Content />
