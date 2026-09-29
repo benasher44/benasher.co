@@ -31,6 +31,12 @@
 }
 
 :root {
+  --site-font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --site-font-serif: var(--site-font-serif);
+  --site-font-mono: var(--site-font-mono);
+}
+
+:root {
   /* site tokens (the 003 sketch) */
   --site-bg: #fcfcfb;
   --site-surface: #f5f6f5;
@@ -53,15 +59,15 @@
   --pico-h4-color: var(--site-text);
   --pico-h5-color: var(--site-text);
   --pico-h6-color: var(--site-text);
-  --pico-text-selection-color: rgba(13, 110, 95, 0.22);
+  --pico-text-selection-color: color-mix(in srgb, var(--site-accent) 22%, transparent);
   --pico-primary: var(--site-accent);
   --pico-primary-background: var(--site-accent);
   --pico-primary-border: var(--site-accent);
-  --pico-primary-underline: rgba(13, 110, 95, 0.5);
+  --pico-primary-underline: color-mix(in srgb, var(--site-accent) 50%, transparent);
   --pico-primary-hover: #0a574c;
   --pico-primary-hover-background: #0a574c;
   --pico-primary-hover-border: #0a574c;
-  --pico-primary-focus: rgba(13, 110, 95, 0.35);
+  --pico-primary-focus: color-mix(in srgb, var(--site-accent) 35%, transparent);
   --pico-primary-inverse: #ffffff;
   --pico-blockquote-border-color: var(--site-accent);
   --pico-code-background-color: var(--site-code-bg);
@@ -111,15 +117,15 @@
 /* dark pico mapping: same pattern pico's own themes use */
 @media only screen and (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --pico-text-selection-color: rgba(79, 194, 174, 0.25);
+    --pico-text-selection-color: color-mix(in srgb, var(--site-accent) 25%, transparent);
     --pico-primary: var(--site-accent);
     --pico-primary-background: var(--site-accent);
     --pico-primary-border: var(--site-accent);
-    --pico-primary-underline: rgba(79, 194, 174, 0.5);
+    --pico-primary-underline: color-mix(in srgb, var(--site-accent) 50%, transparent);
     --pico-primary-hover: #6fd3c0;
     --pico-primary-hover-background: #6fd3c0;
     --pico-primary-hover-border: #6fd3c0;
-    --pico-primary-focus: rgba(79, 194, 174, 0.4);
+    --pico-primary-focus: color-mix(in srgb, var(--site-accent) 40%, transparent);
     --pico-primary-inverse: #08211c;
     --pico-blockquote-border-color: var(--site-accent);
     --pico-code-background-color: var(--site-code-bg);
@@ -128,15 +134,15 @@
 }
 
 [data-theme='dark'] {
-  --pico-text-selection-color: rgba(79, 194, 174, 0.25);
+  --pico-text-selection-color: color-mix(in srgb, var(--site-accent) 25%, transparent);
   --pico-primary: var(--site-accent);
   --pico-primary-background: var(--site-accent);
   --pico-primary-border: var(--site-accent);
-  --pico-primary-underline: rgba(79, 194, 174, 0.5);
+  --pico-primary-underline: color-mix(in srgb, var(--site-accent) 50%, transparent);
   --pico-primary-hover: #6fd3c0;
   --pico-primary-hover-background: #6fd3c0;
   --pico-primary-hover-border: #6fd3c0;
-  --pico-primary-focus: rgba(79, 194, 174, 0.4);
+  --pico-primary-focus: color-mix(in srgb, var(--site-accent) 40%, transparent);
   --pico-primary-inverse: #08211c;
   --pico-blockquote-border-color: var(--site-accent);
   --pico-code-background-color: var(--site-code-bg);
@@ -155,12 +161,7 @@ body > footer {
 }
 
 body {
-  font-family:
-    'Inter Variable',
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    sans-serif;
+  font-family: var(--site-font-sans);
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -171,14 +172,14 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Fraunces Variable', Georgia, serif;
+  font-family: var(--site-font-serif);
   letter-spacing: -0.02em;
   font-weight: 600;
 }
 
 code,
 pre {
-  font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--site-font-mono);
 }
 
 /* visually hidden but screen-reader accessible */
@@ -219,7 +220,7 @@ body > header nav {
 }
 
 .brand {
-  font-family: 'Fraunces Variable', Georgia, serif;
+  font-family: var(--site-font-serif);
   font-weight: 600;
   font-size: 1.3rem;
   letter-spacing: -0.01em;
@@ -238,7 +239,7 @@ body > header nav {
 }
 
 .nav-links a {
-  font-family: 'Inter Variable', sans-serif;
+  font-family: var(--site-font-sans);
   font-weight: 600;
   font-size: 0.84rem;
   letter-spacing: 0.07em;
@@ -325,7 +326,7 @@ html:not([data-theme]) #theme-toggle {
 /* ——— pills & buttons ——— */
 .pill {
   display: inline-block;
-  font-family: 'Inter Variable', sans-serif;
+  font-family: var(--site-font-sans);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -427,7 +428,7 @@ article.card h2 a:hover {
   flex-wrap: wrap;
   gap: 0.45rem 0.8rem;
   align-items: center;
-  font-family: 'Inter Variable', sans-serif;
+  font-family: var(--site-font-sans);
   font-weight: 500;
   font-size: 0.8rem;
   letter-spacing: 0.02em;
@@ -486,7 +487,7 @@ article:not(.card) h2::before {
 }
 
 article blockquote {
-  font-family: 'Fraunces Variable', Georgia, serif;
+  font-family: var(--site-font-serif);
   font-style: italic;
   font-weight: 400;
   font-size: 1.24rem;
