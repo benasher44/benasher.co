@@ -2,22 +2,24 @@
 
 .PHONY: build
 build:
-	bundle exec jekyll build
+	corepack yarn build
 
 .PHONY: serve
 serve:
-	bundle exec jekyll serve --drafts
+	corepack yarn dev
 
-.PHONY: live-serve
-live-serve:
-	bundle exec jekyll serve --drafts --livereload
-
-.PHONY: deploy-build
-deploy-build:
-	./scripts/prep_cache.rb
-	bundle exec jekyll build --config _config.yml,cached_assets.yml
-	./scripts/fill_cache.rb
+.PHONY: preview
+preview:
+	corepack yarn preview
 
 .PHONY: deploy
-deploy: deploy-build
-	bundle exec ruby ./scripts/deploy.rb
+deploy:
+	corepack yarn deploy
+
+.PHONY: lint
+lint:
+	corepack yarn lint
+
+.PHONY: fmt
+fmt:
+	corepack yarn format

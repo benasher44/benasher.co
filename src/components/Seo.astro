@@ -1,0 +1,64 @@
+---
+// Port of jekyll-seo-tag v2.8.0 output, tag-for-tag (verified against the
+// live site's <head> for a post page and the homepage).
+import { laIso } from '../lib/dates';
+import { SITE_URL, SITE_NAME, SITE_AUTHOR, SITE_DESCRIPTION, OG_IMAGE, MASTODON_URL } from '../lib/site';
+
+interface Props {
+  pageTitle: string; // page title without the site suffix
+  description?: string;
+  path: string;
+  type?: 'website' | 'article';
+  pubDate?: Date;
+}
+
+const { pageTitle, description, path, type = 'website', pubDate } = Astro.props;
+
+const desc = description ?? SITE_DESCRIPTION;
+const url = `${SITE_URL}${path}`;
+
+const jsonLd =
+  type === 'article'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        author: { '@type': 'Person', name: SITE_AUTHOR },
+        dateModified: pubDate ? laIso(pubDate) : undefined,
+        datePublished: pubDate ? laIso(pubDate) : undefined,
+        description: desc,
+        headline: pageTitle,
+        image: { width: 1000, height: 1000, url: OG_IMAGE, '@type': 'imageObject' },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+        url,
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        author: { '@type': 'Person', name: SITE_AUTHOR },
+        description: SITE_DESCRIPTION,
+        headline: pageTitle,
+        image: { width: 1000, height: 1000, url: OG_IMAGE, '@type': 'imageObject' },
+        name: SITE_NAME,
+        sameAs: [MASTODON_URL],
+        url,
+      };
+---
+
+<title>{pageTitle} | {SITE_NAME}</title>
+<meta property="og:title" content={pageTitle} />
+<meta name="author" content={SITE_AUTHOR} />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content={desc} />
+<meta property="og:description" content={desc} />
+<link rel="canonical" href={url} />
+<meta property="og:url" content={url} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:image" content={OG_IMAGE} />
+<meta property="og:image:height" content="1000" />
+<meta property="og:image:width" content="1000" />
+<meta property="og:type" content={type} />
+{pubDate && <meta property="article:published_time" content={laIso(pubDate)} />}
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content={OG_IMAGE} />
+<meta property="twitter:title" content={pageTitle} />
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

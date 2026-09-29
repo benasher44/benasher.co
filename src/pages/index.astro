@@ -1,0 +1,12 @@
+---
+// Port of index.md (homepage): all posts, newest first, card mode
+import Base from '../layouts/Base.astro';
+import PostEntry from '../components/PostEntry.astro';
+import { sortedPosts } from '../lib/posts';
+
+const posts = await sortedPosts();
+---
+
+<Base pageTitle="Blog" path="/" type="website">
+  {posts.map((post) => <PostEntry post={post} />)}
+</Base>

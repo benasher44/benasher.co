@@ -1,11 +1,32 @@
 {
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && mkdir -p dist/404 && cp dist/404.html dist/404/index.html && rm dist/404.html",
+    "preview": "astro preview",
+    "deploy": "node scripts/deploy.mjs",
+    "lint": "oxlint",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check ."
+  },
   "dependencies": {
-    "bulma": "^0.9.4"
+    "astro": "^7.3.5",
+    "bulma": "^1.0.4"
   },
   "devDependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@aws-sdk/client-cloudfront": "^3.1142.0",
+    "@aws-sdk/client-s3": "^3.1142.0",
     "@benasher44/danger-plugin-spellcheck": "^2.1.1",
+    "@types/node": "^24",
     "danger": "^12.1.0",
+    "marked": "^18.0.14",
+    "oxfmt": "^0.71.0",
+    "oxlint": "^1.86.0",
+    "sass-embedded": "^1.105.0",
     "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "packageManager": "yarn@4.0.2"
 }

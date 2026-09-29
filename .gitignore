@@ -1,9 +1,9 @@
 vendor
 .bundle
 _site
-.jekyll-cache
+dist
+.astro
 node_modules
-cached_assets.yml
 .idea
 .pnp.*
 .yarn/*
@@ -12,3 +12,4 @@ cached_assets.yml
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+.DS_Store

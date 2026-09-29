@@ -1,0 +1,22 @@
+---
+// Port of _layouts/page.html
+import Base from './Base.astro';
+
+interface Props {
+  pageTitle: string;
+  description?: string;
+  path: string;
+}
+
+const { pageTitle, description, path } = Astro.props;
+---
+
+<Base pageTitle={pageTitle} description={description} path={path} type="website">
+  <section class="section">
+    <div class="container">
+      <article class="content">
+        <slot />
+      </article>
+    </div>
+  </section>
+</Base>
