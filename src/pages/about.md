@@ -19,4 +19,4 @@ You can find me on [mastodon.social](https://mastodon.social/@benasher44) or via
 
 ## This Site
 
-This website is built with [astro](https://astro.build), styled with [bulma](https://bulma.io), and designed by me with inspiration from [jessesquires.com](https://jessesquires.com).
+This website is built with [astro](https://astro.build), styled with [pico css](https://picocss.com), and designed by me.
