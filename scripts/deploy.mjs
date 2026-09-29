@@ -21,6 +21,10 @@ import { CloudFrontClient, CreateInvalidationCommand } from '@aws-sdk/client-clo
 const BUCKET = 'benasher.co';
 const SITE_ROOT = 'dist';
 
+// cache-control max-age for content-hashed assets (safe to cache forever
+// because the filename changes when the content does)
+const ASSET_MAX_AGE = 60 * 60 * 24 * 365; // one year, in seconds
+
 const CONTENT_TYPES = {
   '.css': 'text/css',
   '.html': 'text/html',
@@ -63,7 +67,7 @@ if (DRY_RUN) {
     const key = relative(SITE_ROOT, file);
     const type = content_type(key);
     const body = await readFile(file); // fail early on unreadable files
-    const cache = key.startsWith('_astro/') ? ' max-age=31536000 immutable' : '';
+    const cache = key.startsWith('_astro/') ? ` max-age=${ASSET_MAX_AGE} immutable` : '';
     console.log(`Would put ${key} (${type}${cache}, ${body.length} bytes)`);
     count++;
   }
@@ -92,7 +96,7 @@ for (const file of enumerateSiteFiles(SITE_ROOT)) {
   // content-hashed assets: immutable year-long cache (replaces the old
   // prep_cache/fill_cache content-hash mechanism)
   if (key.startsWith('_astro/')) {
-    params.CacheControl = 'max-age=31536000, immutable';
+    params.CacheControl = `max-age=${ASSET_MAX_AGE}, immutable`;
   }
   console.log(`Putting ${key}`);
   await s3.send(new PutObjectCommand(params));
