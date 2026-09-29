@@ -82,9 +82,12 @@
 }
 
 :root {
-  --site-font-sans: 'Inter Variable', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --site-font-sans:
+    'Inter Variable', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --site-font-serif: 'Fraunces Variable', 'Fraunces Fallback', Georgia, serif;
-  --site-font-mono: 'JetBrains Mono Variable', 'JetBrains Mono Fallback', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --site-font-mono:
+    'JetBrains Mono Variable', 'JetBrains Mono Fallback', ui-monospace, SFMono-Regular, Menlo,
+    monospace;
 }
 
 :root {
