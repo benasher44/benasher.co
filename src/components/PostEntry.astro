@@ -37,7 +37,7 @@ const hasExcerpt = !full;
       }
       <h6 class="subtitle is-6">
         {formatDateString(post.data.pubDate)}
-        {minutes && <span class="tag is-info is-light">{minutes} minute read</span>}
+        {minutes && [' - ', <span class="tag is-info is-light">{minutes} minute read</span>]}
         {post.data.updated && <span class="tag is-warning">Updated: {formatDateString(post.data.updated)}</span>}
       </h6>
       {

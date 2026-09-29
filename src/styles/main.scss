@@ -27,7 +27,8 @@
 );
 
 @use "bulma/sass/elements/content" as content with (
-  $content-heading-color: #76323F // was $content-heading-color: $ben-red
+  $content-heading-color: #76323F, // was $content-heading-color: $ben-red
+  $content-heading-weight: 600 // 0.9.x compiled weight; 1.x defaults to extrabold (800)
 );
 
 @use "bulma/sass/components/navbar" as navbar with (
