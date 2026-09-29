@@ -1,0 +1,28 @@
+---
+// Homepage card: title link, byline, excerpt, read-more link.
+import { marked } from 'marked';
+import { readMinutes } from '../lib/posts';
+import type { CollectionEntry } from 'astro:content';
+import PostMeta from './PostMeta.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const href = `/${post.id}/`;
+
+// excerpt = everything before <!--more-->, else the first paragraph
+const body: string = post.body ?? '';
+const raw = body.includes('<!--more-->') ? body.split('<!--more-->')[0] : body.split(/\n\n+/)[0];
+const excerptHtml = marked.parse(raw) as string;
+---
+
+<article class="card">
+  <h2><a href={href}>{post.data.title}</a></h2>
+  <PostMeta pubDate={post.data.pubDate} minutes={readMinutes(body)} updated={post.data.updated} />
+  <div class="excerpt">
+    <Fragment set:html={excerptHtml} />
+  </div>
+  <a class="more" href={href}>Read the rest&hellip;</a>
+</article>
