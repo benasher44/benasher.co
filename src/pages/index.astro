@@ -1,12 +1,18 @@
 ---
-// Port of index.md (homepage): all posts, newest first, card mode
+// Homepage: masthead + all posts, newest first, card mode.
+// Post URLs are /<slug>/ derived from content-collection filenames
+// (see the benasher-co skill invariant — never title-slugify).
 import Base from '../layouts/Base.astro';
 import PostEntry from '../components/PostEntry.astro';
 import { sortedPosts } from '../lib/posts';
 
 const posts = await sortedPosts();
+const oldestYear = posts.length > 0 ? posts[posts.length - 1].data.pubDate.getFullYear() : null;
 ---
 
-<Base pageTitle="Blog" path="/" type="website">
-  {posts.map((post) => <PostEntry post={post} />)}
-</Base>
+<div class="masthead">
+  <h1>Writing</h1>
+  <span class="count"><b>{posts.length}</b> posts · since {oldestYear}</span>
+</div>
+<p class="intro">Kotlin, the web, and the systems in between — long-form notes from ten years of building things that ship.</p>
+{posts.map((post) => <PostEntry post={post} />)}

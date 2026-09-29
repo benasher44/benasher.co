@@ -1,6 +1,8 @@
 ---
-// Port of _layouts/default.html
-import '../styles/main.scss';
+// Base layout: head, nav, footer, theme machinery.
+// Pico CSS + brand tokens live in main.css; fonts are self-hosted via
+// fontsource variable packages (content-hashed _astro/ assets).
+import '../styles/main.css';
 import Seo from '../components/Seo.astro';
 import { formatShortDate } from '../lib/dates';
 import { SITE_DESCRIPTION, MASTODON_URL, REPO_URL } from '../lib/site';
@@ -15,13 +17,12 @@ interface Props {
 
 const { pageTitle, description, path, type, pubDate } = Astro.props;
 
-// Jekyll rendered nav from site pages with in-nav: true, sorted by nav-order
 const nav = [
   { title: 'Blog', href: '/' },
   { title: 'About', href: '/about/' },
 ];
 
-const now = new Date(); // build time, like Liquid's "now"
+const now = new Date(); // build time
 ---
 
 <!doctype html>
@@ -31,39 +32,72 @@ const now = new Date(); // build time, like Liquid's "now"
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <meta name="description" content={SITE_DESCRIPTION} />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fcfcfb" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121514" />
     <Seo pageTitle={pageTitle} description={description} path={path} type={type} pubDate={pubDate} />
+    <script is:inline>
+      // set the theme before first paint — no flash.
+      // ?theme=light|dark wins (shareable/previewable), then localStorage, then system.
+      const qsTheme = new URLSearchParams(location.search).get('theme');
+      const stored = localStorage.getItem('theme');
+      if (qsTheme === 'light' || qsTheme === 'dark') {
+        document.documentElement.dataset.theme = qsTheme;
+      } else if (stored) {
+        document.documentElement.dataset.theme = stored;
+      } else if (matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    </script>
   </head>
   <body>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="/">benasher.co</a>
-      </div>
-      <div class="navbar-menu">
-        <div class="navbar-start">
+    <a class="skip" href="#main">Skip to content</a>
+    <header>
+      <nav aria-label="Main">
+        <a class="brand" href="/">benasher.co</a>
+        <div class="nav-links">
           {
             nav.map((item) => (
               <a
-                class={`navbar-item${Astro.url.pathname === item.href ? ' is-active' : ''}`}
                 href={item.href}
+                aria-current={Astro.url.pathname === item.href ? 'page' : undefined}
               >
                 {item.title}
               </a>
             ))
           }
+          <a href="/feed.xml">RSS</a>
+          <button
+            id="theme-toggle"
+            type="button"
+            aria-label="Toggle dark mode"
+            aria-pressed="false">☾</button
+          >
         </div>
-        <div class="navbar-end">
-          <a class="navbar-item" href="/feed.xml">RSS</a>
-        </div>
-      </div>
-    </nav>
-    <main>
+      </nav>
+    </header>
+    <main id="main">
       <slot />
     </main>
-    <footer class="footer">
-      <div class="content has-text-centered is-size-7">
-        <p>The source to build and deploy this site is available <a href={REPO_URL}>here</a>. &copy; {now.getFullYear()} <a rel="me" href={MASTODON_URL}>Ben Asher</a>.</p>
-        <p>This site was last updated on {formatShortDate(now)}.</p>
-      </div>
+    <footer>
+      <p>
+        © {now.getFullYear()}
+        <a rel="me" href={MASTODON_URL}>Ben Asher</a> · <a href={REPO_URL}>source</a>
+      </p>
+      <p>This site was last updated on {formatShortDate(now)}.</p>
     </footer>
+    <script>
+      const btn = document.getElementById('theme-toggle') as HTMLButtonElement;
+      const apply = (t: string) => {
+        btn.textContent = t === 'dark' ? '☀' : '☾';
+        btn.setAttribute('aria-pressed', String(t === 'dark'));
+      };
+      apply(document.documentElement.dataset.theme ?? 'light');
+      btn.addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('theme', next);
+        apply(next);
+      });
+    </script>
   </body>
 </html>

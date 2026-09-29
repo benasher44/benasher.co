@@ -12,11 +12,7 @@ const { pageTitle, description, path } = Astro.props;
 ---
 
 <Base pageTitle={pageTitle} description={description} path={path} type="website">
-  <section class="section">
-    <div class="container">
-      <article class="content">
-        <slot />
-      </article>
-    </div>
-  </section>
+  <article>
+    <slot />
+  </article>
 </Base>

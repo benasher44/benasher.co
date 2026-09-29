@@ -1,6 +1,5 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import purgecss from 'astro-purgecss';
 import { SITE_URL } from './src/lib/site';
 
 // https://astro.build/config
@@ -9,13 +8,10 @@ export default defineConfig({
   build: {
     format: 'directory',
   },
-  integrations: [
-    // strip unused selectors from the bundled css against the built html
-    purgecss(),
-  ],
   markdown: {
+    // code blocks stay dark in both themes (see main.css: pre background)
     shikiConfig: {
-      theme: 'github-light',
+      theme: 'github-dark',
     },
   },
 });
