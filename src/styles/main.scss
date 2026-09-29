@@ -112,3 +112,10 @@ a.navbar-item.is-active {
 .title:not(.is-spaced) + .subtitle {
     margin-top: 0.25rem;
 }
+
+// Restore 0.9.x "N minute read" badge colors (1.x derives the light-variant
+// text from info-15-l; 0.9 used hsl(207, 61%, 41%) on hsl(207, 61%, 96%)).
+.tag.is-info.is-light {
+    background-color: hsl(207, 61%, 96%);
+    color: hsl(207, 61%, 41%);
+}
