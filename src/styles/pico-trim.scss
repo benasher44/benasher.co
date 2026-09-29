@@ -1,0 +1,65 @@
+/*
+ * pico-trim.scss — Pico compiled from its own sass modules, trimmed to the
+ * modules this site actually uses. Deterministic: module switches come from
+ * Pico's own $modules config surface (every module file guards its output on
+ * map.get($modules, ...)), not selector heuristics — so unlike purgecss this
+ * can never strip the [data-theme] forced-theme blocks the toggle relies on.
+ *
+ * Settings mirror Pico's own classless entry (scss/pico.classless.scss):
+ * semantic container, no classes. Disabled here: forms (no inputs anywhere),
+ * accordion/dropdown/loading/modal/progress/tooltip (no interactive widgets),
+ * grid/overflow-auto/group (class- and role-based helpers we never emit).
+ * Markdown content modules (table/embedded/figure/code/misc) stay — a future
+ * post can emit any of them.
+ *
+ * Kept in sync with node_modules/@picocss/pico/scss/_settings.scss's map:
+ * every key is listed explicitly (settings map.merge()s our map over its
+ * defaults, so an omitted key would silently default to true = included).
+ * A pico upgrade adding a NEW module also defaults to included — safe
+ * direction (no style loss), just re-review the trim on upgrades.
+ */
+@use '@picocss/pico/scss/index' with (
+  $enable-semantic-container: true,
+  $enable-classes: false,
+  $modules: (
+    // Theme
+    'themes/default': true,
+    // Layout
+    'layout/document': true,
+    'layout/landmarks': true,
+    'layout/container': true,
+    'layout/section': true,
+    'layout/grid': false,
+    'layout/overflow-auto': false,
+    // Content
+    'content/link': true,
+    'content/typography': true,
+    'content/embedded': true,
+    'content/button': true,
+    'content/table': true,
+    'content/code': true,
+    'content/figure': true,
+    'content/misc': true,
+    // Forms — all off
+    'forms/basics': false,
+    'forms/checkbox-radio-switch': false,
+    'forms/input-color': false,
+    'forms/input-date': false,
+    'forms/input-file': false,
+    'forms/input-range': false,
+    'forms/input-search': false,
+    // Components
+    'components/accordion': false,
+    'components/card': true,
+    'components/dropdown': false,
+    'components/group': false,
+    'components/loading': false,
+    'components/modal': false,
+    'components/nav': true,
+    'components/progress': false,
+    'components/tooltip': false,
+    // Utilities
+    'utilities/accessibility': true,
+    'utilities/reduce-motion': true
+  )
+);

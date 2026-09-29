@@ -17,8 +17,9 @@
 @import '@fontsource-variable/fraunces/wght-italic.css';
 @import '@fontsource-variable/jetbrains-mono';
 
-/* ——— layer 1: pico ——— */
-@import '@picocss/pico/css/pico.classless.min.css';
+/* pico is imported as sass in src/styles/pico-trim.scss (imported by
+   Base.astro ahead of this file) so the build compiles only the modules we
+   use — see that file's header for the module decisions. */
 
 /* ——— layer 2a: brand tokens ——— */
 
