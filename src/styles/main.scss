@@ -12,7 +12,8 @@
 
 // ——— build-time configuration (replaces the old pre-import var block) ———
 @use "bulma/sass/utilities/initial-variables" as iv with (
-  $fullhd: 700px
+  $fullhd: 700px,
+  $family-sans-serif: (BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif) // restore 0.9.4 stack (1.x defaults to Inter)
 );
 
 @use "bulma/sass/utilities/derived-variables" as dv with (
@@ -91,4 +92,15 @@ figure.highlight {
 
 .content a {
     font-weight: 600;
+}
+
+// Restore 0.9.x navbar hover/active styling (bulma 1.x derives is-active
+// from the link color; the old site used lighten($ben-gray, 10%) /
+// darken(white, 10%)).
+a.navbar-item:focus,
+a.navbar-item:focus-within,
+a.navbar-item:hover,
+a.navbar-item.is-active {
+    background-color: hsl(195, 22.2222222222%, 27.6470588235%);
+    color: hsl(0, 0%, 90%);
 }
