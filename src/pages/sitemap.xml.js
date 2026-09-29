@@ -1,15 +1,14 @@
 // Hand-rolled sitemap at the same /sitemap.xml URL jekyll-sitemap used.
 // Skips the old /404/ entry (quirk of jekyll-sitemap listing the 404 page).
 import { getCollection } from 'astro:content';
-
-const SITE = 'https://benasher.co';
+import { SITE_URL } from '../lib/site';
 
 export async function GET() {
   const posts = await getCollection('blog');
   const urls = ['/', '/about/', ...posts.map((p) => `/${p.id}/`)];
 
   const body = urls
-    .map((u) => `  <url><loc>${SITE}${u}</loc></url>`)
+    .map((u) => `  <url><loc>${SITE_URL}${u}</loc></url>`)
     .join('\n');
 
   return new Response(

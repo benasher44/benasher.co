@@ -3,9 +3,10 @@
 // the homepage card (excerpt mode) and the post page renderer (full mode).
 import { marked } from 'marked';
 import { formatDateString } from '../lib/dates';
+import type { CollectionEntry } from 'astro:content';
 
 interface Props {
-  post: any; // CollectionEntry<'blog'>
+  post: CollectionEntry<'blog'>;
   full?: boolean;
 }
 

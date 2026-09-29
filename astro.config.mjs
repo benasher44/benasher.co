@@ -1,9 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { SITE_URL } from './src/lib/site';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://benasher.co',
+  site: SITE_URL,
   build: {
     format: 'directory',
   },

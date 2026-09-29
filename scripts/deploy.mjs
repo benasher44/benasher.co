@@ -4,8 +4,11 @@
 //
 // Env: AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_CF_DISTRIBUTION_ID
 // (CI injects these; local runs use the default credential chain).
+// Pass --dry-run to validate the build output (keys, content types,
+// cache headers, readability) without touching S3 or CloudFront.
 
-import { readdirSync, readFile } from 'node:fs';
+import { readdirSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { join, relative, extname } from 'node:path';
 import {
   S3Client,
@@ -56,6 +59,22 @@ function content_type(path) {
   return type;
 }
 
+const DRY_RUN = process.argv.includes('--dry-run');
+
+if (DRY_RUN) {
+  let count = 0;
+  for (const file of enumerateSiteFiles(SITE_ROOT)) {
+    const key = relative(SITE_ROOT, file);
+    const type = content_type(key);
+    const body = await readFile(file); // fail early on unreadable files
+    const cache = key.startsWith('_astro/') ? ` max-age=${WEEK_SECONDS}` : '';
+    console.log(`Would put ${key} (${type}${cache}, ${body.length} bytes)`);
+    count++;
+  }
+  console.log(`dry run: ${count} objects validated`);
+  process.exit(0);
+}
+
 const s3 = new S3Client({ region: process.env.AWS_DEFAULT_REGION || 'us-west-2' });
 
 const existingKeys = new Set();
@@ -73,7 +92,7 @@ for (const file of enumerateSiteFiles(SITE_ROOT)) {
   const params = {
     Bucket: BUCKET,
     Key: key,
-    Body: readFile(file),
+    Body: await readFile(file),
     ContentType: content_type(key),
   };
   // content-hashed assets: long-lived cache (replaces the old
