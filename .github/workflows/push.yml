@@ -5,9 +5,15 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC federation into the benasher-co-deploy role
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
@@ -21,10 +27,12 @@ jobs:
         run: corepack yarn install --immutable
       - name: Build
         run: corepack yarn build
+      - name: Assume the deploy role
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::508021704277:role/benasher-co-deploy
+          aws-region: us-west-2
       - name: Deploy
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_CF_DISTRIBUTION_ID: ${{ secrets.AWS_CF_DISTRIBUTION_ID }}
-          AWS_DEFAULT_REGION: us-west-2
+          AWS_CF_DISTRIBUTION_ID: E2FTU05IZTIYC9
         run: corepack yarn deploy
