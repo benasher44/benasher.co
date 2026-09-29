@@ -500,10 +500,17 @@ article blockquote {
 
 article pre {
   position: relative;
-  background-color: var(--site-pre-bg) !important; /* beats shiki's inline bg */
+  /* no !important needed: defaultColor:false keeps shiki from inlining a bg */
+  background-color: var(--site-pre-bg);
   color: var(--site-pre-text);
   padding: 1.15rem 1.3rem;
   border-radius: 10px;
+}
+
+/* token colors: shiki emits --shiki-dark custom props (defaultColor:false),
+   so spans get their color from their own vars — no inline-style fight */
+pre.astro-code span {
+  color: var(--shiki-dark);
 }
 
 /* language tab, from shiki's data-language attribute — zero JS */
