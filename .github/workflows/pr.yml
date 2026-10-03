@@ -22,28 +22,8 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
-      - name: Cache Yarn Cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.yarn/berry/cache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: ${{ runner.os }}-yarn-
-      - name: Cache node_modules
-        uses: actions/cache@v6
-        with:
-          path: |
-            node_modules
-            .yarn/install-state.gz
-          key: ${{ runner.os }}-nm-${{ hashFiles('yarn.lock') }}
-          restore-keys: ${{ runner.os }}-nm-
-      - name: Enable corepack
-        run: corepack enable
-      - name: Install deps
-        run: corepack yarn install --immutable
+      - name: Setup Node + install deps
+        uses: ./.github/actions/setup-deps
       - name: Lint
         run: corepack yarn lint && corepack yarn format:check
       - name: Spellcheck
@@ -72,40 +52,25 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
-      - name: Cache Yarn Cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.yarn/berry/cache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: ${{ runner.os }}-yarn-
-      - name: Cache node_modules
-        uses: actions/cache@v6
-        with:
-          path: |
-            node_modules
-            .yarn/install-state.gz
-          key: ${{ runner.os }}-nm-${{ hashFiles('yarn.lock') }}
-          restore-keys: ${{ runner.os }}-nm-
-      - name: Enable corepack
-        run: corepack enable
-      - name: Install deps
-        run: corepack yarn install --immutable
+      - name: Setup Node + install deps
+        uses: ./.github/actions/setup-deps
+      # the deployment record is metadata; the preview is the product — a
+      # record hiccup must not block the deploy, hence continue-on-error here
+      # and the id guards on every later step
       - name: Open preview deployment
         id: deployment
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           id="$(node scripts/gh-deployment.mjs create \
             --environment previews \
             --ref '${{ github.event.pull_request.head.sha }}' \
-            --transient \
-            --environment-url 'https://pr-${{ github.event.pull_request.number }}.previews.benasher.co/')"
+            --transient)"
           echo "id=$id" >> "$GITHUB_OUTPUT"
       - name: Mark deployment in progress
+        if: steps.deployment.outputs.id != ''
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state in_progress
@@ -122,10 +87,11 @@ jobs:
       - name: Deploy preview
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }} # GITHUB_SHA is the merge ref in PR runs
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/deploy-preview.mjs deploy
       - name: Mark deployment succeeded
-        if: success()
+        if: success() && steps.deployment.outputs.id != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state success --environment-url 'https://pr-${{ github.event.pull_request.number }}.previews.benasher.co/'
@@ -144,21 +110,16 @@ jobs:
       pull-requests: write # the preview PR comment
       deployments: write # mark the preview deployment inactive
     steps:
-      # main, not the merge ref: the PR head may already be deleted post-merge,
-      # and remove only needs PR_NUMBER + the script (a merged PR runs main's
-      # copy, which is the contract from here on)
+      # merged PRs: the merge commit (post-merge main content, has the
+      # scripts); closed-but-unmerged PRs: the head sha (the branch may be
+      # gone — checkout fetches the sha directly). Pinning main would break
+      # closes before this feature merges: main lacks the scripts entirely.
       - name: Checkout repo
         uses: actions/checkout@v7
         with:
-          ref: main
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
-      - name: Enable corepack
-        run: corepack enable
-      - name: Install deps
-        run: corepack yarn install --immutable
+          ref: '${{ github.event.pull_request.merge_commit_sha || github.event.pull_request.head.sha }}'
+      - name: Setup Node + install deps
+        uses: ./.github/actions/setup-deps
       - name: Assume the previews deploy role
         uses: aws-actions/configure-aws-credentials@v6
         with:
