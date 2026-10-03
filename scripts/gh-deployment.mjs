@@ -4,8 +4,10 @@
 // Environments page tracks production + previews.
 //
 //   gh-deployment.mjs create --environment production --ref <sha>
-//       [--environment-url URL] [--production] [--transient]
-//     prints the deployment id
+//       [--production] [--transient]
+//     prints the deployment id (the preview/production URL goes on the
+//     deployment STATUSES — that is where GitHub reads it for the
+//     View deployment button — not on the create call)
 //   gh-deployment.mjs status --id <id> --state success|failure|in_progress
 //       [--environment-url URL]
 //   gh-deployment.mjs deactivate --environment previews --ref <sha>
@@ -13,20 +15,19 @@
 //
 // Env: GH_TOKEN (required), GITHUB_REPOSITORY (set by Actions).
 
-import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { gh } from './lib/gh.mjs';
 
 const REPO = process.env.GITHUB_REPOSITORY;
 
-function gh(args) {
-  return execSync(`gh ${args}`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
-}
+// API error bodies here are diagnostic gold (422 messages etc.) — surface stderr
+const ghOut = (args) => gh(args, { stderr: 'inherit' });
 
 function usage() {
   console.error(
-    'usage: gh-deployment.mjs create --environment E --ref SHA [--environment-url URL] [--production] [--transient]\n' +
+    'usage: gh-deployment.mjs create --environment E --ref SHA [--production] [--transient]\n' +
       '       gh-deployment.mjs status --id ID --state success|failure|in_progress [--environment-url URL]\n' +
       '       gh-deployment.mjs deactivate --environment E --ref SHA',
   );
@@ -62,32 +63,31 @@ function create(args) {
     production_environment: Boolean(args.production),
     transient_environment: Boolean(args.transient),
   };
-  if (args['environment-url']) body.environment_url = args['environment-url'];
   // POST via --input with a real JSON body: gh's -F doesn't parse `[]` into
   // an empty array (it sends the literal string, which the API rejects with
   // "is not an array or null")
   const tmp = join(tmpdir(), `gh-deployment-create-${Date.now()}.json`);
   writeFileSync(tmp, JSON.stringify(body));
-  const id = gh(`api repos/${REPO}/deployments --input ${tmp} --jq .id`).trim();
+  const id = ghOut(`api repos/${REPO}/deployments --input ${tmp} --jq .id`).trim();
   console.log(id);
 }
 
 function status(args) {
   const url = args['environment-url'] ? ` -F environment_url=${args['environment-url']}` : '';
-  gh(`api repos/${REPO}/deployments/${args.id}/statuses -F state=${args.state}${url}`);
+  ghOut(`api repos/${REPO}/deployments/${args.id}/statuses -F state=${args.state}${url}`);
   console.log(`deployment ${args.id} -> ${args.state}`);
 }
 
 function deactivate(args) {
   const deployments = JSON.parse(
-    gh(`api "repos/${REPO}/deployments?environment=${args.environment}&sha=${args.ref}"`),
+    ghOut(`api "repos/${REPO}/deployments?environment=${args.environment}&sha=${args.ref}"`),
   );
   if (!deployments.length) {
     console.log('no deployment found to deactivate');
     return;
   }
   const newest = deployments.sort((a, b) => b.id - a.id)[0];
-  gh(`api repos/${REPO}/deployments/${newest.id}/statuses -F state=inactive`);
+  ghOut(`api repos/${REPO}/deployments/${newest.id}/statuses -F state=inactive`);
   console.log(`deployment ${newest.id} -> inactive`);
 }
 
