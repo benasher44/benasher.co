@@ -6,7 +6,7 @@ import '../styles/pico-trim.scss';
 import '../styles/main.css';
 import Seo from '../components/Seo.astro';
 import { formatShortDate } from '../lib/dates';
-import { SITE_AUTHOR, SITE_DESCRIPTION, MASTODON_URL, REPO_URL } from '../lib/site';
+import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_NAME, MASTODON_URL, REPO_URL } from '../lib/site';
 
 // The latin woff2 files the browser actually downloads for this site's
 // content (unicode-range picks exactly these). Fonts are only discovered
@@ -54,6 +54,7 @@ const now = new Date(); // build time
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/feed.xml" />
     <meta name="description" content={SITE_DESCRIPTION} />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fcfcfb" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121514" />
@@ -99,7 +100,6 @@ const now = new Date(); // build time
               </a>
             ))
           }
-          <a href="/feed.xml">RSS</a>
         </div>
       </nav>
     </header>
@@ -122,7 +122,7 @@ const now = new Date(); // build time
     </main>
     <footer>
       <p>
-        © {now.getFullYear()} <a rel="me" href={MASTODON_URL}>{SITE_AUTHOR}</a> · <a href={REPO_URL}>source</a>
+        © {now.getFullYear()} <a rel="me" href={MASTODON_URL}>{SITE_AUTHOR}</a> · <a href={REPO_URL}>source</a> · <a href="/feed.xml">rss</a>
       </p>
       <p>This site was last updated on {formatShortDate(now)}.</p>
     </footer>
