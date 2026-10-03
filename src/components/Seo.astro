@@ -60,7 +60,4 @@ const jsonLd =
 <meta property="og:image:alt" content={`${SITE_NAME} logo`} />
 <meta property="og:type" content={type} />
 {pubDate && <meta property="article:published_time" content={laIso(pubDate)} />}
-<meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content={OG_IMAGE} />
-<meta property="twitter:title" content={pageTitle} />
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
