@@ -22,7 +22,7 @@ const jsonLd =
     ? {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
-        author: { '@type': 'Person', name: SITE_AUTHOR },
+        author: { '@type': 'Person', name: SITE_AUTHOR, url: SITE_URL, sameAs: [MASTODON_URL] },
         dateModified: pubDate ? laIso(pubDate) : undefined,
         datePublished: pubDate ? laIso(pubDate) : undefined,
         description: desc,
@@ -34,7 +34,7 @@ const jsonLd =
     : {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        author: { '@type': 'Person', name: SITE_AUTHOR },
+        author: { '@type': 'Person', name: SITE_AUTHOR, url: SITE_URL, sameAs: [MASTODON_URL] },
         description: SITE_DESCRIPTION,
         headline: pageTitle,
         image: { width: 1000, height: 1000, url: OG_IMAGE, '@type': 'imageObject' },
@@ -56,10 +56,9 @@ const jsonLd =
 <meta property="og:image" content={OG_IMAGE} />
 <meta property="og:image:height" content="1000" />
 <meta property="og:image:width" content="1000" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content={`${SITE_NAME} logo`} />
 <meta property="og:type" content={type} />
 <meta name="fediverse:creator" content={MASTODON_HANDLE} />
 {pubDate && <meta property="article:published_time" content={laIso(pubDate)} />}
-<meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content={OG_IMAGE} />
-<meta property="twitter:title" content={pageTitle} />
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
