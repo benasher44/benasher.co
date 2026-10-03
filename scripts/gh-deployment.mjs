@@ -59,7 +59,8 @@ function parseArgs(argv) {
 // either way and return the tag we care about
 function payloadPr(deployment) {
   if (deployment.payload == null) return undefined;
-  const p = typeof deployment.payload === 'string' ? JSON.parse(deployment.payload) : deployment.payload;
+  const p =
+    typeof deployment.payload === 'string' ? JSON.parse(deployment.payload) : deployment.payload;
   return typeof p?.pr === 'number' ? p.pr : undefined;
 }
 
@@ -113,7 +114,9 @@ function cleanup(args) {
     }
   }
   if (failures.length) {
-    throw new Error(`failed to remove ${failures.length}/${targets.length} deployment(s):\n${failures.join('\n')}`);
+    throw new Error(
+      `failed to remove ${failures.length}/${targets.length} deployment(s):\n${failures.join('\n')}`,
+    );
   }
   console.log(`removed ${targets.length} ${args.environment} deployment(s) tagged pr ${pr}`);
 }
