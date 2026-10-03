@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+    types: [opened, synchronize, reopened, closed]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -11,6 +12,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -51,3 +53,94 @@ jobs:
         run: corepack yarn spellcheck
       - name: build
         run: corepack yarn build
+      - name: Upload site build
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+          retention-days: 1 # the preview job consumes it right away
+
+  preview:
+    needs: build
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC federation into the benasher-co-previews role
+      pull-requests: write # the preview PR comment
+      deployments: write # the preview GitHub deployment record
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+      - name: Open preview deployment
+        id: deployment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "id=$(node scripts/gh-deployment.mjs create \
+            --environment previews \
+            --ref '${{ github.event.pull_request.head.sha }}' \
+            --transient \
+            --environment-url 'https://pr-${{ github.event.pull_request.number }}.previews.benasher.co/')" >> "$GITHUB_OUTPUT"
+      - name: Mark deployment in progress
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state in_progress
+      - name: Download site build
+        uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+      - name: Assume the previews deploy role
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::508021704277:role/benasher-co-previews
+          aws-region: us-west-2
+      - name: Deploy preview
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/deploy-preview.mjs deploy
+      - name: Mark deployment succeeded
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state success --environment-url 'https://pr-${{ github.event.pull_request.number }}.previews.benasher.co/'
+      - name: Mark deployment failed
+        if: failure() && steps.deployment.outputs.id != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state failure
+
+  preview-cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC federation into the benasher-co-previews role
+      pull-requests: write # the preview PR comment
+      deployments: write # mark the preview deployment inactive
+    steps:
+      # main, not the merge ref: the PR head may already be deleted post-merge,
+      # and remove only needs PR_NUMBER + the script (a merged PR runs main's
+      # copy, which is the contract from here on)
+      - name: Checkout repo
+        uses: actions/checkout@v7
+        with:
+          ref: main
+      - name: Assume the previews deploy role
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::508021704277:role/benasher-co-previews
+          aws-region: us-west-2
+      - name: Remove preview
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/deploy-preview.mjs remove
+      - name: Mark preview deployment inactive
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs deactivate --environment previews --ref '${{ github.event.pull_request.head.sha }}'

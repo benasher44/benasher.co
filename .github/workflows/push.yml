@@ -18,6 +18,7 @@ jobs:
     permissions:
       contents: read
       id-token: write # OIDC federation into the benasher-co-deploy role
+      deployments: write # the production GitHub deployment record
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
@@ -45,6 +46,20 @@ jobs:
         run: corepack yarn install --immutable
       - name: Build
         run: corepack yarn build
+      - name: Open production deployment
+        id: deployment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "id=$(node scripts/gh-deployment.mjs create \
+            --environment production \
+            --ref '${{ github.sha }}' \
+            --production \
+            --environment-url 'https://benasher.co/')" >> "$GITHUB_OUTPUT"
+      - name: Mark deployment in progress
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state in_progress
       - name: Assume the deploy role
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -54,3 +69,13 @@ jobs:
         env:
           AWS_CF_DISTRIBUTION_ID: E2FTU05IZTIYC9
         run: corepack yarn deploy
+      - name: Mark deployment succeeded
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state success --environment-url 'https://benasher.co/'
+      - name: Mark deployment failed
+        if: failure() && steps.deployment.outputs.id != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state failure
