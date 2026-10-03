@@ -6,4 +6,5 @@ export const SITE_AUTHOR = 'Ben Asher';
 export const SITE_DESCRIPTION = "Ben Asher's personal website and blog";
 export const OG_IMAGE = `${SITE_URL}/img/logo.png`;
 export const MASTODON_URL = 'https://mastodon.social/@benasher44';
+export const MASTODON_HANDLE = '@benasher44@mastodon.social';
 export const REPO_URL = 'https://github.com/benasher44/benasher.co';
