@@ -77,11 +77,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "id=$(node scripts/gh-deployment.mjs create \
+          id="$(node scripts/gh-deployment.mjs create \
             --environment previews \
             --ref '${{ github.event.pull_request.head.sha }}' \
             --transient \
-            --environment-url 'https://pr-${{ github.event.pull_request.number }}.previews.benasher.co/')" >> "$GITHUB_OUTPUT"
+            --environment-url 'https://pr-${{ github.event.pull_request.number }}.previews.benasher.co/')"
+          echo "id=$id" >> "$GITHUB_OUTPUT"
       - name: Mark deployment in progress
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

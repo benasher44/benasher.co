@@ -51,11 +51,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "id=$(node scripts/gh-deployment.mjs create \
+          id="$(node scripts/gh-deployment.mjs create \
             --environment production \
             --ref '${{ github.sha }}' \
             --production \
-            --environment-url 'https://benasher.co/')" >> "$GITHUB_OUTPUT"
+            --environment-url 'https://benasher.co/')"
+          echo "id=$id" >> "$GITHUB_OUTPUT"
       - name: Mark deployment in progress
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

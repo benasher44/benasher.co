@@ -14,6 +14,9 @@
 // Env: GH_TOKEN (required), GITHUB_REPOSITORY (set by Actions).
 
 import { execSync } from 'node:child_process';
+import { writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const REPO = process.env.GITHUB_REPOSITORY;
 
@@ -30,30 +33,42 @@ function usage() {
   process.exit(2);
 }
 
+const BOOL_FLAGS = new Set(['transient', 'production']);
+
 function parseArgs(argv) {
   const args = {};
-  for (let i = 0; i < argv.length; i += 2) {
+  for (let i = 0; i < argv.length; i++) {
     if (!argv[i].startsWith('--')) usage();
-    args[argv[i].slice(2)] = argv[i + 1];
+    const key = argv[i].slice(2);
+    if (BOOL_FLAGS.has(key)) {
+      args[key] = true;
+    } else {
+      args[key] = argv[i + 1];
+      i += 1;
+      if (args[key] === undefined) usage();
+    }
   }
   return args;
 }
 
 function create(args) {
-  const flags = [
-    `-F ref=${args.ref}`,
-    `-F environment=${args.environment}`,
+  const body = {
+    ref: args.ref,
+    environment: args.environment,
     // deployments created from workflow runs must not wait for other checks
     // (required_contexts would block) or try to merge (auto_merge)
-    '-F required_contexts=[]',
-    '-F auto_merge=false',
-    `-F production_environment=${args.production ? 'true' : 'false'}`,
-    args.transient ? '-F transient_environment=true' : null,
-    args['environment-url'] ? `-F environment_url=${args['environment-url']}` : null,
-  ]
-    .filter(Boolean)
-    .join(' ');
-  const id = gh(`api repos/${REPO}/deployments ${flags} --jq .id`).trim();
+    auto_merge: false,
+    required_contexts: [],
+    production_environment: Boolean(args.production),
+    transient_environment: Boolean(args.transient),
+  };
+  if (args['environment-url']) body.environment_url = args['environment-url'];
+  // POST via --input with a real JSON body: gh's -F doesn't parse `[]` into
+  // an empty array (it sends the literal string, which the API rejects with
+  // "is not an array or null")
+  const tmp = join(tmpdir(), `gh-deployment-create-${Date.now()}.json`);
+  writeFileSync(tmp, JSON.stringify(body));
+  const id = gh(`api repos/${REPO}/deployments --input ${tmp} --jq .id`).trim();
   console.log(id);
 }
 
