@@ -4,14 +4,17 @@
 // Environments page tracks production + previews.
 //
 //   gh-deployment.mjs create --environment production --ref <sha>
-//       [--production] [--transient]
+//       [--production] [--transient] [--payload '<json>']
 //     prints the deployment id (the preview/production URL goes on the
 //     deployment STATUSES — that is where GitHub reads it for the
 //     View deployment button — not on the create call)
 //   gh-deployment.mjs status --id <id> --state success|failure|in_progress
 //       [--environment-url URL]
-//   gh-deployment.mjs deactivate --environment previews --ref <sha>
-//     marks the newest deployment for that environment+sha inactive
+//   gh-deployment.mjs cleanup --environment E --pr N
+//     deactivates and DELETES every deployment for that environment whose
+//     payload tags pr N (previews are transient: one record accumulates per
+//     push, and ref/sha matching only reaches the newest — the payload tag
+//     reaches all of them)
 //
 // Env: GH_TOKEN (required), GITHUB_REPOSITORY (set by Actions).
 
@@ -27,9 +30,9 @@ const ghOut = (args) => gh(args, { stderr: 'inherit' });
 
 function usage() {
   console.error(
-    'usage: gh-deployment.mjs create --environment E --ref SHA [--production] [--transient]\n' +
+    'usage: gh-deployment.mjs create --environment E --ref SHA [--production] [--transient] [--payload JSON]\n' +
       '       gh-deployment.mjs status --id ID --state success|failure|in_progress [--environment-url URL]\n' +
-      '       gh-deployment.mjs deactivate --environment E --ref SHA',
+      '       gh-deployment.mjs cleanup --environment E --pr N',
   );
   process.exit(2);
 }
@@ -52,6 +55,15 @@ function parseArgs(argv) {
   return args;
 }
 
+// The list/create API round-trips payload as a JSON string; parse defensively
+// either way and return the tag we care about
+function payloadPr(deployment) {
+  if (deployment.payload == null) return undefined;
+  const p =
+    typeof deployment.payload === 'string' ? JSON.parse(deployment.payload) : deployment.payload;
+  return typeof p?.pr === 'number' ? p.pr : undefined;
+}
+
 function create(args) {
   const body = {
     ref: args.ref,
@@ -63,6 +75,7 @@ function create(args) {
     production_environment: Boolean(args.production),
     transient_environment: Boolean(args.transient),
   };
+  if (args.payload !== undefined) body.payload = args.payload;
   // POST via --input with a real JSON body: gh's -F doesn't parse `[]` into
   // an empty array (it sends the literal string, which the API rejects with
   // "is not an array or null")
@@ -78,17 +91,34 @@ function status(args) {
   console.log(`deployment ${args.id} -> ${args.state}`);
 }
 
-function deactivate(args) {
+function cleanup(args) {
+  const pr = Number(args.pr);
+  if (!Number.isInteger(pr) || pr <= 0) usage();
   const deployments = JSON.parse(
-    ghOut(`api "repos/${REPO}/deployments?environment=${args.environment}&sha=${args.ref}"`),
+    ghOut(`api "repos/${REPO}/deployments?environment=${args.environment}&per_page=100"`),
   );
-  if (!deployments.length) {
-    console.log('no deployment found to deactivate');
+  const targets = deployments.filter((d) => payloadPr(d) === pr);
+  if (!targets.length) {
+    console.log(`no ${args.environment} deployments tagged pr ${pr}`);
     return;
   }
-  const newest = deployments.sort((a, b) => b.id - a.id)[0];
-  ghOut(`api repos/${REPO}/deployments/${newest.id}/statuses -F state=inactive`);
-  console.log(`deployment ${newest.id} -> inactive`);
+  const failures = [];
+  for (const d of targets) {
+    try {
+      // the API rejects deleting an active deployment — set inactive first
+      ghOut(`api repos/${REPO}/deployments/${d.id}/statuses -F state=inactive`);
+      ghOut(`api -X DELETE repos/${REPO}/deployments/${d.id}`);
+      console.log(`deployment ${d.id} (${d.sha.slice(0, 7)}) deleted`);
+    } catch (e) {
+      failures.push(`deployment ${d.id} (${d.sha.slice(0, 7)}): ${e.message}`);
+    }
+  }
+  if (failures.length) {
+    throw new Error(
+      `failed to remove ${failures.length}/${targets.length} deployment(s):\n${failures.join('\n')}`,
+    );
+  }
+  console.log(`removed ${targets.length} ${args.environment} deployment(s) tagged pr ${pr}`);
 }
 
 if (!REPO) {
@@ -99,5 +129,5 @@ const [command] = process.argv.slice(2);
 const args = parseArgs(process.argv.slice(3));
 if (command === 'create') create(args);
 else if (command === 'status') status(args);
-else if (command === 'deactivate') deactivate(args);
+else if (command === 'cleanup') cleanup(args);
 else usage();

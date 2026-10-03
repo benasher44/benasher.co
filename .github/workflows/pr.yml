@@ -11,12 +11,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # one job, not two: the preview deploy needs nothing the build didn't
+  # already produce (node_modules + dist/ in the workspace) — a separate
+  # job paid a second runner, checkout, install, and an artifact round-trip
+  # just to run a small sync script
   build:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write # the spellcheck gate's PR comment
+      id-token: write # OIDC federation into the benasher-co-previews role
+      pull-requests: write # the spellcheck gate's + preview's PR comments
+      deployments: write # the preview GitHub deployment record
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
@@ -33,27 +39,6 @@ jobs:
         run: corepack yarn spellcheck
       - name: build
         run: corepack yarn build
-      - name: Upload site build
-        uses: actions/upload-artifact@v4
-        with:
-          name: site-dist
-          path: dist
-          retention-days: 1 # the preview job consumes it right away
-
-  preview:
-    needs: build
-    if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write # OIDC federation into the benasher-co-previews role
-      pull-requests: write # the preview PR comment
-      deployments: write # the preview GitHub deployment record
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v7
-      - name: Setup Node + install deps
-        uses: ./.github/actions/setup-deps
       # the deployment record is metadata; the preview is the product — a
       # record hiccup must not block the deploy, hence continue-on-error here
       # and the id guards on every later step
@@ -66,7 +51,8 @@ jobs:
           id="$(node scripts/gh-deployment.mjs create \
             --environment previews \
             --ref '${{ github.event.pull_request.head.sha }}' \
-            --transient)"
+            --transient \
+            --payload '{"pr": ${{ github.event.pull_request.number }}}')"
           echo "id=$id" >> "$GITHUB_OUTPUT"
       - name: Mark deployment in progress
         if: steps.deployment.outputs.id != ''
@@ -74,11 +60,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state in_progress
-      - name: Download site build
-        uses: actions/download-artifact@v4
-        with:
-          name: site-dist
-          path: dist
       - name: Assume the previews deploy role
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -108,7 +89,7 @@ jobs:
       contents: read
       id-token: write # OIDC federation into the benasher-co-previews role
       pull-requests: write # the preview PR comment
-      deployments: write # mark the preview deployment inactive
+      deployments: write # remove the PR's preview deployment records
     steps:
       # merged PRs: the merge commit (post-merge main content, has the
       # scripts); closed-but-unmerged PRs: the head sha (the branch may be
@@ -130,9 +111,9 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/deploy-preview.mjs remove
-      - name: Mark preview deployment inactive
+      - name: Remove preview deployment records
         if: always()
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node scripts/gh-deployment.mjs deactivate --environment previews --ref '${{ github.event.pull_request.head.sha }}'
+        run: node scripts/gh-deployment.mjs cleanup --environment previews --pr '${{ github.event.pull_request.number }}'
