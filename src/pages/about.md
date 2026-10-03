@@ -5,7 +5,7 @@ title: About
 
 ## Me
 
-After ten years of mobile development, I now lead engineering teams at Ashby, where we build software for people. I live in San Francisco, and in my spare time I tinker with automation — like the SQLite-powered analytics behind this blog and my [personal link shortener](https://bnshr.co).
+After ten years of mobile development, I now lead engineering teams at Ashby, where we build software for people. I live in San Francisco, and in my spare time I tinker, most recently on the SQLite-powered analytics behind this blog and my [personal link shortener](https://bnshr.co).
 
 You can find me on [mastodon.social](https://mastodon.social/@benasher44) or via email at hello @ this domain. You can find some of my work on [github](https://github.com/benasher44).
 
