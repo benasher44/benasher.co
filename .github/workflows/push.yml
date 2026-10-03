@@ -18,33 +18,34 @@ jobs:
     permissions:
       contents: read
       id-token: write # OIDC federation into the benasher-co-deploy role
+      deployments: write # the production GitHub deployment record
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24'
-      - name: Cache Yarn Cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.yarn/berry/cache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: ${{ runner.os }}-yarn-
-      - name: Cache node_modules
-        uses: actions/cache@v6
-        with:
-          path: |
-            node_modules
-            .yarn/install-state.gz
-          key: ${{ runner.os }}-nm-${{ hashFiles('yarn.lock') }}
-          restore-keys: ${{ runner.os }}-nm-
-      - name: Enable corepack
-        run: corepack enable
-      - name: Install deps
-        run: corepack yarn install --immutable
+      - name: Setup Node + install deps
+        uses: ./.github/actions/setup-deps
       - name: Build
         run: corepack yarn build
+      # the deployment record is metadata; the deploy is the product — a
+      # record hiccup must not block prod, hence continue-on-error here and
+      # the id guards on every later step
+      - name: Open production deployment
+        id: deployment
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          id="$(node scripts/gh-deployment.mjs create \
+            --environment production \
+            --ref '${{ github.sha }}' \
+            --production)"
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+      - name: Mark deployment in progress
+        if: steps.deployment.outputs.id != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state in_progress
       - name: Assume the deploy role
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -54,3 +55,13 @@ jobs:
         env:
           AWS_CF_DISTRIBUTION_ID: E2FTU05IZTIYC9
         run: corepack yarn deploy
+      - name: Mark deployment succeeded
+        if: success() && steps.deployment.outputs.id != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state success --environment-url 'https://benasher.co/'
+      - name: Mark deployment failed
+        if: failure() && steps.deployment.outputs.id != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/gh-deployment.mjs status --id '${{ steps.deployment.outputs.id }}' --state failure

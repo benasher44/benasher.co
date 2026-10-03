@@ -11,54 +11,13 @@
 // Exits 1 if any unknown words are found (add them to cspell.json "words").
 
 import { execSync, spawnSync } from 'node:child_process';
-import { writeFileSync, existsSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { existsSync } from 'node:fs';
+import { upsertComment } from './lib/gh-comment.mjs';
 
 const NODE = process.execPath;
 const YARN_RELEASE = '.yarn/releases/yarn-4.18.1.cjs';
 
 const COMMENT_HEADER = '## 📝 Spellcheck';
-const PR_NUMBER = process.env.PR_NUMBER;
-const REPO = process.env.GITHUB_REPOSITORY;
-
-function gh(args) {
-  return execSync(`gh ${args}`, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
-}
-
-// Upsert one comment on the PR (edit our last one if it exists, else create),
-// so repeat runs don't pile up separate comments.
-function upsertComment(body) {
-  if (!PR_NUMBER || !process.env.GH_TOKEN || !REPO) return;
-  const tmpJson = join(tmpdir(), `spellcheck-comment-${PR_NUMBER}.json`);
-  const tmpMd = join(tmpdir(), `spellcheck-comment-${PR_NUMBER}.md`);
-  writeFileSync(tmpJson, JSON.stringify({ body }));
-  writeFileSync(tmpMd, body);
-  try {
-    const comments = JSON.parse(gh(`api repos/${REPO}/issues/${PR_NUMBER}/comments`));
-    // includes, not startsWith: self-heals the one malformed comment posted
-    // before the create path stopped sending the raw JSON envelope
-    const mine = comments.filter((c) => c.body.includes(COMMENT_HEADER)).map((c) => c.id);
-    if (mine.length > 0) {
-      gh(
-        `api repos/${REPO}/issues/${PR_NUMBER}/comments/${mine[mine.length - 1]} -X PATCH --input ${tmpJson}`,
-      );
-      console.log(`updated spellcheck comment on PR #${PR_NUMBER}`);
-      return;
-    }
-  } catch (e) {
-    console.log(
-      `could not look up existing comments (${e.message.split('\n')[0]}), posting a new one`,
-    );
-  }
-  try {
-    // --body-file takes raw markdown, not a JSON envelope
-    gh(`pr comment ${PR_NUMBER} --body-file ${tmpMd}`);
-    console.log(`posted spellcheck comment on PR #${PR_NUMBER}`);
-  } catch (e) {
-    console.log(`failed to post PR comment: ${e.message.split('\n')[0]}`);
-  }
-}
 
 function changedMarkdownFiles() {
   const out = execSync('git diff --name-only origin/main...HEAD -- "*.md"', {
@@ -107,7 +66,7 @@ if (byFile.size > 0) {
   }
   lines.push('Add deliberate words to `cspell.json` "words", or fix the spelling.');
   const body = lines.join('\n');
-  upsertComment(body);
+  upsertComment({ header: COMMENT_HEADER, label: 'spellcheck', body });
   console.log(body);
   process.exit(1);
 }
@@ -121,5 +80,9 @@ if (res.status !== 0) {
   process.exit(res.status ?? 1);
 }
 
-upsertComment(`${COMMENT_HEADER}\n\n✅ All clean across ${files.length} file(s).`);
+upsertComment({
+  header: COMMENT_HEADER,
+  label: 'spellcheck',
+  body: `${COMMENT_HEADER}\n\n✅ All clean across ${files.length} file(s).`,
+});
 console.log(`spellcheck: ${files.length} file(s) clean`);
