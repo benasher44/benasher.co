@@ -1,12 +1,18 @@
 name: 'Setup Node + install deps'
-description: 'Node 24, yarn berry + node_modules caches, corepack enable, immutable install'
+description: 'Node 26, yarn berry + node_modules caches, corepack enable, immutable install'
 runs:
   using: composite
   steps:
     - name: Setup Node
       uses: actions/setup-node@v7
       with:
-        node-version: '24'
+        node-version: '26'
+    - name: Enable corepack
+      # node 26 no longer bundles corepack; install it before the yarn shims
+      run: |
+        npm install -g corepack@latest
+        corepack enable
+      shell: bash
     - name: Cache Yarn Cache
       uses: actions/cache@v6
       with:
@@ -21,9 +27,6 @@ runs:
           .yarn/install-state.gz
         key: ${{ runner.os }}-nm-${{ hashFiles('yarn.lock') }}
         restore-keys: ${{ runner.os }}-nm-
-    - name: Enable corepack
-      run: corepack enable
-      shell: bash
     - name: Install deps
       run: corepack yarn install --immutable
       shell: bash
