@@ -47,9 +47,21 @@ export function laIso(date: Date): string {
 // Liquid's date_to_string: "09 Feb 2020"
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export function formatDateString(date: Date): string {
+// Dotted date for the index gutter: "2020.08.16"
+export function formatDotted(date: Date): string {
   const { year, month, day } = laParts(date);
-  return `${String(day).padStart(2, '0')} ${MONTHS[month]} ${year}`;
+  return `${year}.${String(month + 1).padStart(2, '0')}.${String(day).padStart(2, '0')}`;
+}
+
+// Compact index date, month abbreviated and lowercase: "apr 04"
+export function formatIndexDate(date: Date): string {
+  const { month, day } = laParts(date);
+  return `${MONTHS[month].toLowerCase()} ${String(day).padStart(2, '0')}`;
+}
+
+// Year in site-local time — the homepage groups its index by this.
+export function laYear(date: Date): number {
+  return laParts(date).year;
 }
 
 // Liquid "%b %e, %Y" (footer "last updated"): "Sep 28, 2026"

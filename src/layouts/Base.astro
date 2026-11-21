@@ -14,7 +14,7 @@ import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_NAME, MASTODON_URL, REPO_URL } from
 // the css, so real typography lands ~1 RTT sooner on first visits.
 // Content-hashed by vite (same asset the css references — no dupes).
 import interLatinUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
-import frauncesLatinUrl from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+import frauncesLatinUrl from '@fontsource-variable/fraunces/files/fraunces-latin-full-normal.woff2?url';
 import frauncesItalicUrl from '@fontsource-variable/fraunces/files/fraunces-latin-wght-italic.woff2?url';
 import jetbrainsMonoUrl from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 
@@ -86,10 +86,11 @@ const now = new Date(); // build time
     </script>
   </head>
   <body>
+    <div class="frame" aria-hidden="true"></div>
     <a class="skip" href="#main">Skip to content</a>
     <header>
       <nav aria-label="Main">
-        <a class="brand" href="/">benasher.co</a>
+        <a class="brand" href="/">benasher<span class="dot">.</span>co</a>
         <div class="nav-links">
           {
             nav.map((item) => (
