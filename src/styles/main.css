@@ -420,12 +420,13 @@ body > main {
     'WONK' 1;
 }
 
-.masthead .intro {
-  margin: 1.35rem 0 0;
-  max-width: 46ch;
+.masthead .facts {
+  margin: 1.1rem 0 0;
+  font-family: var(--site-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
   color: var(--site-muted);
-  font-size: 0.97rem;
-  line-height: 1.6;
 }
 
 /* ——— post index ——— */
