@@ -1,11 +1,11 @@
 /*
  * main.css — benasher.co
  *
- * Layer 1: Pico CSS (classless) — pre-tested semantic HTML styling,
- *          responsive spacing, light/dark color-scheme machinery.
- * Layer 2: brand tokens + site-specific components (cards, pills,
- *          buttons). Overriding a *variable* beats fighting a
- *          framework, so brand colors go through Pico's own vars.
+ * Layer 1: Pico CSS (classless) — semantic HTML defaults, light/dark
+ *          color-scheme machinery, forms.
+ * Layer 2: the "field notebook" design (sketch 004): a hairline page frame,
+ *          a mono metadata gutter, a ruled post index, and prose that sits
+ *          off the gutter rather than centred.
  *
  * Dark mode: system preference by default; an explicit data-theme
  * attribute (set before paint by the snippet in Base.astro) wins.
@@ -13,7 +13,12 @@
 
 /* ——— fonts (self-hosted, content-hashed by astro) ——— */
 @import '@fontsource-variable/inter';
-@import '@fontsource-variable/fraunces';
+/* fraunces ships one file per axis combination. The "full" face carries
+   wght + opsz + SOFT + WONK: the design leans on opsz (display vs text
+   optical sizing) and WONK (the wonky display alternates) for headings,
+   so the wght-only face is not enough. Cost: 121 KB latin vs 37 KB for
+   wght-only, immutable-cached. */
+@import '@fontsource-variable/fraunces/full.css';
 @import '@fontsource-variable/fraunces/wght-italic.css';
 @import '@fontsource-variable/jetbrains-mono';
 
@@ -24,9 +29,9 @@
    fallbacks (Arial / Georgia / Menlo), @next/font's formula: size-adjust =
    avgWidth ratio; overrides = main metric/upm divided by the size-adjust
    ratio; descent-override is the descent magnitude (spec caps it at [0,∞]).
-   Fraunces has normal + italic faces (headings vs blockquotes — different
-   advances). If the fontsource majors ever bump, recompute — a stale face
-   just re-introduces swap reflow, it never affects loaded-font rendering. */
+   Caveat: the Fraunces figures were measured at the face's default optical
+   size, so at large opsz settings (headings) the fallback is approximate.
+   It only affects the swap window, never loaded-font rendering. */
 @font-face {
   font-family: 'Inter Fallback';
   font-style: normal;
@@ -76,7 +81,8 @@
 /* pin pico's fluid root scaling. pico bumps --pico-font-size up to 131.25%
    at wide breakpoints (media-query :root rules); the doubled :root:root
    specificity wins regardless of bundle order, since @imports hoist ahead
-   of this file's own rules. root = 16px, matching the 003 sketch. */
+   of this file's own rules. root = 16px, and 100% (not 16px) is deliberate:
+   the site respects the browser's default font size. */
 :root:root {
   --pico-font-size: 100%;
 }
@@ -88,19 +94,26 @@
   --site-font-mono:
     'JetBrains Mono Variable', 'JetBrains Mono Fallback', ui-monospace, SFMono-Regular, Menlo,
     monospace;
+
+  /* layout: the notebook gutter and the page frame inset */
+  --site-gutter: 104px;
+  --site-frame-inset: 13px;
+  --site-shell: 1120px;
+  --site-measure: 64ch;
 }
 
 :root {
-  /* site tokens (the 003 sketch) */
-  --site-bg: #fcfcfb;
-  --site-surface: #f5f6f5;
-  --site-text: #181a1b;
-  --site-muted: #676d6c;
+  /* site tokens */
+  --site-bg: #fbfaf6;
+  --site-surface: #f2efe6;
+  --site-text: #191a17;
+  --site-muted: #6b6a62;
   --site-accent: #0d6e5f;
-  --site-hairline: #e5e6e4;
-  --site-code-bg: #f0f1f0;
-  --site-pre-bg: #121514;
-  --site-pre-text: #e2e6e4;
+  --site-hairline: #dcd8cc;
+  --site-hairline-strong: #b9b3a3;
+  --site-code-bg: #eeece3;
+  --site-pre-bg: #141715;
+  --site-pre-text: #e6e6e1;
   --site-accent-soft-bg: color-mix(in srgb, var(--site-accent) 8%, transparent);
   --site-accent-soft-border: color-mix(in srgb, var(--site-accent) 35%, transparent);
   --site-toggle-border: var(--site-hairline);
@@ -134,26 +147,28 @@
 
 @media only screen and (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --site-bg: #121514;
-    --site-surface: #181b1a;
-    --site-text: #e8eae8;
-    --site-muted: #9aa19e;
+    --site-bg: #0f1211;
+    --site-surface: #151917;
+    --site-text: #dcd9cf;
+    --site-muted: #8b8a80;
     --site-accent: #4fc2ae;
-    --site-hairline: #242827;
-    --site-code-bg: #1b1f1e;
+    --site-hairline: #252a27;
+    --site-hairline-strong: #3a403c;
+    --site-code-bg: #1a1f1d;
     --site-pre-bg: #090b0a;
     --site-pre-text: #e2e6e4;
   }
 }
 
 [data-theme='dark'] {
-  --site-bg: #121514;
-  --site-surface: #181b1a;
-  --site-text: #e8eae8;
-  --site-muted: #9aa19e;
+  --site-bg: #0f1211;
+  --site-surface: #151917;
+  --site-text: #dcd9cf;
+  --site-muted: #8b8a80;
   --site-accent: #4fc2ae;
-  --site-hairline: #242827;
-  --site-code-bg: #1b1f1e;
+  --site-hairline: #252a27;
+  --site-hairline-strong: #3a403c;
+  --site-code-bg: #1a1f1d;
   --site-pre-bg: #090b0a;
   --site-pre-text: #e2e6e4;
 }
@@ -181,20 +196,38 @@
   color-scheme: dark;
 }
 
-/* ——— layer 2b: brand components ——— */
+/* ——— layer 2b: the notebook ——— */
 
-/* readable prose column inside pico's responsive container */
-body > header,
-body > main,
-body > footer {
-  max-width: 46rem;
-  margin-inline: auto;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
   font-family: var(--site-font-sans);
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.6;
+  background: var(--site-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* one container for header, main and footer so every hairline lines up */
+body > header,
+body > main,
+body > footer {
+  max-width: var(--site-shell);
+  margin-inline: auto;
+  padding-inline: 40px;
+}
+
+/* the frame: a hairline drawn inside the viewport, purely decorative */
+.frame {
+  position: fixed;
+  inset: var(--site-frame-inset);
+  border: 1px solid var(--site-hairline);
+  pointer-events: none;
+  z-index: 5;
 }
 
 h1,
@@ -204,8 +237,8 @@ h4,
 h5,
 h6 {
   font-family: var(--site-font-serif);
-  letter-spacing: -0.02em;
-  font-weight: 600;
+  font-weight: 400;
+  letter-spacing: -0.018em;
 }
 
 code,
@@ -234,30 +267,35 @@ pre {
   background: var(--site-accent);
   color: #fff;
   padding: 0.5rem 1rem;
-  z-index: 10;
+  z-index: 30;
 }
 
 .skip:focus {
   left: 0;
 }
 
-/* ——— nav ——— */
+/* ——— header / nav ——— */
 body > header nav {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
+  gap: 1.5rem;
   /* right padding reserves corner space for the floating theme toggle */
-  padding: 1.4rem 3.2rem 1.1rem 0;
-  border-bottom: 1px solid var(--site-hairline);
+  padding: 2.6rem 3.4rem 0.85rem 0;
+  border-bottom: 1px solid var(--site-hairline-strong);
 }
 
 .brand {
-  font-family: var(--site-font-serif);
-  font-weight: 600;
-  font-size: 1.3rem;
-  letter-spacing: -0.01em;
+  font-family: var(--site-font-mono);
+  font-weight: 500;
+  font-size: 0.94rem;
+  letter-spacing: 0.01em;
   color: var(--site-text);
   text-decoration: none;
+}
+
+.brand .dot {
+  color: var(--site-accent);
 }
 
 .brand:hover {
@@ -266,21 +304,20 @@ body > header nav {
 
 .nav-links {
   display: flex;
-  gap: 0.6rem;
-  align-items: center;
+  gap: 1.5rem;
+  align-items: baseline;
 }
 
 .nav-links a {
-  font-family: var(--site-font-sans);
-  font-weight: 600;
-  font-size: 0.84rem;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  font-family: var(--site-font-mono);
+  font-weight: 400;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
   color: var(--site-muted);
   text-decoration: none;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
 }
 
 .nav-links a:hover {
@@ -288,25 +325,25 @@ body > header nav {
 }
 
 .nav-links a[aria-current='page'] {
-  color: var(--site-accent);
-  border-color: var(--site-accent-soft-border);
-  background: var(--site-accent-soft-bg);
+  color: var(--site-text);
+  background: none;
+  border: 0;
 }
 
-/* theme toggle — floats at the page's top-right corner, clear of the nav */
+/* theme toggle — floats at the page's top-right corner, inside the frame */
 #theme-toggle {
   position: fixed;
-  top: 0.9rem;
-  right: 1rem;
+  top: calc(var(--site-frame-inset) + 0.55rem);
+  right: calc(var(--site-frame-inset) + 0.55rem);
   z-index: 20;
-  width: 2.3rem;
-  height: 2.3rem;
+  width: 2rem;
+  height: 2rem;
   display: grid;
   place-items: center;
   padding: 0;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--site-bg);
-  border: 1px solid var(--site-toggle-border);
+  border: 1px solid var(--site-hairline);
   color: var(--site-muted);
   cursor: pointer;
   font-size: 0.9rem;
@@ -323,8 +360,8 @@ body > header nav {
 /* icon swap is pure css off data-theme (which the no-flash script always
    sets explicitly); the button hides entirely for no-js visitors */
 #theme-toggle svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
 }
 
 html[data-theme='dark'] #theme-toggle .icon-moon {
@@ -339,57 +376,164 @@ html:not([data-theme]) #theme-toggle {
   display: none;
 }
 
-/* ——— pills & buttons ——— */
-.pill {
-  display: inline-block;
-  font-family: var(--site-font-sans);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1;
-  padding: 0.28rem 0.65rem;
-  border-radius: 999px;
-  border: 1px solid var(--site-accent-soft-border);
-  background: var(--site-accent-soft-bg);
-  color: var(--site-accent);
+/* ——— main ——— */
+body > main {
+  padding-top: 0;
 }
 
-.pill--ghost {
-  border-color: var(--site-hairline);
-  background: transparent;
+/* ——— masthead (homepage) ——— */
+.masthead {
+  display: grid;
+  grid-template-columns: var(--site-gutter) minmax(0, 1fr);
+  gap: 0 2rem;
+  padding: 4rem 0 2.1rem;
+}
+
+.masthead .label {
+  font-family: var(--site-font-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--site-muted);
+  padding-top: 0.95rem;
 }
 
-.btn {
-  display: inline-block;
-  font-size: 0.84rem;
-  font-weight: 600;
-  line-height: 1;
-  padding: 0.55rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--site-hairline);
+.masthead h1 {
+  margin: 0;
+  font-size: clamp(2.35rem, 4.6vw, 3.85rem);
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  font-variation-settings:
+    'opsz' 100,
+    'SOFT' 20,
+    'WONK' 1;
+  max-width: 19ch;
+}
+
+.masthead h1 em {
+  font-style: italic;
+  color: var(--site-accent);
+  font-variation-settings:
+    'opsz' 100,
+    'SOFT' 40,
+    'WONK' 1;
+}
+
+.masthead .intro {
+  margin: 1.35rem 0 0;
+  max-width: 46ch;
+  color: var(--site-muted);
+  font-size: 0.97rem;
+  line-height: 1.6;
+}
+
+/* ——— post index ——— */
+.year {
+  display: grid;
+  grid-template-columns: var(--site-gutter) minmax(0, 1fr);
+  gap: 0 2rem;
+  padding-top: 2.6rem;
+}
+
+.year .y {
+  margin: 0;
+  font-family: var(--site-font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--site-muted);
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--site-hairline-strong);
+}
+
+.year ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--site-hairline-strong);
+}
+
+.year li {
+  border-bottom: 1px solid var(--site-hairline);
+  transition: background-color 0.12s ease;
+}
+
+.year li:hover {
+  background: var(--site-accent-soft-bg);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) 92px;
+  gap: 0 1.25rem;
+  align-items: baseline;
+  padding: 1.05rem 0 1rem;
+  text-decoration: none;
+}
+
+.row .d {
+  font-family: var(--site-font-mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--site-muted);
+  padding-top: 0.35rem;
+}
+
+.row .t {
+  margin: 0;
+  font-family: var(--site-font-serif);
+  font-size: 1.44rem;
+  font-weight: 400;
+  line-height: 1.22;
+  letter-spacing: -0.008em;
+  font-variation-settings:
+    'opsz' 24,
+    'SOFT' 10;
+}
+
+.row .t a {
   color: var(--site-text);
   text-decoration: none;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease;
 }
 
-.btn:hover {
-  border-color: var(--site-accent);
+.year li:hover .t a {
   color: var(--site-accent);
-  text-decoration: none;
 }
 
-/* homepage list: breathing room between the nav hairline and first card */
-body > main {
-  padding-top: 2.2rem;
+.row .t .part {
+  color: var(--site-muted);
+  font-size: 0.72em;
+  font-variation-settings:
+    'opsz' 14,
+    'SOFT' 10;
 }
 
-/* ——— post cards ——— */
-/* pico styles every <article> as a widget card; prose pages render plain,
-   and our .card is a flat hairline surface (no pico shadow) */
-body > main > article:not(.card) {
+.row .m {
+  font-family: var(--site-font-mono);
+  font-size: 0.66rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: var(--site-muted);
+  text-align: right;
+}
+
+.row .dek {
+  grid-column: 2 / 4;
+  margin: 0.4rem 0 0;
+  color: var(--site-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  max-width: 62ch;
+}
+
+/* ——— article ——— */
+/* pico styles every <article> as a widget card and gives article>header its
+   own chrome (bg, radius, negative margins). Prose pages and the article
+   view both neutralize it here — if a page suddenly shows a mystery panel,
+   check for a bare <article> or <header> that lost this. */
+body > main > article {
   background: none;
   box-shadow: none;
   border-radius: 0;
@@ -398,128 +542,172 @@ body > main > article:not(.card) {
 }
 
 body > main > article > header {
-  margin: 0 0 1.8rem;
-  padding: 0;
   background: none;
   border: 0;
-}
-
-article.card {
-  border: 1px solid var(--site-hairline);
-  border-radius: 12px;
-  background: var(--site-surface);
+  border-radius: 0;
   box-shadow: none;
-  padding: 1.55rem 1.7rem 1.45rem;
-  margin-bottom: 1rem;
-  transition: border-color 0.15s ease;
+  margin: 0;
+  padding: 0;
 }
 
-article.card:hover {
-  border-color: color-mix(in srgb, var(--site-accent) 45%, var(--site-hairline));
+.article-head {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 0 2rem;
+  padding: 3.6rem 0 0;
 }
 
-article.card h2 {
-  font-size: 1.85rem;
-  line-height: 1.16;
-  margin-bottom: 0.6rem;
+/* the gutter: stacked mono metadata, aligned with the title's cap height */
+.gutter-meta {
+  font-family: var(--site-font-mono);
+  font-size: 0.63rem;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+  color: var(--site-muted);
+  padding-top: 0.75rem;
 }
 
-article.card h2 a {
+.gutter-meta time,
+.gutter-meta span {
+  display: block;
+  white-space: nowrap;
+}
+
+.gutter-meta time {
   color: var(--site-text);
-  text-decoration: none;
-  background-image: linear-gradient(var(--site-accent), var(--site-accent));
-  background-repeat: no-repeat;
-  background-size: 0% 2px;
-  background-position: 0 96%;
-  transition: background-size 0.22s ease;
-}
-
-article.card h2 a:hover {
-  color: var(--site-text);
-  background-size: 100% 2px;
-}
-
-.meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem 0.8rem;
-  align-items: center;
-  font-family: var(--site-font-sans);
   font-weight: 500;
-  font-size: 0.8rem;
   letter-spacing: 0.02em;
+}
+
+.gutter-meta span {
+  margin-top: 0.6rem;
+}
+
+.article-head h1 {
+  margin: 0;
+  font-size: clamp(2.1rem, 3.9vw, 3.25rem);
+  line-height: 1.04;
+  letter-spacing: -0.022em;
+  font-variation-settings:
+    'opsz' 96,
+    'SOFT' 20,
+    'WONK' 1;
+  max-width: 22ch;
+}
+
+.article-head .dek {
+  margin: 1.15rem 0 0;
+  font-size: 1.09rem;
+  line-height: 1.55;
   color: var(--site-muted);
-  margin-bottom: 0.9rem;
+  max-width: 54ch;
 }
 
-article.card .excerpt {
-  color: var(--site-muted);
-  margin-bottom: 1.05rem;
+.article-head .rule {
+  margin: 2.1rem 0 0;
+  border: 0;
+  border-top: 1px solid var(--site-hairline-strong);
 }
 
-article.card .more {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--site-accent);
-  text-decoration: none;
+.article-body {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 0 2rem;
 }
 
-article.card .more:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+/* prose: 64ch measure, sitting to the right of the gutter */
+.prose {
+  max-width: var(--site-measure);
+  padding: 2.1rem 0 1.2rem;
+  counter-reset: section;
 }
 
-/* ——— article view ——— */
-.article-header h1 {
-  font-weight: 700;
-  font-size: clamp(2.1rem, 5.5vw, 2.8rem);
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  margin-bottom: 0.9rem;
+.prose p {
+  margin: 0 0 1.35rem;
+  font-size: 1.03rem;
+  line-height: 1.68;
 }
 
-.article-header .meta {
-  padding-bottom: 1.3rem;
-  border-bottom: 1px solid var(--site-hairline);
-  margin-bottom: 1.8rem;
-}
-
-/* section tick: short accent rule above h2s in prose */
-article:not(.card) h2 {
+.prose h2 {
   position: relative;
-  padding-top: 0.95rem;
+  margin: 2.9rem 0 0.9rem;
+  font-size: 1.7rem;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+  font-variation-settings:
+    'opsz' 32,
+    'SOFT' 10;
+  scroll-margin-top: 2.5rem;
 }
 
-article:not(.card) h2::before {
-  content: '';
+/* section numbers live in the gutter, outside the measure. The offset is the
+   gutter column (132px) plus its gap (2rem). */
+.prose h2::before {
+  counter-increment: section;
+  content: counter(section, decimal-leading-zero);
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 1.7rem;
-  height: 2px;
-  background: var(--site-accent);
-  border-radius: 1px;
+  left: calc(-132px - 2rem);
+  width: 132px;
+  font-family: var(--site-font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  line-height: 2.4;
+  letter-spacing: 0.08em;
+  color: var(--site-accent);
 }
 
-article blockquote {
+.prose a {
+  color: var(--site-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--site-accent) 40%, transparent);
+}
+
+.prose a:hover {
+  text-decoration-color: var(--site-accent);
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 1.35rem;
+  padding-left: 1.25rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose blockquote {
+  margin: 1.9rem 0;
+  padding: 0 0 0 1.35rem;
+  border-left: 2px solid var(--site-accent);
+  background: none;
+  border-radius: 0;
   font-family: var(--site-font-serif);
   font-style: italic;
   font-weight: 400;
-  font-size: 1.24rem;
-  line-height: 1.55;
-  border-left: 2px solid var(--site-accent);
-  background: var(--site-surface);
-  border-radius: 0 10px 10px 0;
-  padding: 0.9rem 1.3rem;
+  font-size: 1.18rem;
+  line-height: 1.5;
+  font-variation-settings:
+    'opsz' 24,
+    'SOFT' 40,
+    'WONK' 1;
 }
 
-article pre {
+.prose blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.prose pre {
   position: relative;
   /* no !important needed: defaultColor:false keeps shiki from inlining a bg */
   background-color: var(--site-pre-bg);
   color: var(--site-pre-text);
-  padding: 1.15rem 1.3rem;
-  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  border-radius: 0;
+  border-left: 2px solid var(--site-accent);
+  margin: 0 0 1.5rem;
 }
 
 /* token colors: shiki emits --shiki-dark custom props (defaultColor:false),
@@ -534,32 +722,145 @@ pre[data-language]::before {
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.3rem 0.7rem;
-  border-bottom-left-radius: 8px;
+  padding: 0.28rem 0.65rem;
+  border-bottom-left-radius: 0;
   background: color-mix(in srgb, var(--site-accent) 16%, transparent);
   color: var(--site-accent);
+}
+
+.prose :not(pre) > code {
+  font-size: 0.86em;
+  background: var(--site-code-bg);
+  color: var(--site-text);
+  padding: 0.1rem 0.3rem;
+}
+
+.article-foot {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 0 2rem;
+  margin-top: 2.1rem;
+}
+
+.article-foot .inner {
+  border-top: 1px solid var(--site-hairline-strong);
+  padding-top: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--site-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--site-muted);
 }
 
 .endlinks {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
+  gap: 0.6rem;
   align-items: center;
-  margin-top: 2.2rem;
+}
+
+.btn {
+  display: inline-block;
+  font-family: var(--site-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  padding: 0.55rem 0.8rem;
+  border-radius: 0;
+  border: 1px solid var(--site-hairline);
+  color: var(--site-text);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--site-accent);
+  color: var(--site-accent);
+  text-decoration: none;
+}
+
+/* ——— prose-only pages (about, 404) ——— */
+.page-head {
+  padding: 3.6rem 0 0;
+}
+
+.page-head h1 {
+  margin: 0 0 1.6rem;
+  font-size: clamp(2.1rem, 3.9vw, 3.25rem);
+  line-height: 1.04;
+  font-variation-settings:
+    'opsz' 96,
+    'SOFT' 20,
+    'WONK' 1;
+}
+
+.page-body {
+  max-width: var(--site-measure);
+  padding: 3.6rem 0 1.2rem;
+}
+
+/* when a page title already provides the top spacing, the body follows it */
+.page-head + .page-body {
+  padding-top: 1.4rem;
+}
+
+.page-body > :first-child {
+  margin-top: 0;
+}
+
+.page-body h2 {
+  margin: 2.6rem 0 0.9rem;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.page-body h3 {
+  margin: 2rem 0 0.7rem;
+  font-size: 1.24rem;
+  line-height: 1.25;
+}
+
+.page-body p,
+.page-body li {
+  font-size: 1.03rem;
+  line-height: 1.68;
+}
+
+.page-body a {
+  color: var(--site-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--site-accent) 40%, transparent);
 }
 
 /* ——— footer ——— */
 body > footer {
+  margin-top: 4.5rem;
   border-top: 1px solid var(--site-hairline);
-  padding: 1.7rem 0 3rem;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  padding: 1.3rem 0 3.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  font-family: var(--site-font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
   color: var(--site-muted);
+}
+
+body > footer p {
+  margin: 0;
 }
 
 body > footer a {
@@ -570,19 +871,113 @@ body > footer a:hover {
   color: var(--site-accent);
 }
 
-@media (max-width: 560px) {
-  article.card {
-    padding: 1.25rem 1.2rem 1.2rem;
+/* ——— responsive ——— */
+@media (max-width: 860px) {
+  :root {
+    --site-gutter: 0px;
   }
 
-  /* keep the nav clear of the floating toggle at phone widths */
+  body > header,
+  body > main,
+  body > footer {
+    padding-inline: 22px;
+  }
+
+  .frame {
+    display: none;
+  }
+
+  body > header nav {
+    padding: 1.7rem 2.8rem 0.8rem 0;
+  }
+
+  .masthead,
+  .year,
+  .article-head,
+  .article-body,
+  .article-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .masthead {
+    padding: 2.5rem 0 1.6rem;
+  }
+
+  .masthead .label {
+    padding: 0 0 0.75rem;
+  }
+
+  .year {
+    padding-top: 1.9rem;
+  }
+
+  .year .y {
+    padding: 0 0 0.7rem;
+    border-top: 0;
+  }
+
+  .row {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 0 1rem;
+  }
+
+  .row .m {
+    display: none;
+  }
+
+  .row .dek {
+    grid-column: 2 / 3;
+  }
+
+  .row .t {
+    font-size: 1.2rem;
+  }
+
+  .article-head {
+    padding-top: 2.2rem;
+  }
+
+  .gutter-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.9rem;
+    padding: 0 0 1rem;
+    border-bottom: 1px solid var(--site-hairline);
+    margin-bottom: 1.2rem;
+  }
+
+  .gutter-meta span {
+    margin-top: 0;
+  }
+
+  .article-head .rule {
+    display: none;
+  }
+
+  .prose {
+    padding-top: 1.4rem;
+  }
+
+  .prose h2::before {
+    position: static;
+    display: block;
+    width: auto;
+    margin-bottom: 0.15rem;
+    line-height: 1.6;
+  }
+
+  .article-foot {
+    margin-top: 1.6rem;
+  }
+}
+
+@media (max-width: 560px) {
   .nav-links {
-    gap: 0.25rem;
+    gap: 0.9rem;
   }
 
   .nav-links a {
-    padding: 0.3rem 0.5rem;
-    letter-spacing: 0.04em;
+    font-size: 0.74rem;
   }
 }
 

@@ -1,15 +1,47 @@
 ---
-// Homepage: all posts, newest first, card mode.
+// Homepage: masthead statement, then every post as a ruled index row,
+// grouped by year (newest first).
 // Post URLs are /<slug>/ derived from content-collection filenames
 // (see the benasher-co skill invariant — never title-slugify).
 import Base from '../layouts/Base.astro';
-import PostCard from '../components/PostCard.astro';
+import PostRow from '../components/PostRow.astro';
+import { laYear } from '../lib/dates';
 import { sortedPosts } from '../lib/posts';
 
 const posts = await sortedPosts();
+
+// group by site-local year, preserving the newest-first order
+const years = [...new Set(posts.map((post) => laYear(post.data.pubDate)))];
+const grouped = years.map((year) => ({
+  year,
+  posts: posts.filter((post) => laYear(post.data.pubDate) === year),
+}));
 ---
 
 <Base pageTitle="Blog" path="/" type="website">
-  <h1 class="sr-only">Blog</h1>
-  {posts.map((post) => <PostCard post={post} />)}
+  <section class="masthead">
+    <p class="label">who</p>
+    <div>
+      <h1>Notes from the seam between <em>Kotlin</em> and <em>Swift</em>.</h1>
+      <p class="intro">
+        I'm Ben Asher. I write about Kotlin multiplatform on iOS: interop, builds, debugging, and
+        the parts nobody documents.
+      </p>
+    </div>
+  </section>
+
+  {
+    grouped.map(({ year, posts: yearPosts }) => (
+      <section class="year" aria-labelledby={`year-${year}`}>
+        <p class="y" id={`year-${year}`}>
+          {year}
+        </p>
+        <ul>
+          {yearPosts.map((post) => (
+            <PostRow post={post} />
+          ))}
+        </ul>
+      </section>
+    ))
+  }
 </Base>

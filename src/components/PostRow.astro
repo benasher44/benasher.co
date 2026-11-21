@@ -1,0 +1,24 @@
+---
+// One row of the homepage index: date, title, read time, description.
+// The year grouping lives in index.astro, so the row only carries month/day.
+import { formatIndexDate, laIso } from '../lib/dates';
+import { readMinutes } from '../lib/posts';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const href = `/${post.id}/`;
+const minutes = readMinutes(post.body ?? '');
+---
+
+<li class="row">
+  <time class="d" datetime={laIso(post.data.pubDate)}>{formatIndexDate(post.data.pubDate)}</time>
+  <h2 class="t">
+    <a href={href}>{post.data.title}</a>{post.data.updated && <span class="part"> · rev</span>}
+  </h2>
+  <span class="m">{minutes ? `${minutes} min` : ''}</span>
+  <p class="dek">{post.data.description}</p>
+</li>

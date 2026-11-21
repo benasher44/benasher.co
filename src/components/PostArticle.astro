@@ -10,21 +10,37 @@ interface Props {
 }
 
 const { post } = Astro.props;
+const tags = post.data.tags ?? [];
 ---
 
 <article>
-  <header class="article-header">
-    <h1>{post.data.title}</h1>
+  <header class="article-head">
     <PostMeta
       pubDate={post.data.pubDate}
       minutes={readMinutes(post.body ?? '')}
       updated={post.data.updated}
     />
+    <div>
+      <h1>{post.data.title}</h1>
+      <p class="dek">{post.data.description}</p>
+      <hr class="rule" />
+    </div>
   </header>
-  <slot />
-  <div class="endlinks">
-    <a class="btn" href={MASTODON_URL}>Discuss on Mastodon</a>
-    <a class="btn" href={`${REPO_URL}/issues`}>Report an issue</a>
-    <a class="btn" href={REPO_URL}>Edit on GitHub</a>
+  <div class="article-body">
+    <div aria-hidden="true"></div>
+    <div class="prose">
+      <slot />
+    </div>
+  </div>
+  <div class="article-foot">
+    <div aria-hidden="true"></div>
+    <div class="inner">
+      <div>filed under {tags.join(' · ')}</div>
+      <div class="endlinks">
+        <a class="btn" href={MASTODON_URL}>Discuss on Mastodon</a>
+        <a class="btn" href={`${REPO_URL}/issues`}>Report an issue</a>
+        <a class="btn" href={REPO_URL}>Edit on GitHub</a>
+      </div>
+    </div>
   </div>
 </article>
