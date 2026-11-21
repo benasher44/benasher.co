@@ -420,8 +420,21 @@ body > main {
     'WONK' 1;
 }
 
+.masthead .tagline {
+  margin: 1.15rem 0 0;
+  font-family: var(--site-font-serif);
+  font-size: 1.32rem;
+  line-height: 1.42;
+  letter-spacing: -0.008em;
+  font-variation-settings:
+    'opsz' 24,
+    'SOFT' 30;
+  color: var(--site-muted);
+  max-width: 34ch;
+}
+
 .masthead .facts {
-  margin: 1.1rem 0 0;
+  margin: 1.15rem 0 0;
   font-family: var(--site-font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.09em;
