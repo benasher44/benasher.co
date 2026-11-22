@@ -424,10 +424,22 @@ body > main {
 
 /* ——— post index ——— */
 .year {
+  position: relative;
   display: grid;
   grid-template-columns: var(--site-gutter) minmax(0, 1fr);
   gap: 0 2rem;
-  padding-top: 2.6rem;
+  padding-top: 1.8rem;
+}
+
+/* one continuous hairline across the gutter and the list, so each year reads
+   as a ruled band rather than two disconnected stubs */
+.year::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--site-hairline-strong);
 }
 
 .year .y {
@@ -437,15 +449,13 @@ body > main {
   font-weight: 500;
   letter-spacing: 0.1em;
   color: var(--site-muted);
-  padding-top: 0.7rem;
-  border-top: 1px solid var(--site-hairline-strong);
+  padding-top: 0.8rem;
 }
 
 .year ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--site-hairline-strong);
 }
 
 .year li {
