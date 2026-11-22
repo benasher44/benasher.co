@@ -428,7 +428,14 @@ body > main {
   display: grid;
   grid-template-columns: var(--site-gutter) minmax(0, 1fr);
   gap: 0 2rem;
-  padding-top: 1.8rem;
+  /* space ABOVE the rule belongs to the gap between bands; space below it
+     belongs to the band, so the rule reads as belonging to what follows */
+  margin-top: 2.4rem;
+  padding-top: 0.9rem;
+}
+
+.masthead + .year {
+  margin-top: 0;
 }
 
 /* one continuous hairline across the gutter and the list, so each year reads
@@ -449,7 +456,7 @@ body > main {
   font-weight: 500;
   letter-spacing: 0.1em;
   color: var(--site-muted);
-  padding-top: 0.8rem;
+  padding-top: 0.55rem;
 }
 
 .year ul {
@@ -912,11 +919,12 @@ body > footer a:hover {
   }
 
   .year {
-    padding-top: 1.9rem;
+    margin-top: 2rem;
+    padding-top: 0.8rem;
   }
 
   .year .y {
-    padding: 0 0 0.7rem;
+    padding: 0 0 0.5rem;
     border-top: 0;
   }
 
