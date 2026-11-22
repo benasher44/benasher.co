@@ -386,7 +386,7 @@ body > main {
   display: grid;
   grid-template-columns: var(--site-gutter) minmax(0, 1fr);
   gap: 0 2rem;
-  padding: 4rem 0 2.1rem;
+  padding: 3.4rem 0 1.7rem;
 }
 
 .masthead .label {
@@ -396,45 +396,25 @@ body > main {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--site-muted);
-  padding-top: 0.95rem;
+  padding-top: 0.55rem;
 }
 
+/* deliberately not a hero: the page leads with what it is, at a size that
+   reads as a subtitle rather than a claim */
 .masthead h1 {
   margin: 0;
-  font-size: clamp(2.35rem, 4.6vw, 3.85rem);
-  line-height: 1.02;
-  letter-spacing: -0.022em;
+  font-size: clamp(1.8rem, 2.9vw, 2.5rem);
+  line-height: 1.16;
+  letter-spacing: -0.016em;
   font-variation-settings:
-    'opsz' 100,
-    'SOFT' 20,
+    'opsz' 40,
+    'SOFT' 30,
     'WONK' 1;
-  max-width: 19ch;
-}
-
-.masthead h1 em {
-  font-style: italic;
-  color: var(--site-accent);
-  font-variation-settings:
-    'opsz' 100,
-    'SOFT' 40,
-    'WONK' 1;
-}
-
-.masthead .tagline {
-  margin: 1.15rem 0 0;
-  font-family: var(--site-font-serif);
-  font-size: 1.32rem;
-  line-height: 1.42;
-  letter-spacing: -0.008em;
-  font-variation-settings:
-    'opsz' 24,
-    'SOFT' 30;
-  color: var(--site-muted);
-  max-width: 34ch;
+  max-width: 26ch;
 }
 
 .masthead .facts {
-  margin: 1.15rem 0 0;
+  margin: 1rem 0 0;
   font-family: var(--site-font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.09em;
