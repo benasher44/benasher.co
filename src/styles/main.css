@@ -381,45 +381,21 @@ body > main {
   padding-top: 0;
 }
 
-/* ——— masthead (homepage) ——— */
-.masthead {
-  display: grid;
-  grid-template-columns: var(--site-gutter) minmax(0, 1fr);
-  gap: 0 2rem;
-  padding: 3.4rem 0 1.7rem;
-}
-
-.masthead .label {
-  font-family: var(--site-font-mono);
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--site-muted);
-  padding-top: 0.55rem;
-}
-
-/* deliberately not a hero: the page leads with what it is, at a size that
-   reads as a subtitle rather than a claim */
-.masthead h1 {
+/* ——— index meta ——— */
+/* The page has no masthead: this one mono line is all the framing there is,
+   and it only states the count and the span. */
+.index-meta {
   margin: 0;
-  font-size: clamp(1.8rem, 2.9vw, 2.5rem);
-  line-height: 1.16;
-  letter-spacing: -0.016em;
-  font-variation-settings:
-    'opsz' 40,
-    'SOFT' 30,
-    'WONK' 1;
-  max-width: 26ch;
-}
-
-.masthead .facts {
-  margin: 1rem 0 0;
+  padding: 1.9rem 0 0;
   font-family: var(--site-font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--site-muted);
+}
+
+.index-meta + .year {
+  margin-top: 1.3rem;
 }
 
 /* ——— post index ——— */
@@ -432,10 +408,6 @@ body > main {
      belongs to the band, so the rule reads as belonging to what follows */
   margin-top: 2.4rem;
   padding-top: 0.9rem;
-}
-
-.masthead + .year {
-  margin-top: 0;
 }
 
 /* one continuous hairline across the gutter and the list, so each year reads
@@ -902,7 +874,6 @@ body > footer a:hover {
     padding: 1.7rem 2.8rem 0.8rem 0;
   }
 
-  .masthead,
   .year,
   .article-head,
   .article-body,
@@ -910,12 +881,8 @@ body > footer a:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .masthead {
-    padding: 2.5rem 0 1.6rem;
-  }
-
-  .masthead .label {
-    padding: 0 0 0.75rem;
+  .index-meta {
+    padding-top: 1.5rem;
   }
 
   .year {

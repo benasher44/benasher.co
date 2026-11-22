@@ -1,6 +1,7 @@
 ---
-// Homepage: masthead statement, then every post as a ruled index row,
-// grouped by year (newest first).
+// Homepage: no masthead. The page opens on the index itself — a count, a span,
+// then every post as a ruled row grouped by year (newest first). Nothing at
+// the top describes the site or the person writing it.
 // Post URLs are /<slug>/ derived from content-collection filenames
 // (see the benasher-co skill invariant — never title-slugify).
 import Base from '../layouts/Base.astro';
@@ -19,15 +20,11 @@ const grouped = years.map((year) => ({
 ---
 
 <Base pageTitle="Blog" path="/" type="website">
-  <section class="masthead">
-    <p class="label">writing</p>
-    <div>
-      <h1>An archive.</h1>
-      <p class="facts">
-        {posts.length} posts · {years[years.length - 1]}–{years[0]}
-      </p>
-    </div>
-  </section>
+  <h1 class="sr-only">Posts</h1>
+
+  <p class="index-meta">
+    {posts.length} posts · {years[years.length - 1]}–{years[0]}
+  </p>
 
   {
     grouped.map(({ year, posts: yearPosts }) => (
