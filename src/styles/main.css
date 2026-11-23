@@ -457,21 +457,20 @@ body > main {
 }
 
 /* the year is the band's only display type: it carries the hue, and at this
-   size it anchors the rows instead of floating in the margin */
+   size it anchors the rows instead of floating in the margin. Inter rather
+   than Fraunces — the display serif's old-style figures drop below the
+   baseline and its stroke contrast reads as a mistake at label size. */
 .year .y {
   margin: 0;
   align-self: start;
-  font-family: var(--site-font-serif);
-  font-size: 1.6rem;
-  font-weight: 400;
+  font-family: var(--site-font-sans);
+  font-size: 1.3rem;
+  font-weight: 500;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+  font-variant-numeric: lining-nums tabular-nums;
   color: var(--hue);
   padding-top: 0.5rem;
-  font-variation-settings:
-    'opsz' 60,
-    'SOFT' 20,
-    'WONK' 1;
 }
 
 .year ul {
@@ -937,7 +936,7 @@ body > footer a:hover {
   .year .y {
     padding: 0 0 0.5rem;
     border-top: 0;
-    font-size: 1.55rem;
+    font-size: 1.1rem;
   }
 
   .row {
