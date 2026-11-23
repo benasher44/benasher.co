@@ -110,6 +110,12 @@
   --site-secondary: #43443e;
   --site-muted: #6b6a62;
   --site-accent: #0d6e5f;
+  /* one hue per year band, cycled every four; the index reads as tabbed
+     dividers rather than a grey list. Kept in one family so they don't fight. */
+  --year-hue-1: #0d6e5f;
+  --year-hue-2: #a8562f;
+  --year-hue-3: #7d6a12;
+  --year-hue-4: #6b3f5e;
   --site-hairline: #dcd8cc;
   --site-hairline-strong: #b9b3a3;
   --site-code-bg: #eeece3;
@@ -154,6 +160,10 @@
     --site-secondary: #b3b0a5;
     --site-muted: #8b8a80;
     --site-accent: #4fc2ae;
+    --year-hue-1: #4fc2ae;
+    --year-hue-2: #d98a5f;
+    --year-hue-3: #c0a93f;
+    --year-hue-4: #c08ad0;
     --site-hairline: #252a27;
     --site-hairline-strong: #3a403c;
     --site-code-bg: #1a1f1d;
@@ -169,6 +179,10 @@
   --site-secondary: #b3b0a5;
   --site-muted: #8b8a80;
   --site-accent: #4fc2ae;
+  --year-hue-1: #4fc2ae;
+  --year-hue-2: #d98a5f;
+  --year-hue-3: #c0a93f;
+  --year-hue-4: #c08ad0;
   --site-hairline: #252a27;
   --site-hairline-strong: #3a403c;
   --site-code-bg: #1a1f1d;
@@ -413,6 +427,24 @@ body > main {
   padding-top: 0.9rem;
 }
 
+/* each band carries one hue, cycled every four years — the index reads as
+   tabbed dividers rather than one grey list */
+.year:nth-of-type(4n + 1) {
+  --hue: var(--year-hue-1);
+}
+
+.year:nth-of-type(4n + 2) {
+  --hue: var(--year-hue-2);
+}
+
+.year:nth-of-type(4n + 3) {
+  --hue: var(--year-hue-3);
+}
+
+.year:nth-of-type(4n) {
+  --hue: var(--year-hue-4);
+}
+
 /* one continuous hairline across the gutter and the list, so each year reads
    as a ruled band rather than two disconnected stubs */
 .year::before {
@@ -421,17 +453,25 @@ body > main {
   top: 0;
   left: 0;
   right: 0;
-  border-top: 1px solid var(--site-hairline-strong);
+  border-top: 1px solid color-mix(in srgb, var(--hue) 50%, var(--site-hairline-strong));
 }
 
+/* the year is the band's only display type: it carries the hue, and at this
+   size it anchors the rows instead of floating in the margin */
 .year .y {
   margin: 0;
-  font-family: var(--site-font-mono);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  color: var(--site-muted);
-  padding-top: 0.55rem;
+  align-self: start;
+  font-family: var(--site-font-serif);
+  font-size: 2.1rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--hue);
+  padding-top: 0.1rem;
+  font-variation-settings:
+    'opsz' 60,
+    'SOFT' 20,
+    'WONK' 1;
 }
 
 .year ul {
@@ -463,7 +503,7 @@ body > main {
   font-size: 0.72rem;
   line-height: 1.5;
   letter-spacing: 0.02em;
-  color: var(--site-muted);
+  color: var(--hue);
   padding-top: 0.35rem;
 }
 
@@ -897,6 +937,7 @@ body > footer a:hover {
   .year .y {
     padding: 0 0 0.5rem;
     border-top: 0;
+    font-size: 1.55rem;
   }
 
   .row {
