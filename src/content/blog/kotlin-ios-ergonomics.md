@@ -1,6 +1,6 @@
 ---
 'title': 'An Ergonomics Review of Using Kotlin from Swift'
-'description': 'A review of using Kotlin from Swift— good parts and those that could use improvement.'
+'description': 'A review of using Kotlin from Swift: good parts and those that could use improvement.'
 'pubDate': 2020-08-16T00:00:00-07:00
 'updated': 2021-02-16T00:00:00-08:00
 'tags': ['kotlin', 'multiplatform', 'kotlin/native', 'ios', 'swift']

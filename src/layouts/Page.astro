@@ -1,18 +1,34 @@
 ---
-// Port of _layouts/page.html
+// Port of _layouts/page.html — prose pages (about, 404).
+// `showTitle` is false when the markdown supplies its own h1 (404 does).
 import Base from './Base.astro';
 
 interface Props {
-  pageTitle: string;
+  /** Base layout title. Markdown pages arrive with frontmatter `title`. */
+  pageTitle?: string;
+  title?: string;
   description?: string;
   path: string;
+  showTitle?: boolean;
 }
 
-const { pageTitle, description, path } = Astro.props;
+const { pageTitle, title, description, path, showTitle } = Astro.props;
+// Markdown pages (about, 404) hand their frontmatter over as `frontmatter`,
+// not as individual props, so read both shapes.
+const fm = (Astro.props.frontmatter ?? {}) as Record<string, unknown>;
+const heading = pageTitle ?? title ?? (fm.title as string | undefined) ?? '';
+const withTitle = showTitle ?? (fm.showTitle as boolean | undefined) ?? true;
 ---
 
-<Base pageTitle={pageTitle} description={description} path={path} type="website">
-  <article>
+<Base pageTitle={heading} description={description} path={path} type="website">
+  {
+    withTitle && heading && (
+      <div class="page-head">
+        <h1>{heading}</h1>
+      </div>
+    )
+  }
+  <div class="page-body">
     <slot />
-  </article>
+  </div>
 </Base>
