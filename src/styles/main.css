@@ -906,6 +906,10 @@ body > footer a:hover {
 
   .row .dek {
     grid-column: 2 / 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
   }
 
   .row .t {

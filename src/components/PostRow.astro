@@ -2,7 +2,7 @@
 // One row of the homepage index: date, title, read time, description.
 // The year grouping lives in index.astro, so the row only carries month/day.
 import { formatIndexDate, laIso } from '../lib/dates';
-import { readMinutes } from '../lib/posts';
+import { excerpt, readMinutes } from '../lib/posts';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -12,6 +12,8 @@ interface Props {
 const { post } = Astro.props;
 const href = `/${post.id}/`;
 const minutes = readMinutes(post.body ?? '');
+// the opening of the post itself; the frontmatter description stays for meta tags
+const preview = excerpt(post.body) || post.data.description;
 ---
 
 <li class="row">
@@ -20,5 +22,5 @@ const minutes = readMinutes(post.body ?? '');
     <a href={href}>{post.data.title}</a>{post.data.updated && <span class="part"> · rev</span>}
   </h2>
   <span class="m">{minutes ? `${minutes} min` : ''}</span>
-  <p class="dek">{post.data.description}</p>
+  <p class="dek">{preview}</p>
 </li>
