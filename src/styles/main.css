@@ -107,6 +107,7 @@
   --site-bg: #fbfaf6;
   --site-surface: #f2efe6;
   --site-text: #191a17;
+  --site-secondary: #43443e;
   --site-muted: #6b6a62;
   --site-accent: #0d6e5f;
   --site-hairline: #dcd8cc;
@@ -150,6 +151,7 @@
     --site-bg: #0f1211;
     --site-surface: #151917;
     --site-text: #dcd9cf;
+    --site-secondary: #b3b0a5;
     --site-muted: #8b8a80;
     --site-accent: #4fc2ae;
     --site-hairline: #252a27;
@@ -164,6 +166,7 @@
   --site-bg: #0f1211;
   --site-surface: #151917;
   --site-text: #dcd9cf;
+  --site-secondary: #b3b0a5;
   --site-muted: #8b8a80;
   --site-accent: #4fc2ae;
   --site-hairline: #252a27;
@@ -504,11 +507,12 @@ body > main {
 
 .row .dek {
   grid-column: 2 / 4;
-  margin: 0.4rem 0 0;
-  color: var(--site-muted);
+  margin: 0.45rem 0 0;
+  /* a step darker than the mono metadata: this is content, not a label */
+  color: var(--site-secondary);
   font-size: 0.88rem;
   line-height: 1.5;
-  max-width: 62ch;
+  max-width: 74ch;
 }
 
 /* ——— article ——— */
